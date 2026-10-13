@@ -25,6 +25,13 @@ _Last updated: October 13, 2026_
 6. **Square** – optional: change customer-facing business name from "Oak Foods LLC" to "Hummus Y'all".
 7. **Launch** – add hummusyall.com as a custom domain in Cloudflare Pages, update DNS at Squarespace Domains, verify, then cancel the Squarespace site plan (keep the domain).
 
+## Orders & notifications (added Oct 13)
+- Private orders page `/admin/orders/` built: lists paid website orders per Sunday, prep totals, Ready for pickup / On its way buttons that email the customer through the Google script (`action: notify`) and mark the order PREPARED in Square.
+- To switch on: Alon updates the Google script (new version of the existing deployment), adds `ADMIN_PASSWORD` in Cloudflare, sends the Cary pickup address + Sunday pickup window (+ delivery window) for `data/site.json`.
+
 ## Later
+- **Replace the ops sheet's Pickups/Deliveries tabs** (Alon's goal):
+  - Option 1 (recommended at launch): the market-ops sheet pulls paid website orders from Square automatically (every 15 min + menu button) into the existing Pickups/Deliveries tabs, same columns, keeps Done ticks; replaces the Squarespace CSV import. Plan row "Pickup / Pre-orders" keeps working.
+  - Option 2 (after a few Sundays): staff view of the orders page with a contractor password (names, phones, addresses, items; no emails, no totals), Ready / Picked up / On its way / Delivered buttons that notify customers; production counts feed Plan; then delete the two tabs.
 - Connect the weekly market schedule to the market-ops Google Sheet so it updates itself.
 - Real photos of the three dips (replace label images).
