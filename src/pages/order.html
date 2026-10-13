@@ -9,13 +9,7 @@
 
       <div class="note" data-orders-closed hidden></div>
 
-      <div class="stack" style="gap:12px">
-        <div class="toggle" role="group" aria-label="How do you want your order?">
-          <button type="button" aria-pressed="true" data-mode="delivery">Delivery</button>
-          <button type="button" aria-pressed="false" data-mode="pickup">Pickup in {{pickupLocation}}</button>
-        </div>
-        <p class="note" data-mode-note>Delivered on <span data-next-day>Sunday</span> to {{deliveryArea}}. Not home? Leave a cooler outside.</p>
-      </div>
+      <p class="note">Choose your bowls below, then pick <strong>delivery ($8)</strong> or <strong>free pickup in {{pickupLocation}}</strong> in your order summary.</p>
 
       <div class="stack" style="gap:16px">
         <h2 style="font-size:30px">Hummus bowls</h2>
@@ -44,6 +38,18 @@
         <h2>Your order</h2>
         <p class="muted" data-empty>No bowls yet. Tap + to add.</p>
         <div class="summary-lines" data-lines></div>
+        <fieldset class="fulfil" data-fulfil>
+          <legend>How would you like your order?</legend>
+          <div class="fulfil-options">
+            <button type="button" class="fulfil-opt" aria-pressed="false" data-mode="delivery">
+              <strong>Delivery</strong><span>$8 · <span data-next-day>Sunday</span></span>
+            </button>
+            <button type="button" class="fulfil-opt" aria-pressed="false" data-mode="pickup">
+              <strong>Pickup in Cary</strong><span>Free · <span data-next-day>Sunday</span></span>
+            </button>
+          </div>
+          <p class="fulfil-note" data-mode-note hidden></p>
+        </fieldset>
         <div class="summary-lines" style="border-top:1.5px solid var(--sand-line);padding-top:14px">
           <div><span>Subtotal</span><span data-subtotal>$0</span></div>
           <div data-fee-row hidden><span>Delivery</span><span data-fee>$0</span></div>

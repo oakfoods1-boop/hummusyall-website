@@ -19,6 +19,7 @@
 }
 
 *, *::before, *::after { box-sizing: border-box; }
+[hidden] { display: none !important; }
 html { scroll-behavior: smooth; }
 body { margin: 0; font-family: var(--body); color: var(--ink); background: var(--cream); font-size: 17px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
 img { max-width: 100%; height: auto; display: block; }
@@ -169,6 +170,16 @@ fieldset.field { border: 0; padding: 0; margin: 0; }
 .summary-lines { display: flex; flex-direction: column; gap: 8px; }
 .summary-lines div { display: flex; justify-content: space-between; gap: 12px; }
 .summary-total { border-top: 1.5px solid var(--sand-line); padding-top: 14px; display: flex; justify-content: space-between; font-size: 18px; font-weight: 600; }
+.fulfil { border: 0; margin: 0; padding: 14px; border-radius: var(--radius-sm); background: var(--sand); display: flex; flex-direction: column; gap: 10px; transition: box-shadow .2s; }
+.fulfil legend { float: left; width: 100%; padding: 0; font-weight: 600; font-size: 16px; color: var(--ink); margin-bottom: 10px; }
+.fulfil.needs-choice { box-shadow: 0 0 0 3px var(--paprika); }
+.fulfil-options { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; clear: both; }
+.fulfil-opt { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; min-height: 64px; padding: 12px 14px; border-radius: 12px; border: 2px solid #C9BFA8; background: var(--white); color: var(--ink); font: 500 14px var(--body); text-align: left; cursor: pointer; }
+.fulfil-opt strong { font-size: 16px; font-weight: 600; color: var(--olive); }
+.fulfil-opt:hover { border-color: var(--olive); }
+.fulfil-opt[aria-pressed="true"] { border-color: var(--olive); background: var(--olive); color: var(--cream); }
+.fulfil-opt[aria-pressed="true"] strong { color: var(--cream); }
+.fulfil-note { font-size: 14px; color: var(--muted); }
 .summary .btn[disabled] { background: var(--sand-line); color: var(--muted); cursor: not-allowed; }
 .mobile-bar { display: none; }
 @media (max-width: 900px) {

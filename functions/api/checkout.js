@@ -20,7 +20,8 @@ export async function onRequestPost({ request, env }) {
 
   let body;
   try { body = await request.json(); } catch { return json({ error: 'Invalid request.' }, 400); }
-  const mode = body.mode === 'pickup' ? 'pickup' : 'delivery';
+  if (body.mode !== 'pickup' && body.mode !== 'delivery') return json({ error: 'Please choose delivery or pickup.' }, 400);
+  const mode = body.mode;
   const catalog = Object.fromEntries([...menu.bowls, ...menu.extras].filter((i) => i.available).map((i) => [i.id, i]));
   const items = (Array.isArray(body.items) ? body.items : [])
     .map((i) => ({ item: catalog[i.id], qty: Math.floor(Number(i.qty)) }))

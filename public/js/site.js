@@ -66,8 +66,9 @@
   var bowlsEl = $('[data-bowls]');
   if (bowlsEl && HY.menu) {
     var CART_KEY = 'hy-cart-v1';
-    var state = { qty: {}, mode: 'delivery' };
-    try { var saved = JSON.parse(localStorage.getItem(CART_KEY) || 'null'); if (saved && saved.qty) state = saved; } catch (e) {}
+    var state = { qty: {}, mode: null };
+    try { var saved = JSON.parse(localStorage.getItem(CART_KEY) || 'null'); if (saved && saved.qty) state.qty = saved.qty; } catch (e) {}
+    // Delivery vs pickup is always an active choice on each visit (nothing pre-selected).
     var save = function () { try { localStorage.setItem(CART_KEY, JSON.stringify(state)); } catch (e) {} };
     var all = HY.menu.bowls.concat(HY.menu.extras);
     var byId = {}; all.forEach(function (i) { byId[i.id] = i; });
@@ -90,7 +91,8 @@
     }).join('');
 
     var modeNote = $('[data-mode-note]');
-    var deliveryNote = modeNote ? modeNote.innerHTML : '';
+    var fulfil = $('[data-fulfil]');
+    var nextLong = next ? next.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' }) : 'Sunday';
     var render = function () {
       var lines = [], sub = 0, count = 0;
       all.forEach(function (i) {
@@ -110,12 +112,18 @@
       $('[data-tax-label]').textContent = 'Sales tax (' + rate + '%)';
       $('[data-tax]').textContent = '$' + (taxCents / 100).toFixed(2);
       $('[data-total]').textContent = '$' + total.toFixed(2);
-      $('[data-total-note]').textContent = state.mode === 'delivery'
-        ? 'Delivery on ' + (next ? next.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' }) : 'Sunday')        : 'Pickup in ' + HY.site.pickupLocation + ' on ' + (next ? next.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' }) : 'Sunday');
+      $('[data-total-note]').textContent = state.mode === 'delivery' ? 'Delivery on ' + nextLong
+        : state.mode === 'pickup' ? 'Pickup in ' + HY.site.pickupLocation + ' on ' + nextLong : '';
       var closed = HY.site.ordersOpen === false || !next;
-      $('[data-checkout]').disabled = count === 0 || closed;
+      var btn = $('[data-checkout]');
+      btn.disabled = count === 0 || closed;
+      btn.textContent = count > 0 && !state.mode ? 'Choose delivery or pickup' : 'Checkout securely';
+      fulfil.classList.toggle('needs-choice', count > 0 && !state.mode);
       $$('[data-mode]').forEach(function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-mode') === state.mode)); });
-      if (modeNote) modeNote.innerHTML = state.mode === 'delivery' ? deliveryNote : 'Pick up in ' + escapeHtml(HY.site.pickupLocation) + ' on ' + (next ? next.toLocaleDateString('en-US', { weekday: 'long' }) : 'Sunday') + '. We\'ll send the address and pickup window with your confirmation.';
+      modeNote.hidden = !state.mode;
+      modeNote.textContent = state.mode === 'delivery'
+        ? 'We deliver on ' + nextLong + '. Not home? Leave a cooler outside. You\'ll enter your address at checkout.'
+        : state.mode === 'pickup' ? 'Pick up in ' + HY.site.pickupLocation + ' on ' + nextLong + '. We\'ll send the address and pickup window with your confirmation.' : '';
       var bar = $('[data-mobile-bar]');
       if (bar) { bar.hidden = count === 0; document.body.classList.toggle('has-bar', count > 0); $('[data-bar-count]').textContent = count + (count === 1 ? ' item' : ' items'); $('[data-bar-total]').textContent = '$' + total.toFixed(2); }
       save();
@@ -147,6 +155,12 @@
     var errEl = $('[data-checkout-error]');
     checkout.addEventListener('click', function () {
       errEl.hidden = true;
+      if (!state.mode) {
+        fulfil.classList.add('needs-choice');
+        fulfil.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        $('.fulfil-opt', fulfil).focus({ preventScroll: true });
+        return;
+      }
       checkout.disabled = true; checkout.textContent = 'Opening secure checkout…';
       var items = Object.keys(state.qty).filter(function (k) { return state.qty[k] > 0 && byId[k]; }).map(function (k) { return { id: k, qty: state.qty[k] }; });
       fetch('/api/checkout', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ items: items, mode: state.mode }) })
