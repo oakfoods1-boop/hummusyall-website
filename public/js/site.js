@@ -122,7 +122,7 @@
       $$('[data-mode]').forEach(function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-mode') === state.mode)); });
       modeNote.hidden = !state.mode;
       modeNote.textContent = state.mode === 'delivery'
-        ? 'We deliver on ' + nextLong + '. Not home? Leave a cooler outside. You\'ll enter your address at checkout.'
+        ? 'We deliver on ' + nextLong + (HY.site.deliveryWindow ? ', ' + HY.site.deliveryWindow : '') + '. Not home? Leave a cooler outside. You\'ll enter your address at checkout.'
         : state.mode === 'pickup' ? 'Pick up in ' + HY.site.pickupLocation + ' on ' + nextLong + (HY.site.pickupWindow ? ', ' + HY.site.pickupWindow : '') + '. We\'ll email you the address as soon as your order is ready.' : '';
       var bar = $('[data-mobile-bar]');
       if (bar) { bar.hidden = count === 0; document.body.classList.toggle('has-bar', count > 0); $('[data-bar-count]').textContent = count + (count === 1 ? ' item' : ' items'); $('[data-bar-total]').textContent = '$' + total.toFixed(2); }

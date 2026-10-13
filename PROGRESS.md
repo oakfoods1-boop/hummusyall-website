@@ -27,7 +27,7 @@ _Last updated: October 13, 2026_
 
 ## Orders & notifications (added Oct 13)
 - Private orders page `/admin/orders/` built: lists paid website orders per Sunday, prep totals, Ready for pickup / On its way buttons that email the customer through the Google script (`action: notify`) and mark the order PREPARED in Square.
-- To switch on: Alon updates the Google script (new version of the existing deployment), adds `ADMIN_PASSWORD` in Cloudflare, sends the Cary pickup address + Sunday pickup window (+ delivery window) for `data/site.json`.
+- Switched on Oct 13: Google script updated (version 2 of the same deployment), `ADMIN_PASSWORD` set in Cloudflare, pickup 800 Roni Ct, Cary, NC 27519, Sundays 9 AM – 2 PM; delivery between 9 AM and 2 PM (`data/site.json`). Pending: Alon's first real test of the Ready email.
 
 ## Later
 - **Replace the ops sheet's Pickups/Deliveries tabs** (Alon's goal):
