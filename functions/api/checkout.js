@@ -57,6 +57,8 @@ export async function onRequestPost({ request, env }) {
         location_id: env.SQUARE_LOCATION_ID,
         reference_id: `web-${date}-${mode}`,
         line_items: lineItems,
+        // Order-level taxes from data/site.json apply to every item automatically.
+        taxes: (site.taxes || []).map((t, i) => ({ uid: `tax-${i}`, name: t.name, percentage: String(t.percentage), type: 'ADDITIVE', scope: 'ORDER' })),
         source: { name: 'hummusyall.com' },
       },
       checkout_options: {

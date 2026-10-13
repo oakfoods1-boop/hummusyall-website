@@ -14,6 +14,12 @@
   "pickupLocation": "Cary, NC",
   "deliveryArea": "Raleigh, Durham, Apex, Cary and surrounding areas",
   "deliveryFee": null,
+  "_taxes": "Sales taxes added to every online order (all items, now and future). Percentages as text.",
+  "taxes": [
+    { "name": "NC State", "percentage": "4.75" },
+    { "name": "Wake County", "percentage": "2" },
+    { "name": "Wake County Transit", "percentage": "0.5" }
+  ],
   "ordersOpen": true,
   "ordersClosedMessage": "Online ordering is paused this week. Find us at a farmers market!"
 }

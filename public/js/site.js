@@ -100,17 +100,23 @@
       });
       $('[data-lines]').innerHTML = lines.join('');
       $('[data-empty]').hidden = count > 0;
+      var fee = state.mode === 'delivery' && count > 0 ? (HY.site.deliveryFee || 0) : 0;
+      var rate = HY.site.taxRate || 0;
+      var taxCents = Math.round((sub + fee) * rate);          // dollars × percent = cents
+      var total = sub + fee + taxCents / 100;
       $('[data-subtotal]').textContent = money(sub);
-      var fee = HY.site.deliveryFee;
+      $('[data-tax-label]').textContent = 'Sales tax (' + rate + '%)';
+      $('[data-tax]').textContent = '$' + (taxCents / 100).toFixed(2);
+      $('[data-total]').textContent = '$' + total.toFixed(2);
       $('[data-total-note]').textContent = state.mode === 'delivery'
-        ? 'Delivery on ' + (next ? next.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' }) : 'Sunday') + (fee ? ' · ' + money(fee) + ' delivery fee' : '') + ' · tax calculated at checkout'
-        : 'Pickup in ' + HY.site.pickupLocation + ' on ' + (next ? next.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' }) : 'Sunday') + ' · tax calculated at checkout';
+        ? 'Delivery on ' + (next ? next.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' }) : 'Sunday') + (HY.site.deliveryFee ? ' · includes ' + money(HY.site.deliveryFee) + ' delivery fee' : '')
+        : 'Pickup in ' + HY.site.pickupLocation + ' on ' + (next ? next.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' }) : 'Sunday');
       var closed = HY.site.ordersOpen === false || !next;
       $('[data-checkout]').disabled = count === 0 || closed;
       $$('[data-mode]').forEach(function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-mode') === state.mode)); });
       if (modeNote) modeNote.innerHTML = state.mode === 'delivery' ? deliveryNote : 'Pick up in ' + escapeHtml(HY.site.pickupLocation) + ' on ' + (next ? next.toLocaleDateString('en-US', { weekday: 'long' }) : 'Sunday') + '. We\'ll send the address and pickup window with your confirmation.';
       var bar = $('[data-mobile-bar]');
-      if (bar) { bar.hidden = count === 0; document.body.classList.toggle('has-bar', count > 0); $('[data-bar-count]').textContent = count + (count === 1 ? ' item' : ' items'); $('[data-bar-total]').textContent = money(sub); }
+      if (bar) { bar.hidden = count === 0; document.body.classList.toggle('has-bar', count > 0); $('[data-bar-count]').textContent = count + (count === 1 ? ' item' : ' items'); $('[data-bar-total]').textContent = '$' + total.toFixed(2); }
       save();
     };
     var closedEl = $('[data-orders-closed]');

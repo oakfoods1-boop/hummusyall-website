@@ -44,7 +44,11 @@
         <h2>Your order</h2>
         <p class="muted" data-empty>No bowls yet. Tap + to add.</p>
         <div class="summary-lines" data-lines></div>
-        <div class="summary-total"><span>Subtotal</span><span data-subtotal>$0</span></div>
+        <div class="summary-lines" style="border-top:1.5px solid var(--sand-line);padding-top:14px">
+          <div><span>Subtotal</span><span data-subtotal>$0</span></div>
+          <div class="muted"><span data-tax-label>Sales tax</span><span data-tax>$0</span></div>
+        </div>
+        <div class="summary-total"><span>Total</span><span data-total>$0</span></div>
         <p class="muted" style="font-size:14px" data-total-note></p>
         <button class="btn btn-primary" type="button" data-checkout disabled>Checkout securely</button>
         <p class="muted" style="font-size:14px">Payment is handled by Square. You'll enter your contact details and address on the next page.</p>
