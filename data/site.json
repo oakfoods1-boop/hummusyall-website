@@ -13,7 +13,7 @@
   "skipDates": [],
   "pickupLocation": "Cary, NC",
   "_pickup": "Used in the 'ready for pickup' and 'on its way' emails sent from the private orders page.",
-  "pickupAddress": "",
+  "pickupAddress": "800 Roni Ct, Cary, NC 27519",
   "pickupWindow": "",
   "deliveryWindow": "",
   "deliveryArea": "Raleigh, Durham, Apex, Cary and surrounding areas",
