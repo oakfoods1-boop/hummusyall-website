@@ -27,7 +27,9 @@ export async function onRequestGet({ env }) {
     } while (cursor && orders.length < 1000);
 
     const paid = orders.filter((o) => (o.reference_id || '').startsWith('web-') && (o.tenders || []).length && !(o.refunds || []).length);
-    const list = (await Promise.all(paid.map((o) => describeOrder(env, o)))).filter(Boolean);
+    const zips = (site.deliveryZips || []).map(String);
+    const list = (await Promise.all(paid.map((o) => describeOrder(env, o)))).filter(Boolean)
+      .map((o) => ({ ...o, outsideArea: o.mode === 'delivery' && zips.length > 0 && !!o.zip && !zips.includes(o.zip) }));
     return json({
       orders: list,
       settings: { pickupAddress: site.pickupAddress || '', pickupWindow: site.pickupWindow || '', deliveryWindow: site.deliveryWindow || '' },

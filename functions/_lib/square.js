@@ -42,6 +42,7 @@ export async function describeOrder(env, o) {
     } catch { /* keep what we have */ }
   }
   const items = (o.line_items || []).map((li) => ({ name: li.name, qty: Number(li.quantity) }));
+  const zip = String(address?.postal_code || '').slice(0, 5);
   return {
     id: o.id,
     version: o.version,
@@ -55,5 +56,6 @@ export async function describeOrder(env, o) {
     name, email, phone,
     address: address ? [address.address_line_1, address.address_line_2, [address.locality, address.administrative_district_level_1].filter(Boolean).join(', '), address.postal_code].filter(Boolean).join(', ') : '',
     items: items.filter((i) => i.name !== 'Delivery'),
+    zip,
   };
 }

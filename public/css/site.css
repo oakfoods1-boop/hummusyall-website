@@ -179,6 +179,11 @@ fieldset.field { border: 0; padding: 0; margin: 0; }
 .fulfil-opt:hover { border-color: var(--olive); }
 .fulfil-opt[aria-pressed="true"] { border-color: var(--olive); background: var(--olive); color: var(--cream); }
 .fulfil-opt[aria-pressed="true"] strong { color: var(--cream); }
+.zip-field input { background: var(--white); max-width: 200px; font-size: 18px; letter-spacing: 1px; }
+.zip-msg { font-size: 14px; font-weight: 500; min-height: 1em; }
+.zip-msg.ok { color: var(--olive); }
+.zip-msg.no { color: #7A2A12; }
+.pill-warn { background: #F8E1D8; color: #7A2A12; }
 .fulfil-note { font-size: 14px; color: var(--muted); }
 .summary .btn[disabled] { background: var(--sand-line); color: var(--muted); cursor: not-allowed; }
 .mobile-bar { display: none; }

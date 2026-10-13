@@ -49,6 +49,11 @@
               <strong>Pickup in Cary</strong><span>Free · <span data-next-day>Sunday</span></span>
             </button>
           </div>
+          <div class="field zip-field" data-zip-field hidden>
+            <label for="o-zip">Delivery ZIP code</label>
+            <input id="o-zip" data-zip inputmode="numeric" autocomplete="postal-code" maxlength="5" placeholder="e.g. 27519">
+            <p class="zip-msg" data-zip-msg aria-live="polite"></p>
+          </div>
           <p class="fulfil-note" data-mode-note hidden></p>
         </fieldset>
         <div class="summary-lines" style="border-top:1.5px solid var(--sand-line);padding-top:14px">

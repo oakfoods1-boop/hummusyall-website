@@ -18,6 +18,8 @@
   "deliveryWindow": "between 9 AM and 2 PM",
   "deliveryArea": "Raleigh, Durham, Apex, Cary and surrounding areas",
   "deliveryFee": 8,
+  "_deliveryZips": "ZIP codes we deliver to. Empty list = no restriction.",
+  "deliveryZips": [],
   "_taxes": "Sales taxes added to every online order (all items, now and future). Percentages as text.",
   "taxes": [
     { "name": "NC State", "percentage": "4.75" },

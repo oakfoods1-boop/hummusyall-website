@@ -76,7 +76,7 @@ const blocks = {
 
   // Data handed to the browser scripts
   pageData: () => `<script>window.HY=${JSON.stringify({
-    site: { fulfillmentWeekday: site.fulfillmentWeekday, orderCutoff: site.orderCutoff, skipDates: site.skipDates, ordersOpen: site.ordersOpen, ordersClosedMessage: site.ordersClosedMessage, pickupLocation: site.pickupLocation, pickupWindow: site.pickupWindow || '', deliveryWindow: site.deliveryWindow || '', deliveryFee: site.deliveryFee, taxRate: (site.taxes || []).reduce((s, t) => s + Number(t.percentage), 0) },
+    site: { fulfillmentWeekday: site.fulfillmentWeekday, orderCutoff: site.orderCutoff, skipDates: site.skipDates, ordersOpen: site.ordersOpen, ordersClosedMessage: site.ordersClosedMessage, pickupLocation: site.pickupLocation, pickupWindow: site.pickupWindow || '', deliveryWindow: site.deliveryWindow || '', deliveryZips: site.deliveryZips || [], deliveryFee: site.deliveryFee, taxRate: (site.taxes || []).reduce((s, t) => s + Number(t.percentage), 0) },
     menu: { bowls: menu.bowls.filter((b) => b.available), extras: menu.extras.filter((x) => x.available) },
     markets, schedule,
   }).replace(/</g, '\\u003c')}</script>`,

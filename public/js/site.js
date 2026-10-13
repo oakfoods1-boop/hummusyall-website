@@ -91,6 +91,16 @@
     }).join('');
 
     var modeNote = $('[data-mode-note]');
+    var zipField = $('[data-zip-field]'), zipInput = $('[data-zip]'), zipMsg = $('[data-zip-msg]');
+    var zips = (HY.site.deliveryZips || []).map(String);
+    if (state.zip) zipInput.value = state.zip;
+    // 'ok' when delivery can go ahead, 'incomplete' while the ZIP isn't 5 digits yet, 'no' when we don't deliver there.
+    var zipStatus = function () {
+      if (state.mode !== 'delivery' || !zips.length) return 'ok';
+      var z = state.zip || '';
+      if (z.length < 5) return 'incomplete';
+      return zips.indexOf(z) !== -1 ? 'ok' : 'no';
+    };
     var fulfil = $('[data-fulfil]');
     var nextLong = next ? next.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' }) : 'Sunday';
     var render = function () {
@@ -116,8 +126,15 @@
         : state.mode === 'pickup' ? 'Pickup in ' + HY.site.pickupLocation + ' on ' + nextLong : '';
       var closed = HY.site.ordersOpen === false || !next;
       var btn = $('[data-checkout]');
-      btn.disabled = count === 0 || closed;
-      btn.textContent = count > 0 && !state.mode ? 'Choose delivery or pickup' : 'Checkout securely';
+      var zs = zipStatus();
+      btn.disabled = count === 0 || closed || zs === 'no';
+      btn.textContent = count > 0 && !state.mode ? 'Choose delivery or pickup'
+        : count > 0 && zs === 'incomplete' ? 'Enter your delivery ZIP code'
+        : count > 0 && zs === 'no' ? 'Delivery not available for this ZIP' : 'Checkout securely';
+      zipField.hidden = state.mode !== 'delivery' || !zips.length;
+      zipMsg.className = 'zip-msg' + (zs === 'ok' && state.zip ? ' ok' : zs === 'no' ? ' no' : '');
+      zipMsg.textContent = zs === 'no' ? 'Sorry, we don\'t deliver to ' + state.zip + ' yet. Choose free pickup in ' + HY.site.pickupLocation.replace(/, NC$/, '') + ' instead.'
+        : zs === 'ok' && state.zip ? '✓ We deliver to ' + state.zip + '.' : '';
       fulfil.classList.toggle('needs-choice', count > 0 && !state.mode);
       $$('[data-mode]').forEach(function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-mode') === state.mode)); });
       modeNote.hidden = !state.mode;
@@ -149,6 +166,11 @@
       if (!state.qty[hid]) state.qty[hid] = 1;
       history.replaceState(null, '', location.pathname);
     }
+    zipInput.addEventListener('input', function () {
+      var v = zipInput.value.replace(/\D/g, '').slice(0, 5);
+      if (zipInput.value !== v) zipInput.value = v;
+      state.zip = v; render();
+    });
     render();
 
     var checkout = $('[data-checkout]');
@@ -161,9 +183,10 @@
         $('.fulfil-opt', fulfil).focus({ preventScroll: true });
         return;
       }
+      if (zipStatus() === 'incomplete') { zipInput.focus(); zipField.scrollIntoView({ behavior: 'smooth', block: 'center' }); return; }
       checkout.disabled = true; checkout.textContent = 'Opening secure checkout…';
       var items = Object.keys(state.qty).filter(function (k) { return state.qty[k] > 0 && byId[k]; }).map(function (k) { return { id: k, qty: state.qty[k] }; });
-      fetch('/api/checkout', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ items: items, mode: state.mode }) })
+      fetch('/api/checkout', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ items: items, mode: state.mode, zip: state.mode === 'delivery' ? state.zip || '' : '' }) })
         .then(function (r) { return r.json().then(function (j) { return { ok: r.ok, j: j }; }); })
         .then(function (res) {
           if (!res.ok || !res.j.url) throw new Error(res.j && res.j.error || 'Checkout is not available right now.');

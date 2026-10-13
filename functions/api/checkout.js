@@ -35,6 +35,12 @@ export async function onRequestPost({ request, env }) {
     .filter((i) => i.item && i.qty > 0 && i.qty <= 50);
   if (!items.length) return json({ error: 'Your order is empty.' }, 400);
 
+  const zips = (site.deliveryZips || []).map(String);
+  const zip = String(body.zip || '').replace(/\D/g, '').slice(0, 5);
+  if (mode === 'delivery' && zips.length && !zips.includes(zip)) {
+    return json({ error: zip ? `Sorry, we don't deliver to ${zip} yet. Please choose pickup instead.` : 'Please enter your delivery ZIP code.' }, 400);
+  }
+
   const date = nextFulfillment(site);
   if (!date) return json({ error: 'No upcoming fulfillment date is open right now.' }, 409);
   const when = prettyDate(date);
@@ -80,7 +86,9 @@ export async function onRequestPost({ request, env }) {
         merchant_support_email: site.email,
         allow_tipping: false,
       },
-      payment_note: `${mode === 'pickup' ? `PICKUP in ${site.pickupLocation}` : 'DELIVERY'} on ${when}`,
+      payment_note: `${mode === 'pickup' ? `PICKUP in ${site.pickupLocation}` : `DELIVERY${zip ? ` (ZIP ${zip})` : ''}`} on ${when}`,
+      // Start Square's address form with the ZIP the customer gave us.
+      ...(mode === 'delivery' && zip ? { pre_populated_data: { buyer_address: { postal_code: zip, country: 'US' } } } : {}),
     }),
   });
   const data = await res.json().catch(() => ({}));
