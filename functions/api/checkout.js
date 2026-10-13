@@ -1,0 +1,77 @@
+// POST /api/checkout  { items: [{id, qty}], mode: "delivery" | "pickup" }
+// Builds a Square payment link from the cart and returns { url }. Prices always come from data/menu.json,
+// never from the browser, so nobody can change what they pay.
+//
+// Needs these settings in Cloudflare Pages (Settings > Environment variables):
+//   SQUARE_ACCESS_TOKEN  - from the Square Developer dashboard (production access token)
+//   SQUARE_LOCATION_ID   - the Square location that should receive online orders
+//   SQUARE_ENV           - "production" (default) or "sandbox" for testing
+import menu from '../../data/menu.json';
+import site from '../../data/site.json';
+import { nextFulfillment, prettyDate } from '../_lib/fulfillment.js';
+
+const json = (body, status = 200) => new Response(JSON.stringify(body), { status, headers: { 'Content-Type': 'application/json' } });
+
+export async function onRequestPost({ request, env }) {
+  if (!env.SQUARE_ACCESS_TOKEN || !env.SQUARE_LOCATION_ID) {
+    return json({ error: 'Online checkout is being set up and will open soon.' }, 503);
+  }
+  if (site.ordersOpen === false) return json({ error: site.ordersClosedMessage }, 409);
+
+  let body;
+  try { body = await request.json(); } catch { return json({ error: 'Invalid request.' }, 400); }
+  const mode = body.mode === 'pickup' ? 'pickup' : 'delivery';
+  const catalog = Object.fromEntries([...menu.bowls, ...menu.extras].filter((i) => i.available).map((i) => [i.id, i]));
+  const items = (Array.isArray(body.items) ? body.items : [])
+    .map((i) => ({ item: catalog[i.id], qty: Math.floor(Number(i.qty)) }))
+    .filter((i) => i.item && i.qty > 0 && i.qty <= 50);
+  if (!items.length) return json({ error: 'Your order is empty.' }, 400);
+
+  const date = nextFulfillment(site);
+  if (!date) return json({ error: 'No upcoming fulfillment date is open right now.' }, 409);
+  const when = prettyDate(date);
+
+  const lineItems = items.map(({ item, qty }) => ({
+    name: item.name + (item.size ? ` (${item.size})` : ''),
+    quantity: String(qty),
+    base_price_money: { amount: Math.round(item.price * 100), currency: 'USD' },
+    note: `${mode === 'pickup' ? 'Pickup' : 'Delivery'} ${when}`,
+  }));
+  if (mode === 'delivery' && site.deliveryFee) {
+    lineItems.push({ name: 'Delivery', quantity: '1', base_price_money: { amount: Math.round(site.deliveryFee * 100), currency: 'USD' } });
+  }
+
+  const origin = new URL(request.url).origin;
+  const base = env.SQUARE_API_BASE || (env.SQUARE_ENV === 'sandbox' ? 'https://connect.squareupsandbox.com' : 'https://connect.squareup.com');
+  const res = await fetch(base + '/v2/online-checkout/payment-links', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${env.SQUARE_ACCESS_TOKEN}`,
+      'Content-Type': 'application/json',
+      'Square-Version': '2025-01-23',
+    },
+    body: JSON.stringify({
+      idempotency_key: crypto.randomUUID(),
+      description: `Hummus Y'all online order: ${mode} ${when}`,
+      order: {
+        location_id: env.SQUARE_LOCATION_ID,
+        reference_id: `web-${date}-${mode}`,
+        line_items: lineItems,
+        source: { name: 'hummusyall.com' },
+      },
+      checkout_options: {
+        ask_for_shipping_address: mode === 'delivery',
+        redirect_url: `${origin}/order/thanks/`,
+        merchant_support_email: site.email,
+        allow_tipping: true,
+      },
+      payment_note: `${mode === 'pickup' ? `PICKUP in ${site.pickupLocation}` : 'DELIVERY'} on ${when}`,
+    }),
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok || !data.payment_link?.url) {
+    console.log('Square error', res.status, JSON.stringify(data.errors || data));
+    return json({ error: 'Checkout is temporarily unavailable.' }, 502);
+  }
+  return json({ url: data.payment_link.url });
+}

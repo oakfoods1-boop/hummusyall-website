@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{title}}</title>
+<meta name="description" content="{{description}}">
+<link rel="canonical" href="{{canonical}}">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Hummus Y'all">
+<meta property="og:title" content="{{title}}">
+<meta property="og:description" content="{{description}}">
+<meta property="og:url" content="{{canonical}}">
+<meta property="og:image" content="https://www.hummusyall.com/img/og-image.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#2F4A2A">
+<link rel="icon" type="image/png" href="/img/favicon.png">
+<link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&amp;family=Poppins:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/site.css">
+{{extraHead}}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FoodEstablishment","name":"Hummus Y'all","url":"https://www.hummusyall.com","logo":"https://www.hummusyall.com/img/logo.webp","image":"https://www.hummusyall.com/img/og-image.jpg","email":"{{email}}","servesCuisine":["Mediterranean","Israeli","Vegan"],"areaServed":["Raleigh","Durham","Cary","Apex","Hillsborough","Morrisville","Mebane","Greensboro"],"address":{"@type":"PostalAddress","addressRegion":"NC","addressCountry":"US"},"sameAs":["{{instagram}}","{{facebook}}"]}
+</script>
+</head>
+<body class="{{bodyClass}}">
+<a class="visually-hidden" href="#main">Skip to content</a>
+{{> header}}
+<main id="main">
+{{content}}
+</main>
+{{> footer}}
+{{pageData}}
+<script src="/js/site.js" defer></script>
+{{extraScripts}}
+</body>
+</html>

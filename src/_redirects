@@ -1,0 +1,10 @@
+# Old Squarespace addresses -> new pages (301 = permanent, keeps Google rankings)
+/shop            /order/      301
+/shop/*          /order/      301
+/cart            /order/      301
+/new-page-2      /markets/    301
+/contact-6       /catering/#inquiry 301
+/team            /about/      301
+/gallery-1       /about/      301
+/s/HummusYall_Catering_Brochure_1.pdf      /files/HummusYall_Catering_Brochure.pdf      301
+/s/Hummus-Yall-Private-Workshop-Flyer3.pdf /files/Hummus-Yall-Private-Workshop-Flyer.pdf 301

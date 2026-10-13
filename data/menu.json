@@ -1,0 +1,27 @@
+{
+  "_note": "Prices are in dollars. The checkout reads prices from this file, so changing a price here changes what customers pay. Set available to false to hide an item.",
+  "bowls": [
+    { "id": "sabich", "name": "Hummus Sabich", "price": 17, "image": "bowl-sabich", "available": true,
+      "description": "Fried eggplant and a hard-boiled egg over creamy hummus, with tahini, parsley and sumac." },
+    { "id": "onions", "name": "Caramelized Onions", "price": 15, "image": "bowl-onions", "available": true,
+      "description": "Slow-cooked sweet onions, fresh parsley and a drizzle of olive oil." },
+    { "id": "cauliflower", "name": "Roasted Cauliflower", "price": 15, "image": "bowl-cauliflower", "available": true,
+      "description": "Spiced, oven-charred cauliflower with tahini and parsley." },
+    { "id": "schug", "name": "Hummus with Green Schug", "price": 15, "image": "bowl-schug", "available": true,
+      "description": "Our spicy cilantro-pepper schug with tahini and olive oil. For heat lovers." },
+    { "id": "mushrooms", "name": "Sautéed Mushrooms", "price": 15, "image": "bowl-mushrooms", "available": true,
+      "description": "Seasoned sautéed mushrooms, tahini and fresh parsley." },
+    { "id": "chickpeas", "name": "Hummus with Chickpeas", "price": 15, "image": "bowl-chickpeas", "available": true,
+      "description": "The classic: warm seasoned chickpeas, tahini, paprika and olive oil." }
+  ],
+  "extras": [
+    { "id": "green-stuff", "name": "The green stuff", "subtitle": "Spicy green schug", "size": "8 oz", "price": 12, "image": "label-green", "available": true, "isNew": true,
+      "description": "Hot peppers, cilantro and garlic. Our most-asked-for topping, now by the jar." },
+    { "id": "baba-ganoush", "name": "Baba Ganoush", "subtitle": "Roasted eggplant with tahini", "size": "8 oz", "price": 8, "image": "label-baba", "available": true, "isNew": true,
+      "description": "Smoky roasted eggplant, tahini, garlic and a touch of sumac." },
+    { "id": "garlic-aioli", "name": "Garlic Aioli", "subtitle": "Made with avocado oil", "size": "8 oz", "price": 8, "image": "label-aioli", "available": true, "isNew": true,
+      "description": "Garlic, avocado oil, lemon and salt. Creamy, bright, and egg-free." },
+    { "id": "pita", "name": "Extra pita", "subtitle": "Warm, authentic pita", "size": "", "price": 2, "image": "", "available": true, "isNew": false,
+      "description": "Every bowl already comes with pita. Add more here." }
+  ]
+}

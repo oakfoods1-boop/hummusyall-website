@@ -1,0 +1,60 @@
+<!--{"title":"Order Hummus Bowls Online | Hummus Y'all","description":"Order fresh hummus bowls, dips and spreads for Sunday delivery or pickup in Cary, NC.","path":"/order/","nav":"order","bodyClass":"page-order"}-->
+<section class="section-tight">
+  <div class="wrap order-layout">
+    <div class="order-main">
+      <div class="stack" style="gap:10px">
+        <h1 style="font-size:clamp(38px,5vw,54px)">Order for <span data-next-date>Sunday</span></h1>
+        <p>Fresh bowls made for this Sunday. Every bowl includes warm pita.</p>
+      </div>
+
+      <div class="note" data-orders-closed hidden></div>
+
+      <div class="stack" style="gap:12px">
+        <div class="toggle" role="group" aria-label="How do you want your order?">
+          <button type="button" aria-pressed="true" data-mode="delivery">Delivery</button>
+          <button type="button" aria-pressed="false" data-mode="pickup">Pickup in {{pickupLocation}}</button>
+        </div>
+        <p class="note" data-mode-note>Delivered on <span data-next-day>Sunday</span> to {{deliveryArea}}. Not home? Leave a cooler outside.</p>
+      </div>
+
+      <div class="stack" style="gap:16px">
+        <h2 style="font-size:30px">Hummus bowls</h2>
+        <div class="grid-cards" data-bowls></div>
+      </div>
+
+      <div class="stack" style="gap:14px">
+        <h2 style="font-size:30px">Add dips &amp; extras</h2>
+        <div class="stack" style="gap:12px" data-extras></div>
+      </div>
+
+      <div class="stack" style="gap:16px">
+        <h2 style="font-size:30px">What arrives at your door</h2>
+        <div class="grid-2" style="gap:24px">
+          <img src="/img/labeled-bowls.webp" alt="Sealed, labeled Hummus Y'all bowls ready for delivery" class="photo" style="height:320px" loading="lazy" width="800" height="1067">
+          <div class="stack">
+            <p>Each bowl comes sealed and labeled with its ingredients. Keep refrigerated and warm for 30 seconds in the microwave before serving.</p>
+            <p class="muted">Contains sesame. Full ingredients are on each label.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <aside class="order-side" aria-label="Your order">
+      <div class="summary" id="summary">
+        <h2>Your order</h2>
+        <p class="muted" data-empty>No bowls yet. Tap + to add.</p>
+        <div class="summary-lines" data-lines></div>
+        <div class="summary-total"><span>Subtotal</span><span data-subtotal>$0</span></div>
+        <p class="muted" style="font-size:14px" data-total-note></p>
+        <button class="btn btn-primary" type="button" data-checkout disabled>Checkout securely</button>
+        <p class="muted" style="font-size:14px">Payment is handled by Square. You'll enter your contact details and address on the next page.</p>
+        <p class="form-status err" data-checkout-error hidden></p>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<div class="mobile-bar" data-mobile-bar hidden>
+  <span><strong data-bar-count>0 items</strong> · <span data-bar-total>$0</span></span>
+  <a class="btn btn-primary" href="#summary">Review order</a>
+</div>

@@ -1,0 +1,82 @@
+<!--{"title":"Hummus Catering & Workshops in the Triangle | Hummus Y'all","description":"Live hummus station catering, corporate lunches and hands-on hummus workshops in Raleigh, Durham, Cary and across North Carolina.","path":"/catering/","nav":"catering"}-->
+<section class="hero">
+  <div class="wrap grid-2">
+    <div class="stack">
+      <span class="pill">Catering &amp; events</span>
+      <h1 style="font-size:clamp(40px,6vw,64px)">Hire us for your next event</h1>
+      <p class="lede">Fresh, authentic hummus with an array of toppings and warm pita, plated in front of your guests.</p>
+      <div class="btn-row">
+        <a class="btn btn-primary" href="#inquiry">Request a quote</a>
+        <a class="btn btn-outline" href="/files/HummusYall_Catering_Brochure.pdf">Catering brochure (PDF)</a>
+      </div>
+    </div>
+    <img src="/img/catering-tent-team.webp" alt="The Hummus Y'all team at an outdoor catering event" class="photo" style="aspect-ratio:4/5;max-width:480px;margin:0 auto" width="800" height="1067">
+  </div>
+</section>
+
+<section class="section sand">
+  <div class="wrap stack" style="gap:36px">
+    <h2>What we offer</h2>
+    <div class="grid-cards">
+      <article class="card">
+        <img src="/img/event-spoon.webp" alt="Alon plating a hummus bowl at a live hummus station" class="card-img" loading="lazy" width="1100" height="733">
+        <h3>Full-service catering</h3>
+        <p>Our fresh hummus with toppings like sautéed mushrooms, roasted cauliflower and cilantro chimichurri. Every serving includes warm pita, beautifully plated for your guests.</p>
+      </article>
+      <article class="card">
+        <img src="/img/catering-spread.webp" alt="Corporate lunch buffet with falafel and Israeli salad" class="card-img" loading="lazy" width="800" height="1067">
+        <h3>Corporate lunches</h3>
+        <p>A full-service lunch buffet with customized hummus bowls and toppings, or pre-plated bowls ready to eat. A crowd-pleaser for your team.</p>
+      </article>
+      <article class="card">
+        <img src="/img/drizzle-closeup.webp" alt="Olive oil being drizzled over a hummus bowl" class="card-img" loading="lazy" width="800" height="1200">
+        <h3>Private hummus workshops</h3>
+        <p>A hands-on party for small groups: learn to prepare and plate hummus the authentic way, then enjoy the freshest hummus around.</p>
+        <a class="btn btn-outline" href="/files/Hummus-Yall-Private-Workshop-Flyer.pdf">Workshop flyer (PDF)</a>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="inquiry">
+  <div class="wrap grid-2" style="align-items:start">
+    <div class="stack">
+      <h2>Tell us about your event</h2>
+      <p>Fill out a few details and we'll get back to you with options and pricing, usually within a day or two.</p>
+      <p>Prefer email? Write to <a href="mailto:{{email}}">{{email}}</a>.</p>
+      <img src="/img/alon-and-partner-event.webp" alt="Alon and a teammate at a hummus station event" class="photo" style="height:380px;margin-top:8px" loading="lazy" width="800" height="1067">
+    </div>
+    <form class="form" data-form="catering" novalidate>
+      <div class="row">
+        <div class="field"><label for="c-first">First name <span class="req">*</span></label><input id="c-first" name="firstName" autocomplete="given-name" required></div>
+        <div class="field"><label for="c-last">Last name <span class="req">*</span></label><input id="c-last" name="lastName" autocomplete="family-name" required></div>
+      </div>
+      <div class="row">
+        <div class="field"><label for="c-email">Email <span class="req">*</span></label><input id="c-email" name="email" type="email" autocomplete="email" required></div>
+        <div class="field"><label for="c-phone">Phone</label><input id="c-phone" name="phone" type="tel" autocomplete="tel"></div>
+      </div>
+      <div class="field"><label for="c-company">Company or organization</label><input id="c-company" name="company" autocomplete="organization"></div>
+      <fieldset class="field">
+        <legend>What are you interested in?</legend>
+        <div class="choices">
+          <label><input type="checkbox" name="services" value="Full-service catering"> Full-service catering</label>
+          <label><input type="checkbox" name="services" value="Corporate lunch"> Corporate lunch</label>
+          <label><input type="checkbox" name="services" value="Hummus workshop"> Hummus workshop</label>
+          <label><input type="checkbox" name="services" value="Other"> Other</label>
+        </div>
+      </fieldset>
+      <div class="row">
+        <div class="field"><label for="c-date">Event date</label><input id="c-date" name="eventDate" type="date"></div>
+        <div class="field"><label for="c-time">Start time</label><input id="c-time" name="eventTime" type="time"></div>
+      </div>
+      <div class="row">
+        <div class="field"><label for="c-guests">Number of guests</label><input id="c-guests" name="guests" type="number" min="1" inputmode="numeric"></div>
+        <div class="field"><label for="c-budget">Budget</label><input id="c-budget" name="budget" placeholder="e.g. $500"></div>
+      </div>
+      <div class="field"><label for="c-msg">Tell us more <span class="req">*</span></label><textarea id="c-msg" name="message" required placeholder="Location, occasion, dietary needs…"></textarea></div>
+      <div class="visually-hidden" aria-hidden="true"><label>Leave empty <input name="website" tabindex="-1" autocomplete="off"></label></div>
+      <button class="btn btn-primary" type="submit">Send inquiry</button>
+      <p class="form-status" role="status" hidden></p>
+    </form>
+  </div>
+</section>

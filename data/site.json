@@ -1,0 +1,19 @@
+{
+  "name": "Hummus Y'all",
+  "legalName": "Oak Foods LLC",
+  "tagline": "Authentic hummus bowls made in the South",
+  "url": "https://www.hummusyall.com",
+  "email": "alon@hummusyall.com",
+  "instagram": "https://www.instagram.com/hummusyall/",
+  "facebook": "https://www.facebook.com/profile.php?id=61561486542995",
+
+  "_orders": "Online orders are fulfilled on Sundays. The site shows the next Sunday automatically. Add a date to skipDates to skip a week (the site then shows the Sunday after).",
+  "fulfillmentWeekday": 0,
+  "orderCutoff": { "weekday": 6, "hour": 23, "minute": 59 },
+  "skipDates": [],
+  "pickupLocation": "Cary, NC",
+  "deliveryArea": "Raleigh, Durham, Apex, Cary and surrounding areas",
+  "deliveryFee": null,
+  "ordersOpen": true,
+  "ordersClosedMessage": "Online ordering is paused this week. Find us at a farmers market!"
+}

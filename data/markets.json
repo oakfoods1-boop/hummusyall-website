@@ -1,0 +1,23 @@
+{
+  "_note": "All markets we are approved vendors at. Weekly attendance lives in schedule.json.",
+  "markets": [
+    { "id": "eno-river", "name": "Eno River Farmers Market", "town": "Hillsborough, NC", "color": "#3AAA60",
+      "lat": 36.0754, "lng": -79.0997, "day": 6,
+      "hours": ["Apr–Dec: Saturdays 8am – 12pm", "Jan–Mar: Saturdays 10am – 12pm"] },
+    { "id": "midtown", "name": "Midtown Farmers Market", "town": "Raleigh, NC", "color": "#E07B39",
+      "lat": 35.8638, "lng": -78.6411, "day": 6,
+      "hours": ["Saturdays 8am – 12pm", "Seasonal: Apr 11 – Oct 31"] },
+    { "id": "western-wake", "name": "Western Wake Farmers Market", "town": "Morrisville, NC", "color": "#3B7DD8",
+      "lat": 35.8326, "lng": -78.8251, "day": 6,
+      "hours": ["Apr–Nov: Saturdays 8am – 12pm", "Dec–Mar: Saturdays 9:30am – 12pm"] },
+    { "id": "greensboro", "name": "Greensboro Farmers Curb Market", "town": "Greensboro, NC", "color": "#9B4DCA",
+      "lat": 36.0726, "lng": -79.7910, "day": 6, "note": "Indoor market",
+      "hours": ["Saturdays 8am – 12pm (year-round)", "Tuesdays 4pm – 7pm (Apr 14 – Oct 27)"] },
+    { "id": "apex", "name": "Apex Farmers Market", "town": "Apex, NC", "color": "#D64545",
+      "lat": 35.7326, "lng": -78.8503, "day": 6,
+      "hours": ["Apr–Oct: Saturdays 8am – 12pm", "Nov–Mar: Saturdays 9am – 12pm"] },
+    { "id": "mebane", "name": "Downtown Mebane Farmers Market", "town": "Mebane, NC", "color": "#C9A227",
+      "lat": 36.0957, "lng": -79.2673, "day": 6,
+      "hours": ["Saturdays 8:30am – 12pm", "Seasonal: Apr 4 – Nov 14"] }
+  ]
+}
