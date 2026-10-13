@@ -65,7 +65,7 @@ export async function onRequestPost({ request, env }) {
         ask_for_shipping_address: mode === 'delivery',
         redirect_url: `${origin}/order/thanks/`,
         merchant_support_email: site.email,
-        allow_tipping: true,
+        allow_tipping: false,
       },
       payment_note: `${mode === 'pickup' ? `PICKUP in ${site.pickupLocation}` : 'DELIVERY'} on ${when}`,
     }),

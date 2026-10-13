@@ -13,7 +13,7 @@
   "skipDates": [],
   "pickupLocation": "Cary, NC",
   "deliveryArea": "Raleigh, Durham, Apex, Cary and surrounding areas",
-  "deliveryFee": null,
+  "deliveryFee": 8,
   "_taxes": "Sales taxes added to every online order (all items, now and future). Percentages as text.",
   "taxes": [
     { "name": "NC State", "percentage": "4.75" },
