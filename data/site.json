@@ -19,7 +19,7 @@
   "deliveryArea": "Raleigh, Durham, Apex, Cary and surrounding areas",
   "deliveryFee": 8,
   "_deliveryZips": "ZIP codes we deliver to. Empty list = no restriction.",
-  "deliveryZips": [],
+  "deliveryZips": ["27278", "27502", "27510", "27511", "27512", "27513", "27514", "27515", "27516", "27518", "27519", "27523", "27526", "27529", "27530", "27539", "27540", "27560", "27562", "27592", "27601", "27603", "27604", "27605", "27606", "27607", "27608", "27609", "27610", "27612", "27613", "27614", "27615", "27616", "27617", "27695", "27701", "27703", "27704", "27705", "27707", "27709", "27712", "27713"],
   "_taxes": "Sales taxes added to every online order (all items, now and future). Percentages as text.",
   "taxes": [
     { "name": "NC State", "percentage": "4.75" },
