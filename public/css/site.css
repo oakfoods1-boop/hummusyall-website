@@ -190,6 +190,17 @@ fieldset.field { border: 0; padding: 0; margin: 0; }
   body.has-bar { padding-bottom: 84px; }
 }
 
+/* Private orders page */
+.admin-stats { display: flex; flex-direction: column; gap: 10px; }
+.admin-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr)); gap: 16px; }
+.admin-order { gap: 10px; }
+.admin-order.done { opacity: .75; }
+.admin-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+.admin-top h3 { font-family: var(--body); font-size: 19px; font-weight: 600; color: var(--ink); margin-bottom: 6px; }
+.admin-items { margin: 0; padding-left: 18px; }
+.admin-contact { font-size: 15px; overflow-wrap: anywhere; }
+.pill-done { background: #E3EFD9; color: var(--olive-dark); }
+
 /* Team */
 .person { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: 32px; align-items: center; }
 

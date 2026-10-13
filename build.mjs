@@ -141,7 +141,7 @@ for (const file of readdirSync(join(root, 'src/pages'))) {
 
 // SEO + hosting files
 writeFileSync(join(dist, 'sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${pages.map((p) => `  <url><loc>${site.url}${p}</loc></url>`).join('\n')}\n</urlset>\n`);
-writeFileSync(join(dist, 'robots.txt'), `User-agent: *\nAllow: /\nSitemap: ${site.url}/sitemap.xml\n`);
+writeFileSync(join(dist, 'robots.txt'), `User-agent: *\nAllow: /\nDisallow: /admin/\nSitemap: ${site.url}/sitemap.xml\n`);
 if (existsSync(join(root, 'src/_redirects'))) cpSync(join(root, 'src/_redirects'), join(dist, '_redirects'));
 if (existsSync(join(root, 'src/_headers'))) cpSync(join(root, 'src/_headers'), join(dist, '_headers'));
 

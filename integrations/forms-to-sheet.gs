@@ -14,6 +14,13 @@ var NOTIFY = 'alon@hummusyall.com';
 function doPost(e) {
   var body = JSON.parse(e.postData.contents || '{}');
   if (body.secret !== SECRET) return out({ ok: false, error: 'forbidden' });
+
+  // Customer messages from the private orders page ("ready for pickup", "on its way").
+  if (body.action === 'notify') {
+    MailApp.sendEmail({ to: body.to, subject: body.subject, body: body.body, name: "Hummus Y'all", replyTo: body.replyTo || NOTIFY });
+    return out({ ok: true });
+  }
+
   var s = body.submission || {};
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var tab = ss.getSheetByName(s.formTitle) || ss.insertSheet(s.formTitle);

@@ -1,0 +1,28 @@
+<!--{"title":"Sunday orders | Hummus Y'all","description":"Private order list.","path":"/admin/orders/","nav":"","noindex":true,"bodyClass":"page-admin","extraHead":"<meta name=\"robots\" content=\"noindex, nofollow\">","extraScripts":"<script src=\"/js/admin.js\" defer></script>"}-->
+<section class="section-tight">
+  <div class="wrap stack" style="gap:20px">
+    <div class="section-head" style="margin-bottom:0">
+      <div class="stack" style="gap:6px">
+        <span class="pill">Private · staff only</span>
+        <h1 style="font-size:clamp(34px,5vw,48px)">Website orders</h1>
+      </div>
+      <div class="btn-row">
+        <label class="field" style="min-width:220px"><span class="visually-hidden">Fulfillment day</span>
+          <select data-day aria-label="Fulfillment day"></select>
+        </label>
+        <button class="btn btn-outline" type="button" data-refresh>Refresh</button>
+      </div>
+    </div>
+
+    <div class="admin-stats" data-stats></div>
+    <p class="form-status err" data-admin-error hidden></p>
+    <p class="note" data-settings-warning hidden></p>
+
+    <div class="field">
+      <label for="a-note">Extra note added to every message (optional)</label>
+      <input id="a-note" data-note placeholder="e.g. Running about 15 minutes late today, sorry!">
+    </div>
+
+    <div class="admin-list" data-orders><p class="muted">Loading orders…</p></div>
+  </div>
+</section>
