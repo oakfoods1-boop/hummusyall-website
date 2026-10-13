@@ -12,8 +12,8 @@ _Last updated: October 13, 2026_
 - Old Squarespace links redirect (/shop, /new-page-2, /team, /contact-6, /gallery-1).
 
 ## Next steps (in order)
-1. **Test order** – Alon places a $2.15 extra-pita pickup order on the test site, checks it in Square, refunds it.
-2. **Forms** – create the "Website Inquiries" Google Sheet with `integrations/forms-to-sheet.gs`, then add `FORM_WEBHOOK_URL` and `FORM_SECRET` in Cloudflare.
+1. ~~Test order~~ – done Oct 13: real order, thank-you page, Square note and refund all worked.
+2. ~~Forms~~ – done Oct 13: catering and job forms go to the Google Sheet "Hummus Y'all Website Inquiries" (one tab per form) and email alon@hummusyall.com. `FORM_WEBHOOK_URL` and `FORM_SECRET` set in Cloudflare.
 3. **Alon's design comments** – collect and apply.
 4. **Content to confirm with Alon**
    - Which markets this Saturday (Oct 17) – currently a copy of last week's lineup in `data/schedule.json`
