@@ -9,6 +9,7 @@
 import menu from '../../data/menu.json';
 import site from '../../data/site.json';
 import { nextFulfillment, prettyDate } from '../_lib/fulfillment.js';
+import { getAvailability } from '../_lib/availability.js';
 
 // Noon in North Carolina on the given YYYY-MM-DD, as an RFC 3339 timestamp (handles daylight saving).
 const noonNC = (iso) => {
@@ -19,7 +20,7 @@ const noonNC = (iso) => {
 };
 const json = (body, status = 200) => new Response(JSON.stringify(body), { status, headers: { 'Content-Type': 'application/json' } });
 
-export async function onRequestPost({ request, env }) {
+export async function onRequestPost({ request, env, waitUntil }) {
   if (!env.SQUARE_ACCESS_TOKEN || !env.SQUARE_LOCATION_ID) {
     return json({ error: 'Online checkout is being set up and will open soon.' }, 503);
   }
@@ -34,6 +35,13 @@ export async function onRequestPost({ request, env }) {
     .map((i) => ({ item: catalog[i.id], qty: Math.floor(Number(i.qty)) }))
     .filter((i) => i.item && i.qty > 0 && i.qty <= 50);
   if (!items.length) return json({ error: 'Your order is empty.' }, 400);
+
+  // Items not being made this week (Plan tab of the operations sheet).
+  const { unavailable } = await getAvailability(env, waitUntil);
+  const out = items.filter((i) => unavailable.includes(i.item.id)).map((i) => i.item.name);
+  if (out.length) {
+    return json({ error: `Sorry, ${out.join(' and ')} ${out.length > 1 ? "aren't" : "isn't"} available this week. Please remove ${out.length > 1 ? 'them' : 'it'} from your order.`, unavailable: items.filter((i) => unavailable.includes(i.item.id)).map((i) => i.item.id) }, 409);
+  }
 
   const zips = (site.deliveryZips || []).map(String);
   const zip = String(body.zip || '').replace(/\D/g, '').slice(0, 5);

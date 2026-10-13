@@ -24,7 +24,7 @@ const fmtDate = (iso, opts) => new Date(iso + 'T12:00:00').toLocaleDateString('e
 // ---------- blocks that pages can drop in with {{name}} ----------
 const blocks = {
   bowlCards: () => menu.bowls.filter((b) => b.available).map((b) => `
-      <article class="card">
+      <article class="card" data-item="${b.id}">
         ${img(b.image, b.name, 'card-img', ' width="700" height="525"')}
         <div class="card-title"><h3>${esc(b.name)}</h3><span class="price">${money(b.price)}</span></div>
         <p>${esc(b.description)}</p>
@@ -32,7 +32,7 @@ const blocks = {
       </article>`).join(''),
 
   dipCards: () => menu.extras.filter((x) => x.available && x.image).map((x) => `
-      <article class="card dip-card">
+      <article class="card dip-card" data-item="${x.id}">
         ${img(x.image, x.name + ' label', '', ' width="190" height="190"')}
         <h3>${esc(x.name)}</h3>
         <p class="dip-sub">${esc(x.subtitle)}</p>

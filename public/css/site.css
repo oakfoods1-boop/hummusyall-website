@@ -227,3 +227,9 @@ fieldset.field { border: 0; padding: 0; margin: 0; }
   .map { height: 360px; }
 }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+/* Items not being made this week (from the operations sheet) */
+.is-out img { filter: grayscale(1); opacity: .55; }
+.is-out h3, .is-out .info strong, .is-out .price, .is-out p { color: var(--muted); }
+.out-label { display: inline-block; align-self: flex-start; background: #ECE6D8; color: var(--muted); font-weight: 600; font-size: 14px; padding: 8px 14px; border-radius: 999px; }
+.extra-row .out-label { margin-left: auto; }

@@ -62,6 +62,27 @@
   function escapeHtml(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
   function money(n) { return '$' + (Number.isInteger(n) ? n : n.toFixed(2)); }
 
+  // ---------- This week's menu (items not being made show "Not available this week") ----------
+  function markUnavailable(ids) {
+    ids.forEach(function (id) {
+      var el = $('[data-item="' + id + '"]');
+      if (!el || el.classList.contains('is-out')) return;
+      el.classList.add('is-out');
+      var label = document.createElement('span');
+      label.className = 'out-label';
+      label.textContent = 'Not available this week';
+      var ctl = $('.qty', el) || $('a.btn', el);
+      if (ctl) ctl.replaceWith(label); else el.appendChild(label);
+    });
+  }
+  function loadAvailability(cb) {
+    fetch(BASE.charAt(0) === '/' ? '/api/availability' : 'api/availability', { cache: 'no-store' })
+      .then(function (r) { return r.ok ? r.json() : { unavailable: [] }; })
+      .then(function (j) { var ids = j.unavailable || []; markUnavailable(ids); if (cb) cb(ids); })
+      .catch(function () {});
+  }
+  if ($('[data-item]') && !$('[data-bowls]')) loadAvailability();
+
   // ---------- Order page ----------
   var bowlsEl = $('[data-bowls]');
   if (bowlsEl && HY.menu) {
@@ -79,13 +100,13 @@
         '<button type="button" class="plus" data-inc="' + item.id + '" aria-label="Add one ' + escapeHtml(item.name) + '">+</button></div>';
     };
     bowlsEl.innerHTML = HY.menu.bowls.map(function (b) {
-      return '<article class="card" id="' + b.id + '">' +
+      return '<article class="card" id="' + b.id + '" data-item="' + b.id + '">' +
         '<img src="' + BASE + 'img/' + b.image + '.webp" alt="' + escapeHtml(b.name) + '" class="card-img" width="700" height="525" loading="lazy">' +
         '<div class="card-title"><h3>' + escapeHtml(b.name) + '</h3><span class="price">' + money(b.price) + '</span></div>' +
         '<p>' + escapeHtml(b.description) + '</p>' + qtyControls(b) + '</article>';
     }).join('');
     $('[data-extras]').innerHTML = HY.menu.extras.map(function (x) {
-      return '<div class="extra-row" id="' + x.id + '">' + (x.image ? '<img src="' + BASE + 'img/' + x.image + '.webp" alt="" width="64" height="64" loading="lazy">' : '') +
+      return '<div class="extra-row" id="' + x.id + '" data-item="' + x.id + '">' + (x.image ? '<img src="' + BASE + 'img/' + x.image + '.webp" alt="" width="64" height="64" loading="lazy">' : '') +
         '<div class="info"><strong>' + escapeHtml(x.name) + '</strong><span>' + escapeHtml([x.subtitle, (x.size || '').replace(' ', '\u00a0')].filter(Boolean).join(' · ')) + '</span></div>' +
         '<span class="price">' + money(x.price) + '</span>' + qtyControls(x) + '</div>';
     }).join('');
@@ -175,6 +196,18 @@
 
     var checkout = $('[data-checkout]');
     var errEl = $('[data-checkout-error]');
+    var dropUnavailable = function (ids) {
+      markUnavailable(ids);
+      var removed = ids.filter(function (id) { return state.qty[id] > 0; });
+      removed.forEach(function (id) { state.qty[id] = 0; });
+      if (removed.length) {
+        errEl.textContent = 'We took ' + removed.map(function (id) { return byId[id].name; }).join(' and ') +
+          ' out of your order. ' + (removed.length > 1 ? 'They aren\'t' : 'It isn\'t') + ' available this week.';
+        errEl.hidden = false;
+      }
+      render();
+    };
+    loadAvailability(dropUnavailable);
     checkout.addEventListener('click', function () {
       errEl.hidden = true;
       if (!state.mode) {
@@ -189,6 +222,7 @@
       fetch('/api/checkout', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ items: items, mode: state.mode, zip: state.mode === 'delivery' ? state.zip || '' : '' }) })
         .then(function (r) { return r.json().then(function (j) { return { ok: r.ok, j: j }; }); })
         .then(function (res) {
+          if (res.j && res.j.unavailable) { markUnavailable(res.j.unavailable); res.j.unavailable.forEach(function (id) { state.qty[id] = 0; }); }
           if (!res.ok || !res.j.url) throw new Error(res.j && res.j.error || 'Checkout is not available right now.');
           window.location.href = res.j.url;
         })
