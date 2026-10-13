@@ -7,3 +7,4 @@
 - Test locally with `npm run dev` and screenshot at 390px and 1366px before pushing. No horizontal scroll on phones.
 - Preview for Alon: `node build.mjs --preview` then publish `dist-preview` as an artifact (root page = dist-preview/index.html with head/body inlined).
 - Keep testimonials verbatim; don't invent claims about ingredients or allergens — ask Alon.
+- Weekly availability: items with a `plan` field in `data/menu.json` are hidden ("Not available this week") when that column's TOTAL on the ops sheet Plan tab is 0. Read via the forms Apps Script (`action:'availability'`, integrations/forms-to-sheet.gs), cached 5 min; if the sheet can't be read, nothing is blocked.
