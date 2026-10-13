@@ -10,6 +10,13 @@ import menu from '../../data/menu.json';
 import site from '../../data/site.json';
 import { nextFulfillment, prettyDate } from '../_lib/fulfillment.js';
 
+// Noon in North Carolina on the given YYYY-MM-DD, as an RFC 3339 timestamp (handles daylight saving).
+const noonNC = (iso) => {
+  const probe = new Date(iso + 'T16:00:00Z');
+  const off = new Intl.DateTimeFormat('en-US', { timeZone: 'America/New_York', timeZoneName: 'longOffset' })
+    .formatToParts(probe).find((p) => p.type === 'timeZoneName').value.replace('GMT', '') || '+00:00';
+  return `${iso}T12:00:00${off}`;
+};
 const json = (body, status = 200) => new Response(JSON.stringify(body), { status, headers: { 'Content-Type': 'application/json' } });
 
 export async function onRequestPost({ request, env }) {
@@ -61,6 +68,11 @@ export async function onRequestPost({ request, env }) {
         // Order-level taxes from data/site.json apply to every item automatically.
         taxes: (site.taxes || []).map((t, i) => ({ uid: `tax-${i}`, name: t.name, percentage: String(t.percentage), type: 'ADDITIVE', scope: 'ORDER' })),
         source: { name: 'hummusyall.com' },
+        // Pickup/delivery details so the order shows on Square's Orders screen; the customer's
+        // name, email, phone (and address for delivery) are filled in by Square at checkout.
+        fulfillments: [mode === 'pickup'
+          ? { type: 'PICKUP', state: 'PROPOSED', pickup_details: { schedule_type: 'SCHEDULED', pickup_at: noonNC(date), note: `Pickup in ${site.pickupLocation} on ${when}` } }
+          : { type: 'SHIPMENT', state: 'PROPOSED', shipment_details: { shipping_note: `Local delivery on ${when}` } }],
       },
       checkout_options: {
         ask_for_shipping_address: mode === 'delivery',
