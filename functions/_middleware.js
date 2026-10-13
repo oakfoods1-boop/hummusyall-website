@@ -1,4 +1,4 @@
-// Swaps this week's markets (from the operations sheet Plan tab) into the homepage and Markets page.
+// Swaps this week's markets (from the operations sheet Plan tab) into the homepage market section.
 // Every other request passes straight through. If the sheet can't be read, the built "coming soon"
 // version is shown.
 import marketsData from '../data/markets.json';
@@ -6,7 +6,7 @@ import { getPlan } from './_lib/plan.js';
 import { scheduleFromPlan, scheduleBlocks } from '../lib/schedule.mjs';
 
 const { markets } = marketsData;
-const PAGES = new Set(['/', '/index.html', '/markets/', '/markets/index.html']);
+const PAGES = new Set(['/', '/index.html']);
 
 export async function onRequest({ request, next, env, waitUntil }) {
   const url = new URL(request.url);

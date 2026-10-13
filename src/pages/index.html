@@ -1,4 +1,4 @@
-<!--{"title":"Hummus Y'all | Fresh Hummus Bowls in Raleigh, Durham & the Triangle","description":"Authentic Mediterranean hummus bowls with warm pita, made fresh in North Carolina. Order for Sunday delivery or Cary pickup, or find us at Triangle farmers markets.","path":"/","nav":"home"}-->
+<!--{"title":"Hummus Y'all | Fresh Hummus Bowls in Raleigh, Durham & the Triangle","description":"Authentic Mediterranean hummus bowls with warm pita, made fresh in North Carolina. Order for Sunday delivery or Cary pickup, or find us at Triangle farmers markets.","path":"/","nav":"home","extraHead":"<link rel=\"stylesheet\" href=\"https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css\">","extraScripts":"<script src=\"https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js\" defer></script><script src=\"/js/map.js\" defer></script>"}-->
 <section class="hero">
   <div class="wrap grid-2">
     <div class="stack">
@@ -67,11 +67,11 @@
   <div class="wrap grid-2" style="align-items:start">
     <div class="stack">
       <h2>Find us at the market</h2>
-      <p>Our lineup changes week to week. Here's where we'll be on <span data-sched="marketsNextDay">{{marketsNextDay}}</span>.</p>
-      <a href="/markets/" class="btn btn-outline" style="align-self:flex-start">Full schedule &amp; map</a>
-      <img src="/img/market-greensboro.webp" alt="The Hummus Y'all stand at the Greensboro Farmers Curb Market" class="photo" style="height:340px;margin-top:8px" loading="lazy" width="800" height="1067">
+      <p data-sched="marketsIntro">{{marketsIntro}}</p>
+      <div class="market-list" data-sched="marketsAll">{{marketsAll}}</div>
+      <p class="muted" style="font-size:15px">Hours can change with the season. Can't make it? <a href="/order/">Order online</a> for <span data-next-day>Sunday</span> delivery or Cary pickup.</p>
     </div>
-    <div class="market-list" data-sched="marketsNext">{{marketsNext}}</div>
+    <div id="map" class="map" role="region" aria-label="Map of our farmers markets"></div>
   </div>
 </section>
 

@@ -2,7 +2,9 @@
 /shop            /order/      301
 /shop/*          /order/      301
 /cart            /order/      301
-/new-page-2      /markets/    301
+/new-page-2      /#markets    301
+/markets         /#markets    301
+/markets/        /#markets    301
 /contact-6       /catering/#inquiry 301
 /team            /about/      301
 /gallery-1       /about/      301

@@ -7,7 +7,7 @@ Source for www.hummusyall.com. A plain static site (no framework) hosted on Clou
 | To change | Edit |
 |---|---|
 | Prices, bowl descriptions, sold-out items | `data/menu.json` (`available: false` hides an item) |
-| This week's farmers markets | Automatic: the Plan tab of the market operations sheet (markets with bowls planned). Market names/hours: `data/markets.json` |
+| This week's farmers markets (homepage) | Automatic: the Plan tab of the market operations sheet (markets with bowls planned). Market names/hours: `data/markets.json` |
 | Market list, pins, seasonal hours | `data/markets.json` |
 | Skip a Sunday, pause orders, delivery fee, pickup town | `data/site.json` |
 | Page text | `src/pages/*.html` |
