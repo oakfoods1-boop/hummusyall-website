@@ -12,8 +12,10 @@ const json = (p) => JSON.parse(read(p));
 const site = json('data/site.json');
 const menu = json('data/menu.json');
 const { markets } = json('data/markets.json');
-const schedule = json('data/schedule.json');
-const marketById = Object.fromEntries(markets.map((m) => [m.id, m]));
+// This week's markets come live from the operations sheet (functions/_middleware.js). The built pages
+// carry the "lineup coming soon" version, which is what shows if the sheet can't be read.
+import { scheduleBlocks } from './lib/schedule.mjs';
+const schedule = { weekStart: '', days: [] };
 
 const esc = (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 const money = (n) => '$' + (Number.isInteger(n) ? n : n.toFixed(2));
@@ -40,39 +42,8 @@ const blocks = {
         <span class="price">${esc(x.size)} · ${money(x.price)}</span>
       </article>`).join(''),
 
-  // Homepage: the next market day's lineup
-  marketsNext: () => {
-    const day = schedule.days[0];
-    if (!day) return '<p>Check back soon for this week\'s markets.</p>';
-    return day.markets.map((s) => {
-      const m = marketById[s.id];
-      return `<div class="market-row" style="--dot:${m.color}"><div><div class="name">${esc(m.name)}</div><div class="town">${esc(m.town)}${m.note ? ' · ' + esc(m.note) : ''}</div></div><span class="when">${esc(s.hours)}</span></div>`;
-    }).join('');
-  },
-  marketsNextDay: () => schedule.days[0] ? fmtDate(schedule.days[0].date, { weekday: 'long', month: 'short', day: 'numeric' }) : 'this week',
-
-  // Markets page: every day this week, then every market we sell at
-  weekSchedule: () => schedule.days.map((d) => `
-      <div class="week-day">
-        <h3>${fmtDate(d.date, { weekday: 'long', month: 'long', day: 'numeric' })}</h3>
-        <div class="market-list">${d.markets.map((s) => {
-          const m = marketById[s.id];
-          return `<div class="market-row" style="--dot:${m.color}"><div><div class="name">${esc(m.name)}</div><div class="town">${esc(m.town)}${m.note ? ' · ' + esc(m.note) : ''}</div></div><span class="when">${esc(s.hours)}</span></div>`;
-        }).join('')}</div>
-      </div>`).join(''),
-  weekLabel: () => {
-    const start = schedule.weekStart;
-    const end = new Date(new Date(start + 'T12:00:00').getTime() + 6 * 864e5).toISOString().slice(0, 10);
-    return `${fmtDate(start, { month: 'long', day: 'numeric' })} – ${fmtDate(end, { month: 'long', day: 'numeric', year: 'numeric' })}`;
-  },
-  allMarkets: () => {
-    const thisWeek = new Set(schedule.days.flatMap((d) => d.markets.map((s) => s.id)));
-    return markets.map((m) => `
-      <div class="market-row${thisWeek.has(m.id) ? '' : ' off'}" style="--dot:${m.color}">
-        <div><div class="name">${esc(m.name)}</div><div class="town">${esc(m.town)}${m.note ? ' · ' + esc(m.note) : ''}</div><div class="town">${m.hours.map(esc).join('<br>')}</div></div>
-        <span class="when">${thisWeek.has(m.id) ? 'This week' : 'Not this week'}</span>
-      </div>`).join('');
-  },
+  // Homepage + Markets page: this week's markets (wrapped so the live site can swap them in)
+  ...Object.fromEntries(Object.entries(scheduleBlocks(schedule, markets)).map(([k, f]) => [k, f])),
 
   // Data handed to the browser scripts
   pageData: () => `<script>window.HY=${JSON.stringify({

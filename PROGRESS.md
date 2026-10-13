@@ -16,7 +16,7 @@ _Last updated: October 13, 2026_
 2. ~~Forms~~ – done Oct 13: catering and job forms go to the Google Sheet "Hummus Y'all Website Inquiries" (one tab per form) and email alon@hummusyall.com. `FORM_WEBHOOK_URL` and `FORM_SECRET` set in Cloudflare.
 3. **Alon's design comments** – collect and apply.
 4. **Content to confirm with Alon**
-   - Which markets this Saturday (Oct 17) – currently a copy of last week's lineup in `data/schedule.json`
+   - ~~Which markets this Saturday~~ – done: markets now come from the ops sheet Plan tab automatically
    - Bowl descriptions in `data/menu.json` (written from photos)
    - Order cutoff (currently Saturday 11:59 PM for Sunday)
    - Team members OK appearing in kitchen photos

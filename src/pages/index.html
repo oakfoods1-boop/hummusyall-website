@@ -67,11 +67,11 @@
   <div class="wrap grid-2" style="align-items:start">
     <div class="stack">
       <h2>Find us at the market</h2>
-      <p>Our lineup changes week to week. Here's where we'll be on {{marketsNextDay}}.</p>
+      <p>Our lineup changes week to week. Here's where we'll be on <span data-sched="marketsNextDay">{{marketsNextDay}}</span>.</p>
       <a href="/markets/" class="btn btn-outline" style="align-self:flex-start">Full schedule &amp; map</a>
       <img src="/img/market-greensboro.webp" alt="The Hummus Y'all stand at the Greensboro Farmers Curb Market" class="photo" style="height:340px;margin-top:8px" loading="lazy" width="800" height="1067">
     </div>
-    <div class="market-list">{{marketsNext}}</div>
+    <div class="market-list" data-sched="marketsNext">{{marketsNext}}</div>
   </div>
 </section>
 
