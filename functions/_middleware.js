@@ -27,12 +27,6 @@ export async function onRequest({ request, next, env, waitUntil }) {
         if (f) el.setInnerContent(f(), { html: true });
       },
     })
-    // The map script reads window.HY.schedule.
-    .on('body', {
-      element(el) {
-        el.append(`<script>window.HY&&(window.HY.schedule=${JSON.stringify(schedule).replace(/</g, '\\u003c')})</script>`, { html: true });
-      },
-    })
     .transform(res);
   const headers = new Headers(out.headers);
   headers.set('Cache-Control', 'public, max-age=0, must-revalidate');
