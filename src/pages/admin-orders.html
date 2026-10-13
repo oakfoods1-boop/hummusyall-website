@@ -18,6 +18,10 @@
     <p class="form-status err" data-admin-error hidden></p>
     <p class="note" data-settings-warning hidden></p>
 
+    <div class="row" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:16px">
+      <div class="field"><label for="a-pickup">Pickup time in today's emails</label><input id="a-pickup" data-pickup-window></div>
+      <div class="field"><label for="a-delivery">Delivery time in today's emails</label><input id="a-delivery" data-delivery-window></div>
+    </div>
     <div class="field">
       <label for="a-note">Extra note added to every message (optional)</label>
       <input id="a-note" data-note placeholder="e.g. Running about 15 minutes late today, sorry!">

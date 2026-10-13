@@ -16,6 +16,9 @@
       .then(function (r) { return r.json().then(function (j) { if (!r.ok) throw new Error(j.error || 'Could not load orders.'); return j; }); })
       .then(function (j) {
         all = j.orders || []; settings = j.settings || {};
+        var pw = $('[data-pickup-window]'), dw = $('[data-delivery-window]');
+        if (!pw.value) pw.value = settings.pickupWindow || '';
+        if (!dw.value) dw.value = settings.deliveryWindow || '';
         var days = Array.from(new Set(all.map(function (o) { return o.date; }))).sort().reverse();
         var keep = dayEl.value;
         dayEl.innerHTML = days.length ? days.map(function (d) { return '<option value="' + d + '">' + prettyDay(d) + '</option>'; }).join('') : '<option value="">No orders yet</option>';
@@ -71,7 +74,7 @@
       return;
     }
     btn.disabled = true; btn.textContent = 'Sending…';
-    fetch('/api/admin/notify', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ orderId: id, note: $('[data-note]').value }) })
+    fetch('/api/admin/notify', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ orderId: id, note: $('[data-note]').value, pickupWindow: $('[data-pickup-window]').value, deliveryWindow: $('[data-delivery-window]').value }) })
       .then(function (r) { return r.json().then(function (j) { if (!r.ok) throw new Error(j.error || 'Could not send.'); return j; }); })
       .then(function (j) {
         o.notified = true; render();

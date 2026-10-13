@@ -20,15 +20,20 @@ export async function onRequestPost({ request, env }) {
     if (o.mode === 'pickup' && !site.pickupAddress) return json({ error: 'Add the pickup address in data/site.json before sending pickup messages.' }, 400);
 
     const first = (o.name || '').split(' ')[0] || 'there';
+    // Use the day the message is sent (orders are sometimes ready Friday or Saturday), in North Carolina time.
+    const today = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/New_York' }).format(new Date());
     const items = o.items.map((i) => `  ${i.qty} × ${i.name}`).join('\n');
     const note = (body.note || '').trim();
+    // Times can be changed on the orders page for days other than Sunday; otherwise the defaults from site.json.
+    const pickupWindow = String(body.pickupWindow ?? site.pickupWindow ?? '').trim().slice(0, 60);
+    const deliveryWindow = String(body.deliveryWindow ?? site.deliveryWindow ?? '').trim().slice(0, 60);
     const subject = o.mode === 'pickup' ? "Your Hummus Y'all order is ready for pickup" : "Your Hummus Y'all order is on its way";
     const text = [
       `Hi ${first},`,
       '',
       o.mode === 'pickup'
-        ? `Your order is ready! Pick it up today (${prettyDate(o.date)}) at:\n\n  ${site.pickupAddress}${site.pickupWindow ? `\n  Pickup time: ${site.pickupWindow}` : ''}`
-        : `Your order is on its way and will arrive today (${prettyDate(o.date)})${site.deliveryWindow ? `, ${site.deliveryWindow}` : ''}.${o.address ? `\n\nDelivering to: ${o.address}` : ''}\nNot home? Leave a cooler outside and we'll take care of the rest.`,
+        ? `Your order is ready! Pick it up today (${prettyDate(today)}) at:\n\n  ${site.pickupAddress}${pickupWindow ? `\n  Pickup time: ${pickupWindow}` : ''}`
+        : `Your order is on its way and will arrive today (${prettyDate(today)})${deliveryWindow ? `, ${deliveryWindow}` : ''}.${o.address ? `\n\nDelivering to: ${o.address}` : ''}\nNot home? Leave a cooler outside and we'll take care of the rest.`,
       note ? `\n${note}` : '',
       '',
       'Your order:',
