@@ -23,6 +23,10 @@
     window.addEventListener('scroll', onScroll, { passive: true }); onScroll();
   }
 
+  // Homepage video: show the still picture instead for visitors who prefer less motion.
+  var heroVideo = $('[data-hero-video]');
+  if (heroVideo && window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) { heroVideo.removeAttribute('autoplay'); heroVideo.pause(); }
+
   // ---------- Next fulfillment date (always current, never stale) ----------
   // Works in North Carolina time no matter where the visitor is.
   function nowInNC() {
