@@ -1,6 +1,6 @@
 # Website project progress
 
-_Last updated: October 14, 2026_
+_Last updated: October 14, 2026 (site live)_
 
 ## Done
 - New site built (home, order, markets, catering, our story, jobs, thank-you, 404) in design "A · Market Fresh", with Alon's photos and logo.
@@ -22,11 +22,15 @@ _Last updated: October 14, 2026_
    - Accountant: county tax rate for Durham/Orange deliveries, tax on the delivery fee
 5. ~~Files from Alon~~ – done Oct 13: brochure and flyer redesigned and in `public/files/` (sources in `integrations/brochures/`).
 6. **Square** – optional: change customer-facing business name from "Oak Foods LLC" to "Hummus Y'all".
-7. **Launch** – add hummusyall.com as a custom domain in Cloudflare Pages, update DNS at Squarespace Domains, verify, then cancel the Squarespace site plan (keep the domain).
+7. ~~Launch~~ – **LIVE Oct 14, 2026**: DNS moved to Cloudflare (nameservers peaches/sri.ns.cloudflare.com; registration stays at Squarespace Domains), hummusyall.com + www on the Pages project, Google Workspace MX + TXT kept. Remaining: cancel the Squarespace *website* plan once no Squarespace orders are open (keep the domain); optional SPF/DMARC records for email.
 
 ## Orders & notifications (added Oct 13)
 - Private orders page `/admin/orders/` built: lists paid website orders per Sunday, prep totals, Ready for pickup / On its way buttons that email the customer through the Google script (`action: notify`) and mark the order PREPARED in Square.
 - Switched on Oct 13: Google script updated (version 2 of the same deployment), `ADMIN_PASSWORD` set in Cloudflare, pickup 800 Roni Ct, Cary, NC 27519, Sundays 9 AM – 2 PM; delivery between 9 AM and 2 PM (`data/site.json`). Pending: Alon's first real test of the Ready email.
+
+## Ops sheet (Oct 14)
+- Ops sheet script v6 pasted: website orders sync into Pickups/Deliveries every 15 min (+ menu "Sync website orders now") from `/api/ops/orders` (key = FORM_SECRET); Squarespace CSV rows kept side by side; customer comments go to Customer notes. Source: `integrations/ops-sheet/`.
+- Order page has an optional customer comment (saved on the Square order as metadata `customer_note`).
 
 ## Later
 - **Replace the ops sheet's Pickups/Deliveries tabs** (Alon's goal):
