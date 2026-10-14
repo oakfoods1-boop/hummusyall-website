@@ -33,7 +33,7 @@ const blocks = {
         <a class="btn btn-outline" href="/order/#${b.id}">Add to order</a>
       </article>`).join(''),
 
-  dipCards: () => menu.extras.filter((x) => x.available && x.image).map((x) => `
+  dipCards: () => menu.extras.filter((x) => x.available && x.image && x.id !== 'pita').map((x) => `
       <article class="card dip-card" data-item="${x.id}">
         ${img(x.image, x.name + ' label', '', ' width="190" height="190"')}
         <h3>${esc(x.name)}</h3>

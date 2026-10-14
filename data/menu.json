@@ -22,7 +22,7 @@
       "description": "Smoky roasted eggplant, tahini, garlic and a touch of sumac." },
     { "id": "garlic-aioli", "plan": "Garlic aioli", "name": "Garlic Aioli", "subtitle": "Made with avocado oil", "size": "8 oz", "price": 8, "image": "label-aioli", "available": true, "isNew": true,
       "description": "Garlic, avocado oil, lemon and salt. Creamy, bright, and egg-free." },
-    { "id": "pita", "name": "Extra pita", "subtitle": "Warm, authentic pita", "size": "", "price": 2, "image": "", "available": true, "isNew": false,
+    { "id": "pita", "name": "Extra pita", "subtitle": "Warm, authentic pita", "size": "", "price": 2, "image": "pita", "available": true, "isNew": false,
       "description": "Every bowl already comes with pita. Add more here." }
   ]
 }
