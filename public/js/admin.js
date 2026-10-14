@@ -8,6 +8,7 @@
 
   function prettyDay(iso) { return new Date(iso + 'T12:00:00').toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' }); }
   function telHref(p) { return 'tel:' + String(p).replace(/[^\d+]/g, ''); }
+  function prettyPhone(p) { var d = String(p).replace(/\D/g, ''); if (d.length === 11 && d[0] === '1') d = d.slice(1); return d.length === 10 ? '(' + d.slice(0, 3) + ') ' + d.slice(3, 6) + '-' + d.slice(6) : String(p); }
 
   function load() {
     errEl.hidden = true;
@@ -54,7 +55,7 @@
         '<ul class="admin-items">' + o.items.map(function (i) { return '<li>' + i.qty + ' × ' + esc(i.name) + '</li>'; }).join('') + '</ul>' +
         (o.note ? '<p class="admin-note"><strong>Customer note:</strong> ' + esc(o.note) + '</p>' : '') +
         (o.address ? '<p><a href="https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(o.address) + '" target="_blank" rel="noopener">' + esc(o.address) + '</a></p>' : '') +
-        '<p class="admin-contact">' + (o.phone ? '<a href="' + telHref(o.phone) + '">' + esc(o.phone) + '</a>' : '<span class="muted">No phone</span>') + ' · ' +
+        '<p class="admin-contact">' + (o.phone ? '<a href="' + telHref(o.phone) + '">' + esc(prettyPhone(o.phone)) + '</a>' : '<span class="muted">No phone</span>') + ' · ' +
         (o.email ? esc(o.email) : '<span class="muted">No email</span>') + '</p>' +
         '<div class="btn-row"><button class="btn ' + (o.notified ? 'btn-outline' : 'btn-primary') + '" type="button" data-send="' + esc(o.id) + '"' + (canSend ? '' : ' disabled') + '>' +
         (o.notified ? 'Send again' : isPickup ? 'Ready for pickup' : 'On its way') + '</button></div>' +
