@@ -3,17 +3,17 @@
   "_plan": "plan = the column name in the operations sheet Plan tab. If that column's TOTAL is 0, the item shows as Not available this week. Items without plan (pita) are always available.",
   "bowls": [
     { "id": "sabich", "plan": "Sabich", "name": "Hummus Sabich", "price": 17, "image": "bowl-sabich", "available": true,
-      "description": "Fried eggplant and a hard-boiled egg over creamy hummus, with tahini, parsley and sumac." },
+      "description": "Fried eggplant and a hard-boiled egg over creamy hummus, with tangy tahini sauce, parsley and sumac." },
     { "id": "onions", "plan": "Caramelized Onions", "name": "Caramelized Onions", "price": 15, "image": "bowl-onions", "available": true,
-      "description": "Slow-cooked sweet onions, fresh parsley and a drizzle of olive oil." },
+      "description": "Slow-cooked sweet onions, tangy tahini sauce, fresh parsley and a drizzle of olive oil." },
     { "id": "cauliflower", "plan": "Cauliflower", "name": "Roasted Cauliflower", "price": 15, "image": "bowl-cauliflower", "available": true,
-      "description": "Spiced, oven-charred cauliflower with tahini and parsley." },
+      "description": "Spiced, oven-charred cauliflower with tangy tahini sauce and parsley." },
     { "id": "schug", "plan": "Green Schug", "name": "Hummus with Green Schug", "price": 15, "image": "bowl-schug", "available": true,
-      "description": "Our spicy cilantro-pepper schug with tahini and olive oil. For heat lovers." },
+      "description": "Our spicy cilantro-pepper schug with tangy tahini sauce and olive oil. For heat lovers." },
     { "id": "mushrooms", "plan": "Mushrooms", "name": "Sautéed Mushrooms", "price": 15, "image": "bowl-mushrooms", "available": true,
-      "description": "Seasoned sautéed mushrooms, tahini and fresh parsley." },
+      "description": "Seasoned sautéed mushrooms, tangy tahini sauce and fresh parsley." },
     { "id": "chickpeas", "plan": "Chickpeas", "name": "Hummus with Chickpeas", "price": 15, "image": "bowl-chickpeas", "available": true,
-      "description": "The classic: warm seasoned chickpeas, tahini, paprika and olive oil." }
+      "description": "The classic: warm seasoned chickpeas, tangy tahini sauce, paprika and olive oil." }
   ],
   "extras": [
     { "id": "green-stuff", "plan": "Schug side", "name": "The green stuff", "subtitle": "Spicy green schug", "size": "8 oz", "price": 12, "image": "label-green", "available": true, "isNew": true,
