@@ -1,6 +1,6 @@
 # Website project progress
 
-_Last updated: October 13, 2026_
+_Last updated: October 14, 2026_
 
 ## Done
 - New site built (home, order, markets, catering, our story, jobs, thank-you, 404) in design "A · Market Fresh", with Alon's photos and logo.
@@ -14,14 +14,13 @@ _Last updated: October 13, 2026_
 ## Next steps (in order)
 1. ~~Test order~~ – done Oct 13: real order, thank-you page, Square note and refund all worked.
 2. ~~Forms~~ – done Oct 13: catering and job forms go to the Google Sheet "Hummus Y'all Website Inquiries" (one tab per form) and email alon@hummusyall.com. `FORM_WEBHOOK_URL` and `FORM_SECRET` set in Cloudflare.
-3. **Alon's design comments** – collect and apply.
+3. **Alon's design comments** – applied Oct 13: delivery/pickup choice, menu + markets follow the ops sheet Plan, one market list on the homepage (tap for address), new photos + hero video, dip Add-to-order buttons, Thursday 11:59 PM cutoff, receipt note. More comments welcome any time.
 4. **Content to confirm with Alon**
    - ~~Which markets this Saturday~~ – done: markets now come from the ops sheet Plan tab automatically
    - Bowl descriptions in `data/menu.json` (written from photos)
-   - Order cutoff (currently Saturday 11:59 PM for Sunday)
    - Team members OK appearing in kitchen photos
    - Accountant: county tax rate for Durham/Orange deliveries, tax on the delivery fee
-5. **Files from Alon** – catering brochure PDF and workshop flyer PDF → `public/files/` (links already on the catering page).
+5. ~~Files from Alon~~ – done Oct 13: brochure and flyer redesigned and in `public/files/` (sources in `integrations/brochures/`).
 6. **Square** – optional: change customer-facing business name from "Oak Foods LLC" to "Hummus Y'all".
 7. **Launch** – add hummusyall.com as a custom domain in Cloudflare Pages, update DNS at Squarespace Domains, verify, then cancel the Squarespace site plan (keep the domain).
 
