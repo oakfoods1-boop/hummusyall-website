@@ -22,7 +22,7 @@ _Last updated: October 14, 2026 (site live)_
    - Accountant: county tax rate for Durham/Orange deliveries, tax on the delivery fee
 5. ~~Files from Alon~~ – done Oct 13: brochure and flyer redesigned and in `public/files/` (sources in `integrations/brochures/`).
 6. **Square** – optional: change customer-facing business name from "Oak Foods LLC" to "Hummus Y'all".
-7. ~~Launch~~ – **LIVE Oct 14, 2026**: DNS moved to Cloudflare (nameservers peaches/sri.ns.cloudflare.com; registration stays at Squarespace Domains), hummusyall.com + www on the Pages project, Google Workspace MX + TXT kept. Remaining: cancel the Squarespace *website* plan once no Squarespace orders are open (keep the domain); optional SPF/DMARC records for email.
+7. ~~Launch~~ – **LIVE Oct 14, 2026**: DNS moved to Cloudflare (nameservers peaches/sri.ns.cloudflare.com; registration stays at Squarespace Domains), hummusyall.com + www on the Pages project, Google Workspace MX + TXT kept. Squarespace *website* plan (Commerce Basic) cancelled Oct 14, 2026 — expires May 22, 2027, no more charges; Domains + Google Workspace subscriptions stay active. SPF + DMARC added. Optional: export Squarespace orders CSV before May 2027; DKIM.
 
 ## Orders & notifications (added Oct 13)
 - Private orders page `/admin/orders/` built: lists paid website orders per Sunday, prep totals, Ready for pickup / On its way buttons that email the customer through the Google script (`action: notify`) and mark the order PREPARED in Square.
