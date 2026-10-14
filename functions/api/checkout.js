@@ -53,11 +53,16 @@ export async function onRequestPost({ request, env, waitUntil }) {
   if (!date) return json({ error: 'No upcoming fulfillment date is open right now.' }, 409);
   const when = prettyDate(date);
 
-  const lineItems = items.map(({ item, qty }) => ({
+  // Item notes show on Square's emailed receipt (when "Show item notes" is on in Square's receipt settings).
+  // The first item also tells the customer to expect our follow-up email.
+  const followUp = mode === 'pickup'
+    ? "Once your order is ready, we'll email you pickup instructions (address and time)."
+    : "We'll email you when your order is on its way.";
+  const lineItems = items.map(({ item, qty }, i) => ({
     name: item.name + (item.size ? ` (${item.size})` : ''),
     quantity: String(qty),
     base_price_money: { amount: Math.round(item.price * 100), currency: 'USD' },
-    note: `${mode === 'pickup' ? 'Pickup' : 'Delivery'} ${when}`,
+    note: `${mode === 'pickup' ? 'Pickup' : 'Delivery'} ${when}.` + (i === 0 ? ' ' + followUp : ''),
   }));
   if (mode === 'delivery' && site.deliveryFee) {
     lineItems.push({ name: 'Delivery', quantity: '1', base_price_money: { amount: Math.round(site.deliveryFee * 100), currency: 'USD' } });
