@@ -56,13 +56,13 @@ export async function onRequestPost({ request, env, waitUntil }) {
   // Item notes show on Square's emailed receipt (when "Show item notes" is on in Square's receipt settings).
   // The first item also tells the customer to expect our follow-up email.
   const followUp = mode === 'pickup'
-    ? "Once your order is ready, we'll email you pickup instructions (address and time)."
-    : "We'll email you when your order is on its way.";
+    ? `Pickup ${when}${site.pickupWindow ? ', ' + site.pickupWindow : ''} in ${site.pickupLocation}. Once your order is ready, we'll email you the pickup address and instructions.`
+    : `Delivery ${when}${site.deliveryWindow ? ', ' + site.deliveryWindow : ''}. We'll email you when your order is on its way. Not home? Leave a cooler outside.`;
   const lineItems = items.map(({ item, qty }, i) => ({
     name: item.name + (item.size ? ` (${item.size})` : ''),
     quantity: String(qty),
     base_price_money: { amount: Math.round(item.price * 100), currency: 'USD' },
-    note: `${mode === 'pickup' ? 'Pickup' : 'Delivery'} ${when}.` + (i === 0 ? ' ' + followUp : ''),
+    note: i === 0 ? followUp : `${mode === 'pickup' ? 'Pickup' : 'Delivery'} ${when}.`,
   }));
   if (mode === 'delivery' && site.deliveryFee) {
     lineItems.push({ name: 'Delivery', quantity: '1', base_price_money: { amount: Math.round(site.deliveryFee * 100), currency: 'USD' } });
