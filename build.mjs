@@ -40,6 +40,7 @@ const blocks = {
         <p class="dip-sub">${esc(x.subtitle)}</p>
         <p>${esc(x.description)}</p>
         <span class="price">${esc(x.size)} · ${money(x.price)}</span>
+        <a class="btn btn-outline" href="/order/#${x.id}">Add to order</a>
       </article>`).join(''),
 
   // Homepage + Markets page: this week's markets (wrapped so the live site can swap them in)
