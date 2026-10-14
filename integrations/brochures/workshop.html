@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Hummus Y'all Private Workshop Flyer</title>
+<link rel="stylesheet" href="base.css">
+<style>
+.top { background: var(--olive); color: var(--cream); padding: .36in .5in .24in; position: relative; flex: none; }
+.top .brand { display: flex; align-items: center; gap: 9px; font-family: 'Bricolage'; font-weight: 800; font-size: 14pt; }
+.top .brand img { width: .5in; height: .5in; }
+.top .row { display: flex; justify-content: space-between; align-items: center; }
+.top h1 { color: var(--cream); font-size: 40pt; font-weight: 800; margin-top: .2in; }
+.top h1 em { font-style: normal; color: var(--lime); }
+.top .tag { margin-top: 6px; font-size: 11.5pt; color: var(--cream); opacity: .92; }
+.photos { display: grid; grid-template-columns: 1.15fr 1fr 1fr; gap: 8px; height: 1.55in; padding: 0 .5in; margin-top: -.0in; flex: none; background: linear-gradient(var(--olive) 50%, var(--cream) 50%); }
+.photos div { border-radius: 12px; overflow: hidden; }
+.body { padding: .2in .5in 0; display: grid; grid-template-columns: 1.25fr 1fr; gap: .32in; flex: none; }
+.body h2 { font-size: 17pt; margin: 3px 0 6px; }
+.body p.lead { font-size: 9.3pt; line-height: 1.5; }
+.list { list-style: none; margin-top: 10px; }
+.list li { position: relative; padding-left: 18px; margin-bottom: 4px; font-size: 8.8pt; line-height: 1.38; }
+.list li::before { content: ''; position: absolute; left: 2px; top: 5px; width: 9px; height: 9px; border-radius: 3px; background: var(--paprika); transform: rotate(45deg); }
+.callout { margin-top: 10px; background: var(--lime); border-radius: 12px; padding: 12px 16px; font-family: 'Bricolage'; font-weight: 700; font-size: 11.5pt; color: var(--olive); line-height: 1.2; }
+.price { background: var(--olive); color: var(--cream); border-radius: 14px; padding: 14px 16px; }
+.price .kicker { color: var(--lime); }
+.price .big { font-family: 'Bricolage'; font-weight: 800; font-size: 30pt; color: var(--lime); line-height: 1; margin-top: 4px; }
+.price .big small { font-family: 'Poppins'; font-weight: 500; font-size: 10pt; color: var(--cream); margin-left: 4px; }
+.price dl { margin-top: 8px; display: grid; grid-template-columns: auto 1fr; gap: 3px 10px; font-size: 8.8pt; border-top: 1px solid rgba(251,246,236,.25); padding-top: 8px; }
+.price dt { color: var(--lime); font-weight: 600; }
+.price .min { margin-top: 8px; font-size: 8.4pt; font-weight: 600; background: rgba(223,231,119,.15); border-radius: 8px; padding: 5px 9px; }
+.host { margin-top: 12px; display: grid; grid-template-columns: .85in 1fr; gap: 12px; align-items: center; }
+.host .ph { width: .85in; height: .85in; border-radius: 50%; overflow: hidden; border: 3px solid var(--lime); }
+.host h3 { font-size: 13pt; margin-bottom: 2px; }
+.host p { font-size: 8.2pt; line-height: 1.4; }
+.special { padding: .16in .5in 0; margin-bottom: .16in; flex: none; }
+.special h3 { font-size: 12pt; margin-bottom: 6px; }
+.special .cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.special .cards div { background: #fff; border-radius: 10px; padding: 9px 11px; font-size: 8.4pt; border-left: 4px solid var(--lime); line-height: 1.35; }
+.special .cards strong { display: block; color: var(--olive); font-size: 9pt; }
+.foot { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 16px; background: var(--paprika); color: #fff; margin: auto .5in .3in; border-radius: 14px; padding: 12px 16px; }
+.foot h2 { color: #fff; font-size: 15pt; font-weight: 800; }
+.foot p { font-size: 9.2pt; font-weight: 600; margin-top: 3px; }
+.foot .qr { background: var(--cream); border-radius: 8px; padding: 5px 5px 3px; text-align: center; color: var(--olive); font-size: 6.5pt; font-weight: 600; }
+.foot .qr img { width: .78in; height: .78in; }
+</style></head>
+<body>
+<section class="page">
+  <div class="top">
+    <div class="row">
+      <div class="brand"><img src="img/logo.png" alt="">Hummus Y'all</div>
+      <span class="pill">Private hummus workshops</span>
+    </div>
+    <h1>The science of<br><em>perfect hummus.</em></h1>
+    <p class="tag">Hands-on. Intimate. Deliciously educational.</p>
+  </div>
+  <div class="photos">
+    <div><img src="img/ws-group.jpg" alt=""></div>
+    <div><img src="img/ws-demo.jpg" alt="" style="object-position:50% 40%"></div>
+    <div><img src="img/ws-guest.jpg" alt="" style="object-position:50% 45%"></div>
+  </div>
+
+  <div class="body">
+    <div>
+      <div class="kicker">The experience</div>
+      <h2>More than a cooking class</h2>
+      <p class="lead">This isn't your typical cooking workshop. It's a deep dive into the craft and chemistry behind the world's most beloved dip, guided by someone who approaches hummus with a scientist's precision and a chef's heart.</p>
+      <ul class="list">
+        <li>Learn the secrets of impossibly smooth, silky hummus from scratch</li>
+        <li>Understand the science behind texture, emulsification &amp; flavor</li>
+        <li>Create your own signature topping combinations</li>
+        <li>Master the art of restaurant-style presentation &amp; plating</li>
+        <li>Enjoy your freshly made hummus creation</li>
+        <li>Great for birthdays, corporate events, friend groups &amp; date nights</li>
+      </ul>
+      <div class="callout">“We bring everything. You just bring your appetite and curiosity.”</div>
+    </div>
+    <div>
+      <div class="price">
+        <div class="kicker">Pricing</div>
+        <div class="big">$35<small>per person</small></div>
+        <dl>
+          <dt>Capacity</dt><dd>10 – 30 guests</dd>
+          <dt>Duration</dt><dd>About 2 hours</dd>
+          <dt>Includes</dt><dd>All ingredients &amp; equipment</dd>
+          <dt>Location</dt><dd>Your home or venue</dd>
+          <dt>Perfect for</dt><dd>Birthdays, team events, celebrations</dd>
+        </dl>
+        <div class="min">Minimum booking $500</div>
+      </div>
+      <div class="host">
+        <div class="ph"><img src="img/ws-alon.jpg" alt="" style="object-position:50% 20%"></div>
+        <div>
+          <div class="kicker">Your host</div>
+          <h3>Alon</h3>
+          <p>Former skin biology scientist turned full-time hummus entrepreneur. Alon brings a rigorous, scientific approach to perfecting every swirl, and an infectious passion for sharing it.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="special">
+    <h3>What makes it special</h3>
+    <div class="cards">
+      <div><strong>Science-backed</strong>technique for ultra-smooth texture</div>
+      <div><strong>Hands-on</strong>participation: everyone makes their own bowl</div>
+      <div><strong>Small &amp; intimate</strong>setting, even at 30 guests</div>
+      <div><strong>Fully portable</strong>we come to you</div>
+    </div>
+  </div>
+
+  <div class="foot">
+    <div>
+      <h2>Book your private workshop</h2>
+      <p>alon@hummusyall.com &nbsp;·&nbsp; hummusyall.com/catering &nbsp;·&nbsp; @hummusyall</p>
+    </div>
+    <div class="qr"><img src="img/qr-catering.png" alt="">Scan to book</div>
+  </div>
+</section>
+</body></html>

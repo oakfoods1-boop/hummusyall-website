@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Hummus Y'all Catering Brochure</title>
+<link rel="stylesheet" href="base.css">
+<style>
+/* ---------- page 1 ---------- */
+.cover { position: relative; height: 4.55in; flex: none; }
+.cover > img { object-position: 50% 62%; }
+.cover::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(34,55,30,.55) 0%, rgba(34,55,30,0) 30%, rgba(34,55,30,0) 55%, rgba(34,55,30,.9) 100%); }
+.cover .brand { position: absolute; top: .38in; left: .5in; z-index: 2; display: flex; align-items: center; gap: 10px; color: var(--cream); font-family: 'Bricolage'; font-weight: 800; font-size: 17pt; }
+.cover .brand img { width: .62in; height: .62in; }
+.cover .where { position: absolute; top: .5in; right: .5in; z-index: 2; }
+.cover .title { position: absolute; left: .5in; right: .5in; bottom: .34in; z-index: 2; color: var(--cream); }
+.cover .title .kicker { display: inline-block; background: var(--lime); color: var(--ink); padding: 4px 10px; border-radius: 999px; margin-bottom: 10px; }
+.cover h1 { color: var(--cream); font-size: 42pt; font-weight: 800; }
+.cover h1 em { font-style: normal; color: var(--lime); }
+.intro { padding: .26in .5in 0; display: grid; grid-template-columns: 1.45fr 1fr; gap: .35in; align-items: start; }
+.intro .lede { font-size: 11.5pt; line-height: 1.5; }
+.intro .lede strong { color: var(--olive); }
+.facts { background: var(--olive); color: var(--cream); border-radius: 14px; padding: 14px 16px; }
+.facts .num { font-family: 'Bricolage'; font-weight: 800; font-size: 26pt; color: var(--lime); line-height: 1; }
+.facts .lbl { font-size: 8.5pt; opacity: .9; margin-bottom: 8px; }
+.facts ul { list-style: none; border-top: 1px solid rgba(251,246,236,.25); padding-top: 8px; font-size: 8.5pt; }
+.facts li { padding-left: 14px; position: relative; margin: 3px 0; }
+.facts li::before { content: ''; position: absolute; left: 0; top: 5px; width: 6px; height: 6px; border-radius: 50%; background: var(--lime); }
+.steps-wrap { padding: .2in .5in 0; }
+.steps-wrap h2 { font-size: 17pt; margin: 4px 0 10px; }
+.steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.step { background: #fff; border-radius: 12px; padding: 12px 14px; }
+.step .n { width: 24px; height: 24px; border-radius: 50%; background: var(--paprika); color: #fff; font-weight: 600; font-size: 10pt; display: grid; place-items: center; margin-bottom: 6px; }
+.step h3 { font-size: 12pt; margin-bottom: 3px; }
+.step p { font-size: 8.6pt; color: var(--muted); }
+.strip { padding: .2in .5in 0; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; flex: 1; min-height: 0; margin-bottom: .26in; }
+.strip div { border-radius: 12px; overflow: hidden; }
+
+/* ---------- page 2 ---------- */
+.p2 { padding: .45in .5in 0; }
+.p2-head { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 12px; }
+.p2-head h2 { font-size: 24pt; font-weight: 800; }
+.packages { display: grid; grid-template-columns: 1.1fr 1fr; gap: 14px; }
+.pkg { border-radius: 14px; padding: 16px 18px; display: flex; flex-direction: column; }
+.pkg h3 { font-size: 15pt; margin: 2px 0 8px; }
+.pkg ul { list-style: none; columns: 2; column-gap: 14px; font-size: 8.8pt; }
+.pkg li { break-inside: avoid; padding-left: 13px; position: relative; margin-bottom: 3px; }
+.pkg li::before { content: '✓'; position: absolute; left: 0; color: var(--paprika); font-weight: 600; font-size: 8pt; }
+.pkg .price { margin-top: auto; padding-top: 10px; font-weight: 600; font-size: 9pt; }
+.classic { background: #fff; border: 1.5px solid var(--sand-line); }
+.premium { background: var(--olive); color: var(--cream); }
+.premium h3 { color: var(--cream); }
+.premium .kicker { color: var(--lime); }
+.premium ul { columns: 1; font-size: 9.2pt; }
+.premium li::before { color: var(--lime); }
+.premium li.lead { font-weight: 600; color: var(--lime); padding-left: 0; }
+.premium li.lead::before { content: none; }
+.premium .price { color: var(--lime); }
+.premium .pic { margin-top: 10px; border-radius: 10px; overflow: hidden; flex: 1 1 0; min-height: 0; }
+.packages { align-items: stretch; }
+.premium ul { flex: none; }
+.extras { margin-top: 10px; display: flex; gap: 6px; flex-wrap: nowrap; align-items: center; font-size: 7.9pt; white-space: nowrap; }
+.extras .tag { background: var(--sand); border-radius: 999px; padding: 4px 9px; font-weight: 500; }
+.extras .tag.hi { background: var(--lime); }
+.sec-title { display: flex; align-items: baseline; gap: 10px; margin: .24in 0 9px; }
+.sec-title h2 { font-size: 16pt; }
+.sec-title span { font-size: 8.6pt; color: var(--muted); }
+.tops { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; }
+.top { background: #fff; border-radius: 10px; overflow: hidden; }
+.top .ph { height: 1.25in; }
+.top p { font-size: 7.8pt; font-weight: 600; text-align: center; padding: 5px 2px 6px; color: var(--olive); }
+.quotes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.quote { background: #fff; border-radius: 12px; padding: 12px 14px 10px; border-top: 4px solid var(--lime); display: flex; flex-direction: column; }
+.quote blockquote { font-size: 8.8pt; font-style: italic; line-height: 1.45; }
+.quote figcaption { margin-top: auto; padding-top: 6px; font-weight: 600; font-size: 8.4pt; color: var(--olive); }
+.cta { margin-top: .26in; background: var(--paprika); color: #fff; border-radius: 16px; padding: 16px 20px; display: grid; grid-template-columns: 1fr auto; gap: 18px; align-items: center; }
+.cta h2 { color: #fff; font-size: 19pt; font-weight: 800; margin-bottom: 4px; }
+.cta p { font-size: 9.2pt; }
+.cta .contact { margin-top: 8px; font-weight: 600; font-size: 9.6pt; }
+.cta .qr { background: var(--cream); border-radius: 10px; padding: 7px 7px 4px; text-align: center; color: var(--olive); font-size: 7pt; font-weight: 600; }
+.cta .qr img { width: .95in; height: .95in; }
+</style></head>
+<body>
+
+<!-- ================= PAGE 1 ================= -->
+<section class="page">
+  <div class="cover">
+    <img src="img/cover.jpg" alt="">
+    <div class="brand"><img src="img/logo.png" alt="">Hummus Y'all</div>
+    <span class="pill where">Raleigh · Durham · Apex · Cary, NC</span>
+    <div class="title">
+      <div class="kicker">Catering · Live hummus station</div>
+      <h1>Build your own<br><em>hummus bowl.</em></h1>
+    </div>
+  </div>
+
+  <div class="intro">
+    <p class="lede">Transform your next event with an <strong>unforgettable interactive food experience</strong>. Our live hummus station lets guests build their own restaurant-style hummus bowl with fresh, handcrafted hummus and a curated spread of authentic toppings.</p>
+    <div class="facts">
+      <div class="num">50–150</div>
+      <div class="lbl">guests, ideal party size</div>
+      <ul>
+        <li>Vegan &amp; vegetarian</li>
+        <li>No preservatives</li>
+        <li>Imported tahini &amp; extra virgin olive oil</li>
+        <li>Indoor or outdoor setup</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="steps-wrap">
+    <div class="kicker">The live station experience</div>
+    <h2>Guests build their own bowl. Freshly assembled, beautifully presented.</h2>
+    <div class="steps">
+      <div class="step"><div class="n">1</div><h3>Fresh hummus base</h3><p>Silky smooth, warm hummus freshly scooped into each bowl.</p></div>
+      <div class="step"><div class="n">2</div><h3>Choose your toppings</h3><p>Guests pick from a spread of hot &amp; cold signature toppings.</p></div>
+      <div class="step"><div class="n">3</div><h3>Finish &amp; enjoy</h3><p>Drizzled with olive oil, served with warm authentic pita.</p></div>
+    </div>
+  </div>
+
+  <div class="strip">
+    <div><img src="img/tent-team.jpg" alt="" style="object-position:50% 35%"></div>
+    <div><img src="img/event-spoon.jpg" alt=""></div>
+    <div><img src="img/station-bowl.jpg" alt=""></div>
+  </div>
+
+  <div class="footer">
+    <div class="logo-sm"><img src="img/logo.png" alt="">Hummus Y'all</div>
+    <div class="links"><span><strong>hummusyall.com</strong></span><span>alon@hummusyall.com</span><span>@hummusyall</span></div>
+  </div>
+</section>
+
+<!-- ================= PAGE 2 ================= -->
+<section class="page">
+  <div class="p2">
+    <div class="p2-head">
+      <div><div class="kicker">Packages</div><h2>Choose your station</h2></div>
+    </div>
+    <div class="packages">
+      <div class="pkg classic">
+        <div class="kicker">Classic station</div>
+        <h3>Everything for a full hummus bar</h3>
+        <ul>
+          <li>Fresh hummus base</li>
+          <li>Classic warm chickpeas</li>
+          <li>Seasoned sautéed mushrooms</li>
+          <li>Tangy tahini</li>
+          <li>Parsley</li>
+          <li>Sumac</li>
+          <li>Olive oil</li>
+          <li>Spicy green schug</li>
+          <li>Garlic-lemon drizzle sauce</li>
+          <li>Warm authentic pita</li>
+          <li>Mediterranean pickles</li>
+        </ul>
+        <div class="price">Contact us for pricing</div>
+      </div>
+      <div class="pkg premium">
+        <div class="kicker">Premium station</div>
+        <h3>The full spread</h3>
+        <ul>
+          <li class="lead">Everything in Classic, plus:</li>
+          <li>Crispy falafel balls</li>
+          <li>Finely chopped vegetable salad</li>
+          <li>Custom toppings</li>
+        </ul>
+        <div class="pic"><img src="img/spread.jpg" alt="" style="object-position:50% 60%"></div>
+        <div class="price">Contact us for pricing</div>
+      </div>
+    </div>
+    <div class="extras">
+      <strong style="color:var(--olive)">Add-ons:</strong>
+      <span class="tag">Private hummus workshop</span>
+      <span class="tag">Corporate lunch buffet</span>
+      <span class="tag">Custom toppings on request</span>
+      <span class="tag hi">Indoor or outdoor setup</span>
+    </div>
+
+    <div class="sec-title"><h2>Our signature toppings</h2><span>Every topping handcrafted, transforming hummus into a complete meal.</span></div>
+    <div class="tops">
+      <div class="top"><div class="ph"><img src="img/top-chickpeas.jpg" alt=""></div><p>Classic chickpeas</p></div>
+      <div class="top"><div class="ph"><img src="img/top-mushrooms.jpg" alt=""></div><p>Sautéed mushrooms</p></div>
+      <div class="top"><div class="ph"><img src="img/top-schug.jpg" alt=""></div><p>Schug &amp; herbs</p></div>
+      <div class="top"><div class="ph"><img src="img/top-falafel.jpg" alt=""></div><p>Crispy falafel</p></div>
+      <div class="top"><div class="ph"><img src="img/top-salad.jpg" alt=""></div><p>Israeli salad</p></div>
+      <div class="top"><div class="ph"><img src="img/top-sauces.jpg" alt=""></div><p>House sauces</p></div>
+    </div>
+
+    <div class="sec-title"><h2>What our guests say</h2></div>
+    <div class="quotes">
+      <figure class="quote"><blockquote>“I took home your Hummus with Schug and can only say Delicious! The pita you included is the best. Very glad I stopped at your table.”</blockquote><figcaption>Kathie H.</figcaption></figure>
+      <figure class="quote"><blockquote>“Let me know when you will be back at your popup in Durham. I think I might be addicted!”</blockquote><figcaption>Susan S.</figcaption></figure>
+      <figure class="quote"><blockquote>“I have never liked hummus until I tried yours. Now I can't stop.”</blockquote><figcaption>M. Smith</figcaption></figure>
+    </div>
+
+    <div class="cta">
+      <div>
+        <h2>Ready to book your live hummus station?</h2>
+        <p>Reach out to discuss packages, availability and customization for your event.</p>
+        <div class="contact">alon@hummusyall.com &nbsp;·&nbsp; hummusyall.com/catering &nbsp;·&nbsp; @hummusyall</div>
+      </div>
+      <div class="qr"><img src="img/qr-catering.png" alt="">Scan for a quote</div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div class="logo-sm"><img src="img/logo.png" alt="">Hummus Y'all</div>
+    <div class="links"><span><strong>hummusyall.com</strong></span><span>alon@hummusyall.com</span><span>@hummusyall</span><span>Raleigh · Durham · Apex · Cary, NC</span></div>
+  </div>
+</section>
+</body></html>

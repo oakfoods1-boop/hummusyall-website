@@ -1,0 +1,29 @@
+@font-face { font-family: 'Bricolage'; src: url(bricolage-grotesque-latin-600-normal.woff2) format('woff2'); font-weight: 600; }
+@font-face { font-family: 'Bricolage'; src: url(bricolage-grotesque-latin-700-normal.woff2) format('woff2'); font-weight: 700; }
+@font-face { font-family: 'Bricolage'; src: url(bricolage-grotesque-latin-800-normal.woff2) format('woff2'); font-weight: 800; }
+@font-face { font-family: 'Poppins'; src: url(poppins-latin-400-normal.woff2) format('woff2'); font-weight: 400; }
+@font-face { font-family: 'Poppins'; src: url(poppins-latin-400-italic.woff2) format('woff2'); font-weight: 400; font-style: italic; }
+@font-face { font-family: 'Poppins'; src: url(poppins-latin-500-normal.woff2) format('woff2'); font-weight: 500; }
+@font-face { font-family: 'Poppins'; src: url(poppins-latin-600-normal.woff2) format('woff2'); font-weight: 600; }
+
+:root {
+  --cream: #FBF6EC; --sand: #F2E8D5; --sand-line: #E6DCC6;
+  --olive: #2F4A2A; --olive-dark: #22371E; --olive-soft: #E3EBD9;
+  --paprika: #C8502A; --lime: #DFE777; --ink: #1F2A1C; --muted: #5E6656;
+}
+@page { size: 8.5in 11in; margin: 0; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { background: #ddd; }
+body { font-family: 'Poppins', sans-serif; color: var(--ink); font-size: 10pt; line-height: 1.45; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+.page { width: 8.5in; height: 11in; background: var(--cream); position: relative; overflow: hidden; page-break-after: always; break-after: page; margin: 0 auto 20px; display: flex; flex-direction: column; }
+.page:last-child { page-break-after: auto; break-after: auto; }
+@media print { html, body { background: none; } .page { margin: 0; } }
+h1, h2, h3 { font-family: 'Bricolage', sans-serif; color: var(--olive); line-height: 1.02; letter-spacing: -0.015em; }
+img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.kicker { font-family: 'Poppins'; font-weight: 600; font-size: 7.5pt; letter-spacing: .16em; text-transform: uppercase; color: var(--paprika); }
+.pill { display: inline-block; background: var(--lime); color: var(--ink); font-weight: 600; font-size: 8pt; padding: 4px 11px; border-radius: 999px; }
+.footer { margin-top: auto; background: var(--olive); color: var(--cream); padding: 0.16in 0.5in; display: flex; justify-content: space-between; align-items: center; font-size: 8pt; }
+.footer strong { color: var(--lime); font-weight: 600; }
+.footer .logo-sm { display: flex; align-items: center; gap: 8px; font-family: 'Bricolage'; font-weight: 700; font-size: 11pt; }
+.footer .logo-sm img { width: 26px; height: 26px; }
+.footer .links span + span::before { content: '·'; margin: 0 8px; color: var(--lime); }
