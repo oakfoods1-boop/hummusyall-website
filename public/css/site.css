@@ -245,3 +245,4 @@ fieldset.field { border: 0; padding: 0; margin: 0; }
 .extra-row .out-label { margin-left: auto; }
 
 @media (max-width: 780px) { .hide-phone { display: none; } }
+.team-img { aspect-ratio: 1 / 1; object-position: 50% 20%; }
