@@ -196,6 +196,13 @@
       if (!state.qty[hid]) state.qty[hid] = 1;
       history.replaceState(null, '', location.pathname);
     }
+    var noteEl = $('[data-order-note]'), noteCount = $('[data-note-count]');
+    if (noteEl) {
+      if (state.note) noteEl.value = state.note;
+      var showCount = function () { noteCount.textContent = noteEl.value.length + ' / 250'; };
+      showCount();
+      noteEl.addEventListener('input', function () { state.note = noteEl.value.slice(0, 250); showCount(); save(); });
+    }
     zipInput.addEventListener('input', function () {
       var v = zipInput.value.replace(/\D/g, '').slice(0, 5);
       if (zipInput.value !== v) zipInput.value = v;
@@ -228,7 +235,7 @@
       if (zipStatus() === 'incomplete') { zipInput.focus(); zipField.scrollIntoView({ behavior: 'smooth', block: 'center' }); return; }
       checkout.disabled = true; checkout.textContent = 'Opening secure checkout…';
       var items = Object.keys(state.qty).filter(function (k) { return state.qty[k] > 0 && byId[k]; }).map(function (k) { return { id: k, qty: state.qty[k] }; });
-      fetch('/api/checkout', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ items: items, mode: state.mode, zip: state.mode === 'delivery' ? state.zip || '' : '' }) })
+      fetch('/api/checkout', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ items: items, mode: state.mode, zip: state.mode === 'delivery' ? state.zip || '' : '', note: (state.note || '').trim() }) })
         .then(function (r) { return r.json().then(function (j) { return { ok: r.ok, j: j }; }); })
         .then(function (res) {
           if (res.j && res.j.unavailable) { markUnavailable(res.j.unavailable); res.j.unavailable.forEach(function (id) { state.qty[id] = 0; }); }

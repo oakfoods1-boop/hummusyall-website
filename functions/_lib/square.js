@@ -57,5 +57,6 @@ export async function describeOrder(env, o) {
     address: address ? [address.address_line_1, address.address_line_2, [address.locality, address.administrative_district_level_1].filter(Boolean).join(', '), address.postal_code].filter(Boolean).join(', ') : '',
     items: items.filter((i) => i.name !== 'Delivery'),
     zip,
+    note: (o.metadata && o.metadata.customer_note) || '',
   };
 }

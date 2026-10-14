@@ -49,6 +49,9 @@ export async function onRequestPost({ request, env, waitUntil }) {
     return json({ error: zip ? `Sorry, we don't deliver to ${zip} yet. Please choose pickup instead.` : 'Please enter your delivery ZIP code.' }, 400);
   }
 
+  // Customer's comment (optional): plain text, one paragraph, max 250 characters.
+  const note = String(body.note || '').replace(/[\u0000-\u001f\u007f]+/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 250);
+
   const date = nextFulfillment(site);
   if (!date) return json({ error: 'No upcoming fulfillment date is open right now.' }, 409);
   const when = prettyDate(date);
@@ -87,11 +90,12 @@ export async function onRequestPost({ request, env, waitUntil }) {
         // Order-level taxes from data/site.json apply to every item automatically.
         taxes: (site.taxes || []).map((t, i) => ({ uid: `tax-${i}`, name: t.name, percentage: String(t.percentage), type: 'ADDITIVE', scope: 'ORDER' })),
         source: { name: 'hummusyall.com' },
+        ...(note ? { metadata: { customer_note: note } } : {}),
         // Pickup/delivery details so the order shows on Square's Orders screen; the customer's
         // name, email, phone (and address for delivery) are filled in by Square at checkout.
         fulfillments: [mode === 'pickup'
-          ? { type: 'PICKUP', state: 'PROPOSED', pickup_details: { schedule_type: 'SCHEDULED', pickup_at: noonNC(date), note: `Pickup in ${site.pickupLocation} on ${when}` } }
-          : { type: 'SHIPMENT', state: 'PROPOSED', shipment_details: { shipping_note: `Local delivery on ${when}` } }],
+          ? { type: 'PICKUP', state: 'PROPOSED', pickup_details: { schedule_type: 'SCHEDULED', pickup_at: noonNC(date), note: `Pickup in ${site.pickupLocation} on ${when}${note ? ` · Customer note: ${note}` : ''}`.slice(0, 500) } }
+          : { type: 'SHIPMENT', state: 'PROPOSED', shipment_details: { shipping_note: `Local delivery on ${when}${note ? ` · Customer note: ${note}` : ''}`.slice(0, 500) } }],
       },
       checkout_options: {
         ask_for_shipping_address: mode === 'delivery',
@@ -99,7 +103,7 @@ export async function onRequestPost({ request, env, waitUntil }) {
         merchant_support_email: site.email,
         allow_tipping: false,
       },
-      payment_note: `${mode === 'pickup' ? `PICKUP in ${site.pickupLocation}` : `DELIVERY${zip ? ` (ZIP ${zip})` : ''}`} on ${when}`,
+      payment_note: `${mode === 'pickup' ? `PICKUP in ${site.pickupLocation}` : `DELIVERY${zip ? ` (ZIP ${zip})` : ''}`} on ${when}${note ? ` · Note: ${note}` : ''}`.slice(0, 500),
       // Start Square's address form with the ZIP the customer gave us.
       ...(mode === 'delivery' && zip ? { pre_populated_data: { buyer_address: { postal_code: zip, country: 'US' } } } : {}),
     }),

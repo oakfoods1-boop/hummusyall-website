@@ -722,11 +722,11 @@ function webOrderRow_(o, tz, unknown) {
   if (o.mode === 'pickup') place = WEB.pickupPlace;
   else place = o.address ? '=HYPERLINK("https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(o.address) +
                            '","' + String(o.address).replace(/"/g, '""') + '")' : '(no address)';
-  var notes = 'Website order for ' + day + (o.notified ? ' · customer notified' : '');
+  var notes = 'Website order for ' + day + (o.note ? ' · Note: ' + o.note : '') + (o.notified ? ' · customer notified' : '');
   return {
     when: when,
     vals: [false, safeText_(o.number), when || '', safeText_(o.name || ''), formatPhone_(o.phone), o.mode === 'pickup' ? safeText_(place) : place]
-          .concat(itemVals).concat([safeText_(other.join(', ')), notes, ''])
+          .concat(itemVals).concat([safeText_(other.join(', ')), safeText_(notes), ''])
   };
 }
 

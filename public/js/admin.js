@@ -52,6 +52,7 @@
         (o.outsideArea ? ' <span class="pill pill-warn">Outside delivery area (' + esc(o.zip) + ')</span>' : '') + '</div>' +
         '<span class="price">$' + o.total.toFixed(2) + '</span></div>' +
         '<ul class="admin-items">' + o.items.map(function (i) { return '<li>' + i.qty + ' × ' + esc(i.name) + '</li>'; }).join('') + '</ul>' +
+        (o.note ? '<p class="admin-note"><strong>Customer note:</strong> ' + esc(o.note) + '</p>' : '') +
         (o.address ? '<p><a href="https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(o.address) + '" target="_blank" rel="noopener">' + esc(o.address) + '</a></p>' : '') +
         '<p class="admin-contact">' + (o.phone ? '<a href="' + telHref(o.phone) + '">' + esc(o.phone) + '</a>' : '<span class="muted">No phone</span>') + ' · ' +
         (o.email ? esc(o.email) : '<span class="muted">No email</span>') + '</p>' +
