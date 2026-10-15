@@ -1,5 +1,6 @@
 // Builds the site into dist/. No dependencies: run with `node build.mjs`.
 // Pages live in src/pages, shared pieces in src/partials, content in data/*.json.
+import { createHash } from 'node:crypto';
 import { readFileSync, writeFileSync, mkdirSync, rmSync, readdirSync, cpSync, existsSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 
@@ -75,6 +76,15 @@ rmSync(dist, { recursive: true, force: true });
 mkdirSync(dist, { recursive: true });
 cpSync(join(root, 'public'), dist, { recursive: true });
 
+// Add ?v=<content hash> to our own /js and /css links so phones load a new version right after each deploy.
+const assetHash = {};
+const bustCache = (html) => html.replace(/((?:src|href)=")(\/(?:js|css)\/[\w.-]+\.(?:js|css))"/g, (all, pre, url) => {
+  const f = join(dist, url);
+  if (!existsSync(f)) return all;
+  assetHash[url] ??= createHash('sha256').update(readFileSync(f)).digest('hex').slice(0, 10);
+  return `${pre}${url}?v=${assetHash[url]}"`;
+});
+
 const pages = [];
 for (const file of readdirSync(join(root, 'src/pages'))) {
   const src = read('src/pages/' + file);
@@ -92,7 +102,7 @@ for (const file of readdirSync(join(root, 'src/pages'))) {
   const html = fill(layout, vars);
   if (/\{\{\s*[\w.>]/.test(html)) throw new Error(`${file}: unfilled placeholder ${html.match(/\{\{[^}]*\}\}/)[0]}`);
   const outDir = meta.path === '/' ? dist : join(dist, meta.path);
-  let finalHtml = html;
+  let finalHtml = bustCache(html);
   if (PREVIEW) {
     // Preview copy: relative links so it works from any address (no server functions).
     const depth = meta.file ? 0 : meta.path.split('/').filter(Boolean).length;
