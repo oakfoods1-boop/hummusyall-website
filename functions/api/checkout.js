@@ -40,7 +40,7 @@ export async function onRequestPost(ctx) {
   } catch (e) {
     // Never let a crash turn into Cloudflare's HTML error page.
     console.log('checkout crashed', e && e.stack || e);
-    res = json({ error: 'Checkout is temporarily unavailable.' }, 500);
+    res = json({ error: `Checkout is temporarily unavailable (ref: ${String(e && e.name || 'crash').slice(0, 40)}).` }, 500);
   }
   if (!isForm) return res;
   const data = await res.clone().json().catch(() => ({}));
@@ -131,14 +131,16 @@ async function checkout({ request, env, waitUntil }, body) {
         allow_tipping: false,
       },
       payment_note: `${mode === 'pickup' ? `PICKUP in ${site.pickupLocation}` : `DELIVERY${zip ? ` (ZIP ${zip})` : ''}`} on ${when}${note ? ` · Note: ${note}` : ''}`.slice(0, 500),
-      // Start Square's address form with the ZIP the customer gave us.
-      ...(mode === 'delivery' && zip ? { pre_populated_data: { buyer_address: { postal_code: zip, country: 'US' } } } : {}),
+      // No pre_populated_data here: Square rejects it together with an order fulfillment
+      // ("Only one of [fulfillment, buyer_…] fields should be set"), which broke every delivery checkout.
     }),
   });
   const data = await res.json().catch(() => ({}));
   if (!res.ok || !data.payment_link?.url) {
     console.log('Square error', res.status, JSON.stringify(data.errors || data));
-    return json({ error: 'Checkout is temporarily unavailable.' }, 502);
+    // Short Square error code (e.g. UNAUTHORIZED) in the message so a screenshot tells us what went wrong.
+    const ref = (data.errors || []).map((e) => e.code).filter(Boolean).slice(0, 2).join(', ') || `HTTP ${res.status}`;
+    return json({ error: `Checkout is temporarily unavailable (ref: Square ${ref}).` }, 502);
   }
   return json({ url: data.payment_link.url });
 }
