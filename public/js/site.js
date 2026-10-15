@@ -82,6 +82,8 @@
       label.textContent = 'Not available this week';
       var ctl = $('.qty', el) || $('a.btn', el);
       if (ctl) ctl.replaceWith(label); else el.appendChild(label);
+      // Show what's available first: move unavailable items to the end of their list.
+      if (el.parentNode) el.parentNode.appendChild(el);
     });
   }
   function loadAvailability(cb) {
