@@ -20,14 +20,41 @@ const noonNC = (iso) => {
 };
 const json = (body, status = 200) => new Response(JSON.stringify(body), { status, headers: { 'Content-Type': 'application/json' } });
 
-export async function onRequestPost({ request, env, waitUntil }) {
+// Two ways in:
+//  - the order page's normal JSON request (answers { url } or { error }), and
+//  - a plain form post (field "payload" = the same JSON). The page falls back to this when the JSON
+//    request gets something other than JSON back (for example a Cloudflare security check page):
+//    as a full page load the browser can pass that check, and we answer with a redirect to Square,
+//    or back to the order page with the error message.
+export async function onRequestPost(ctx) {
+  const isForm = !(ctx.request.headers.get('content-type') || '').includes('application/json');
+  let res;
+  try {
+    let body = null;
+    if (isForm) {
+      try { body = JSON.parse(String((await ctx.request.formData()).get('payload') || '')); } catch { body = null; }
+    } else {
+      try { body = await ctx.request.json(); } catch { body = null; }
+    }
+    res = body && typeof body === 'object' ? await checkout(ctx, body) : json({ error: 'Invalid request.' }, 400);
+  } catch (e) {
+    // Never let a crash turn into Cloudflare's HTML error page.
+    console.log('checkout crashed', e && e.stack || e);
+    res = json({ error: 'Checkout is temporarily unavailable.' }, 500);
+  }
+  if (!isForm) return res;
+  const data = await res.clone().json().catch(() => ({}));
+  const origin = new URL(ctx.request.url).origin;
+  const to = data.url || `${origin}/order/?checkout_error=${encodeURIComponent(data.error || 'Checkout is temporarily unavailable.')}`;
+  return new Response(null, { status: 303, headers: { Location: to, 'Cache-Control': 'no-store' } });
+}
+
+async function checkout({ request, env, waitUntil }, body) {
   if (!env.SQUARE_ACCESS_TOKEN || !env.SQUARE_LOCATION_ID) {
     return json({ error: 'Online checkout is being set up and will open soon.' }, 503);
   }
   if (site.ordersOpen === false) return json({ error: site.ordersClosedMessage }, 409);
 
-  let body;
-  try { body = await request.json(); } catch { return json({ error: 'Invalid request.' }, 400); }
   if (body.mode !== 'pickup' && body.mode !== 'delivery') return json({ error: 'Please choose delivery or pickup.' }, 400);
   const mode = body.mode;
   const catalog = Object.fromEntries([...menu.bowls, ...menu.extras].filter((i) => i.available).map((i) => [i.id, i]));

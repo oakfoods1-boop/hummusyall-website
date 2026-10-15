@@ -38,3 +38,8 @@ _Last updated: October 14, 2026 (site live)_
   - Option 2 (after a few Sundays): staff view of the orders page with a contractor password (names, phones, addresses, items; no emails, no totals), Ready / Picked up / On its way / Delivered buttons that notify customers; production counts feed Plan; then delete the two tabs.
 - Connect the weekly market schedule to the market-ops Google Sheet so it updates itself.
 - Real photos of the three dips (replace label images).
+
+## Checkout fix (Oct 15)
+- A customer saw "Unexpected token '<' … is not valid JSON": /api/checkout answered with an HTML page (Cloudflare security check or crash page) instead of JSON. Code itself worked locally.
+- Fix: /api/checkout never crashes into HTML (try/catch, 500 JSON). The order page reads the reply as text; if it isn't JSON (or the request fails at network level) it re-sends the order as a normal form post (`payload` field), which can pass a Cloudflare check; the server then redirects (303) to Square, or back to /order/?checkout_error=… which the page shows.
+- To check in Cloudflare: Security → Events for hummusyall.com around Oct 15 7 PM, and Pages → Functions logs.

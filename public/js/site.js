@@ -226,6 +226,15 @@
       render();
     };
     loadAvailability(dropUnavailable);
+    // Coming back from the page-load fallback with a problem (see viaPage below).
+    try {
+      var backErr = new URLSearchParams(window.location.search).get('checkout_error');
+      if (backErr) {
+        errEl.textContent = backErr + ' Please try again, or email alon@hummusyall.com.';
+        errEl.hidden = false;
+        history.replaceState(null, '', window.location.pathname + window.location.hash);
+      }
+    } catch (err) {}
     checkout.addEventListener('click', function () {
       errEl.hidden = true;
       if (!state.mode) {
@@ -237,15 +246,32 @@
       if (zipStatus() === 'incomplete') { zipInput.focus(); zipField.scrollIntoView({ behavior: 'smooth', block: 'center' }); return; }
       checkout.disabled = true; checkout.textContent = 'Opening secure checkout…';
       var items = Object.keys(state.qty).filter(function (k) { return state.qty[k] > 0 && byId[k]; }).map(function (k) { return { id: k, qty: state.qty[k] }; });
-      fetch('/api/checkout', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ items: items, mode: state.mode, zip: state.mode === 'delivery' ? state.zip || '' : '', note: (state.note || '').trim() }) })
-        .then(function (r) { return r.json().then(function (j) { return { ok: r.ok, j: j }; }); })
+      var payload = JSON.stringify({ items: items, mode: state.mode, zip: state.mode === 'delivery' ? state.zip || '' : '', note: (state.note || '').trim() });
+      // If the answer isn't JSON (e.g. a Cloudflare security check page), send the same order as a
+      // normal page load instead: the browser can pass the check and the server redirects to Square.
+      var viaPage = function () {
+        var f = document.createElement('form');
+        f.method = 'POST'; f.action = '/api/checkout'; f.style.display = 'none';
+        var inp = document.createElement('input'); inp.type = 'hidden'; inp.name = 'payload'; inp.value = payload;
+        f.appendChild(inp); document.body.appendChild(f); f.submit();
+      };
+      fetch('/api/checkout', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: payload })
+        .then(function (r) {
+          return r.text().then(function (t) {
+            var j; try { j = JSON.parse(t); } catch (err) { j = null; }
+            return { ok: r.ok, j: j };
+          });
+        })
         .then(function (res) {
+          if (!res.j) { viaPage(); return; }
           if (res.j && res.j.unavailable) { markUnavailable(res.j.unavailable); res.j.unavailable.forEach(function (id) { state.qty[id] = 0; }); }
           if (!res.ok || !res.j.url) throw new Error(res.j && res.j.error || 'Checkout is not available right now.');
           window.location.href = res.j.url;
         })
         .catch(function (e) {
-          errEl.textContent = (e && e.message && e.message.indexOf('Failed to fetch') === -1 ? e.message : 'We couldn\'t reach checkout.') + ' Please try again, or email ' + 'alon@hummusyall.com' + '.';
+          // Network-level failure (no answer at all): try once more as a normal page load.
+          if (e instanceof TypeError) { viaPage(); return; }
+          errEl.textContent = (e && e.message ? e.message : 'We couldn\'t reach checkout.') + ' Please try again, or email ' + 'alon@hummusyall.com' + '.';
           errEl.hidden = false; checkout.textContent = 'Checkout securely'; render();
         });
     });
