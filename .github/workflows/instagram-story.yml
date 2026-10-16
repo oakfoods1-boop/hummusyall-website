@@ -1,0 +1,85 @@
+# Posts the "Find us at the market" Instagram story every Saturday morning (about 6:30–7:30 AM New York time)
+# from this week's lineup on the operations sheet Plan tab (via https://www.hummusyall.com/api/schedule).
+# Run it by hand from the Actions tab: "preview" only makes the image (download it from the run page),
+# "post" posts it right away. Needs the IG_ACCESS_TOKEN secret (permanent Facebook Page token).
+name: Instagram Saturday story
+
+on:
+  schedule:
+    - cron: '30 10 * * 6'   # UTC; the "Decide" step only posts between 6 and 10 AM New York time,
+    - cron: '30 11 * * 6'   # so this covers both daylight and standard time. Extra runs skip once posted.
+    - cron: '30 12 * * 6'
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'preview = make the image only, post = post it to Instagram now'
+        type: choice
+        options: [preview, post]
+        default: preview
+
+permissions:
+  contents: write
+
+concurrency:
+  group: instagram-story
+  cancel-in-progress: false
+
+jobs:
+  story:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      IG_USER_ID: '17841467835833598'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Decide
+        id: gate
+        run: |
+          if [ "${{ github.event_name }}" = "schedule" ]; then
+            H=$(TZ=America/New_York date +%-H); D=$(TZ=America/New_York date +%u)
+            if [ "$D" = "6" ] && [ "$H" -ge 6 ] && [ "$H" -lt 10 ]; then echo "mode=post" >> "$GITHUB_OUTPUT"; else echo "mode=skip" >> "$GITHUB_OUTPUT"; fi
+          else
+            echo "mode=${{ inputs.mode }}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: actions/setup-node@v4
+        if: steps.gate.outputs.mode != 'skip'
+        with:
+          node-version: 22
+
+      - name: Install browser
+        if: steps.gate.outputs.mode != 'skip'
+        run: npm i --no-save playwright@1.56.0 && npx playwright install --with-deps chromium
+
+      - name: Make the story image
+        id: render
+        if: steps.gate.outputs.mode != 'skip'
+        run: node integrations/instagram/story.mjs render
+
+      - name: Save the image on this run's page
+        if: startsWith(steps.render.outputs.status, 'rendered')
+        uses: actions/upload-artifact@v4
+        with:
+          name: story-${{ steps.render.outputs.date }}
+          path: public/ig/story-${{ steps.render.outputs.date }}.jpg
+
+      - name: Put the image on the website
+        id: publish
+        if: steps.gate.outputs.mode == 'post' && startsWith(steps.render.outputs.status, 'rendered') && steps.render.outputs.posted == 'no'
+        run: |
+          git config user.name "hummusyall-bot"
+          git config user.email "oakfoods1@gmail.com"
+          git add public/ig
+          git diff --cached --quiet || git commit -m "Instagram story image for ${{ steps.render.outputs.date }}"
+          git pull --rebase -q origin main && git push -q origin HEAD:main
+
+      - name: Post to Instagram
+        if: steps.publish.outcome == 'success'
+        env:
+          IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
+        run: |
+          node integrations/instagram/story.mjs post --date "${{ steps.render.outputs.date }}"
+          git add integrations/instagram/state.json
+          git diff --cached --quiet || git commit -m "Instagram story posted for ${{ steps.render.outputs.date }}"
+          git pull --rebase -q origin main && git push -q origin HEAD:main

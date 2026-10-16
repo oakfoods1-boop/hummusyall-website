@@ -1,0 +1,57 @@
+<!doctype html><html><head><meta charset="utf-8">
+<!-- Saturday market story, 1080×1920. Filled in by story.mjs (window.STORY). Brand colors match public/css/site.css. -->
+<style>
+@font-face{font-family:B;src:url(fonts/bricolage-grotesque-latin-700-normal.woff2);font-weight:700}
+@font-face{font-family:B;src:url(fonts/bricolage-grotesque-latin-800-normal.woff2);font-weight:800}
+@font-face{font-family:P;src:url(fonts/poppins-latin-400-normal.woff2);font-weight:400}
+@font-face{font-family:P;src:url(fonts/poppins-latin-500-normal.woff2);font-weight:500}
+@font-face{font-family:P;src:url(fonts/poppins-latin-600-normal.woff2);font-weight:600}
+:root{--cream:#FBF6EC;--sand:#F3EAD6;--olive:#2F4A2A;--ink:#24301F;--paprika:#C8502A;--lime:#DFE777}
+*{box-sizing:border-box;margin:0;padding:0}
+body{width:1080px;height:1920px;overflow:hidden;font-family:P;background:var(--olive)}
+.story{position:relative;width:1080px;height:1920px;background:var(--olive);color:var(--cream)}
+.photo{position:absolute;inset:0 0 auto 0;height:820px;background:url(../../public/img/hero.webp) center 45%/cover}
+.photo::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(28,46,25,.55) 0%,rgba(28,46,25,0) 30%,rgba(47,74,42,0) 62%,var(--olive) 100%)}
+.brand{position:absolute;top:150px;left:72px;right:72px;display:flex;align-items:center;gap:22px;z-index:2}
+.brand img{width:104px;height:104px;border-radius:50%;background:var(--cream);box-shadow:0 6px 24px rgba(0,0,0,.25)}
+.brand span{font:800 46px/1 B;color:var(--cream);text-shadow:0 2px 14px rgba(0,0,0,.35)}
+.body{position:absolute;left:72px;right:72px;top:620px;z-index:2}
+.kicker{display:inline-block;background:var(--lime);color:var(--ink);font:600 30px/1 P;letter-spacing:.12em;text-transform:uppercase;padding:16px 28px;border-radius:999px}
+h1{font:800 116px/.95 B;letter-spacing:-.02em;margin:26px 0 8px;color:var(--cream)}
+h1 em{font-style:normal;color:var(--lime)}
+.date{font:500 40px/1.2 P;color:var(--sand);margin-bottom:38px}
+.markets{display:flex;flex-direction:column;gap:22px}
+.m{display:flex;align-items:center;gap:28px;background:var(--cream);color:var(--ink);border-radius:30px;padding:30px 36px}
+.dot{flex:none;width:26px;height:26px;border-radius:50%;background:var(--c)}
+.m .name{font:800 46px/1.05 B;color:var(--olive)}
+.m .sub{font:500 30px/1.3 P;color:#4A5644;margin-top:6px}
+/* 4+ markets: smaller cards so everything fits above the button */
+.many .body{top:560px} .many h1{font-size:100px} .many .date{margin-bottom:28px}
+.many .markets{gap:14px} .many .m{padding:20px 32px;border-radius:24px} .many .m .name{font-size:38px} .many .m .sub{font-size:26px;margin-top:2px}
+/* 5+ markets */
+.lots .body{top:470px} .lots h1{font-size:88px} .lots .date{margin-bottom:20px} .lots .markets{gap:10px} .lots .m{padding:14px 30px} .lots .m .name{font-size:34px} .lots .m .sub{font-size:24px}
+.cta{position:absolute;left:72px;right:72px;bottom:210px;text-align:center;z-index:2}
+.cta p{font:500 32px/1.35 P;color:var(--sand)}
+.cta strong{display:inline-block;margin-top:14px;background:var(--paprika);color:#fff;font:600 38px/1 P;padding:24px 44px;border-radius:999px}
+</style></head><body>
+<div class="story" id="story">
+  <div class="photo"></div>
+  <div class="brand"><img src="../../public/img/logo.webp" alt=""><span>Hummus Y'all</span></div>
+  <div class="body">
+    <span class="kicker">This Saturday</span>
+    <h1>Find us at<br><em>the market</em></h1>
+    <div class="date" id="date"></div>
+    <div class="markets" id="markets"></div>
+  </div>
+  <div class="cta"><p>Can't make it? Order for Sunday delivery</p><strong>hummusyall.com</strong></div>
+</div>
+<script>
+window.fill = (D) => {
+  const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  document.getElementById('story').classList.toggle('many', D.markets.length > 3);
+  document.getElementById('story').classList.toggle('lots', D.markets.length > 4);
+  document.getElementById('date').textContent = D.date;
+  document.getElementById('markets').innerHTML = D.markets.map((m) =>
+    `<div class="m" style="--c:${esc(m.color)}"><span class="dot"></span><div><div class="name">${esc(m.name)}</div><div class="sub">${esc(m.town)} · ${esc(m.hours)}</div></div></div>`).join('');
+};
+</script></body></html>

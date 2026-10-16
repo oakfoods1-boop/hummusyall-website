@@ -1,11 +1,11 @@
 {
-  "_note": "All markets we are approved vendors at. Which ones we attend each week comes from the operations sheet Plan tab: sheetName = the market name in the sheet (Lists tab). address = shown when a market is tapped (with an Open in Google Maps button); place = optional spot name. times = the hours shown for a market day (weekday 0=Sun..6=Sat, months optional). Sheet markets not listed here (JCC, Misc popup) never show on the website.",
+  "_note": "All markets we are approved vendors at. Which ones we attend each week comes from the operations sheet Plan tab: sheetName = the market name in the sheet (Lists tab). storyTown = optional town line on the Instagram story. address = shown when a market is tapped (with an Open in Google Maps button); place = optional spot name. times = the hours shown for a market day (weekday 0=Sun..6=Sat, months optional). Sheet markets not listed here (JCC, Misc popup) never show on the website.",
   "markets": [
     { "id": "eno-river", "address": "144 E Margaret Ln, Hillsborough, NC 27278", "sheetName": "Eno River", "name": "Eno River Farmers Market", "town": "Hillsborough, NC", "color": "#3AAA60",
       "lat": 36.0754, "lng": -79.0997, "day": 6,
       "hours": ["Apr–Dec: Saturdays 8am – 12pm", "Jan–Mar: Saturdays 10am – 12pm"],
       "times": [{ "weekday": 6, "months": [4, 5, 6, 7, 8, 9, 10, 11, 12], "hours": "8:00 AM – 12:00 PM" }, { "weekday": 6, "months": [1, 2, 3], "hours": "10:00 AM – 12:00 PM" }] },
-    { "id": "midtown", "address": "4191 Main at North Hills St, Raleigh, NC 27609", "place": "North Hills", "sheetName": "Midtown Raleigh", "name": "Midtown Farmers Market", "town": "Raleigh, NC", "color": "#E07B39",
+    { "id": "midtown", "address": "4191 Main at North Hills St, Raleigh, NC 27609", "place": "North Hills", "sheetName": "Midtown Raleigh", "storyTown": "North Hills, Raleigh", "name": "Midtown Farmers Market", "town": "Raleigh, NC", "color": "#E07B39",
       "lat": 35.8638, "lng": -78.6411, "day": 6,
       "hours": ["Saturdays 8am – 12pm", "Seasonal: Apr 11 – Oct 31"],
       "times": [{ "weekday": 6, "hours": "8:00 AM – 12:00 PM" }] },
