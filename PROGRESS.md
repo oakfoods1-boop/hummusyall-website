@@ -14,7 +14,7 @@ _Last updated: October 14, 2026 (site live)_
 ## Next steps (in order)
 1. ~~Test order~~ – done Oct 13: real order, thank-you page, Square note and refund all worked.
 2. ~~Forms~~ – done Oct 13: catering and job forms go to the Google Sheet "Hummus Y'all Website Inquiries" (one tab per form) and email alon@hummusyall.com. `FORM_WEBHOOK_URL` and `FORM_SECRET` set in Cloudflare.
-3. **Alon's design comments** – applied Oct 13: delivery/pickup choice, menu + markets follow the ops sheet Plan, one market list on the homepage (tap for address), new photos + hero video, dip Add-to-order buttons, Thursday 11:59 PM cutoff, receipt note. More comments welcome any time.
+3. **Alon's design comments** – applied Oct 13: delivery/pickup choice, menu + markets follow the ops sheet Plan, one market list on the homepage (tap for address), new photos + hero video, dip Add-to-order buttons, Thursday 11:59 PM cutoff (moved to Friday 11:59 PM on Oct 16), receipt note. More comments welcome any time.
 4. **Content to confirm with Alon**
    - ~~Which markets this Saturday~~ – done: markets now come from the ops sheet Plan tab automatically
    - Bowl descriptions in `data/menu.json` (written from photos)

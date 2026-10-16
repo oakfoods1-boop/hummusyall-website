@@ -57,8 +57,8 @@
     var day = next.toLocaleDateString('en-US', { weekday: 'long' });
     $$('[data-next-date]').forEach(function (el) { el.textContent = long; });
     $$('[data-next-day]').forEach(function (el) { el.textContent = day; });
-    // Order cutoff for that Sunday (e.g. "Thursday, Oct 15")
-    var cs = (HY.site || {}).orderCutoff || { weekday: 4 };
+    // Order cutoff for that Sunday (e.g. "Friday, Oct 16")
+    var cs = (HY.site || {}).orderCutoff || { weekday: 5 };
     var cutDay = new Date(next.getFullYear(), next.getMonth(), next.getDate() - (next.getDay() - cs.weekday + 7) % 7);
     var cutLabel = cutDay.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' });
     $$('[data-cutoff]').forEach(function (el) { el.textContent = cutLabel; });

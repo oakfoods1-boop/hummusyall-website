@@ -7,9 +7,9 @@
   "instagram": "https://www.instagram.com/hummusyall/",
   "facebook": "https://www.facebook.com/profile.php?id=61561486542995",
 
-  "_orders": "Online orders are fulfilled on Sundays. Orders close Thursday 11:59 PM (orderCutoff, weekday 4 = Thursday); after that, new orders are for the following Sunday. The site shows the next Sunday automatically. Add a date to skipDates to skip a week (the site then shows the Sunday after).",
+  "_orders": "Online orders are fulfilled on Sundays. Orders close Friday 11:59 PM (orderCutoff, weekday 5 = Friday); after that, new orders are for the following Sunday. The site shows the next Sunday automatically. Add a date to skipDates to skip a week (the site then shows the Sunday after).",
   "fulfillmentWeekday": 0,
-  "orderCutoff": { "weekday": 4, "hour": 23, "minute": 59 },
+  "orderCutoff": { "weekday": 5, "hour": 23, "minute": 59 },
   "skipDates": [],
   "pickupLocation": "Cary, NC",
   "_pickup": "Used in the 'ready for pickup' and 'on its way' emails sent from the private orders page.",
