@@ -1,4 +1,4 @@
-// Private orders page: lists paid website orders and sends "ready" / "on its way" emails.
+// Private orders page: lists paid website orders and sends "ready" / "on its way" / "delivered" emails.
 (function () {
   'use strict';
   var $ = function (s, el) { return (el || document).querySelector(s); };
@@ -39,17 +39,19 @@
     var bowls = {};
     list.forEach(function (o) { o.items.forEach(function (i) { bowls[i.name] = (bowls[i.name] || 0) + i.qty; }); });
     statsEl.innerHTML = list.length
-      ? '<div class="note"><strong>' + count() + ' orders</strong> · ' + count('pickup') + ' pickup · ' + count('delivery') + ' delivery · ' + list.filter(function (o) { return o.notified; }).length + ' notified</div>' +
+      ? '<div class="note"><strong>' + count() + ' orders</strong> · ' + count('pickup') + ' pickup · ' + count('delivery') + ' delivery · ' + list.filter(function (o) { return o.notified; }).length + ' notified' +
+        (count('delivery') ? ' · ' + list.filter(function (o) { return o.delivered; }).length + ' delivered' : '') + '</div>' +
         '<div class="note"><strong>To prepare:</strong> ' + Object.keys(bowls).sort().map(function (k) { return bowls[k] + ' × ' + esc(k); }).join(' · ') + '</div>'
       : '';
     if (!list.length) { listEl.innerHTML = '<p class="muted">No paid website orders for this day.</p>'; return; }
     listEl.innerHTML = list.map(function (o) {
       var isPickup = o.mode === 'pickup';
       var canSend = o.email && (!isPickup || settings.pickupAddress);
-      return '<article class="card admin-order' + (o.notified ? ' done' : '') + '">' +
+      var done = isPickup ? o.notified : o.delivered;
+      return '<article class="card admin-order' + (done ? ' done' : '') + '">' +
         '<div class="admin-top"><div><h3>' + esc(o.name || 'Customer') + '</h3>' +
         '<span class="pill ' + (isPickup ? '' : 'pill-new') + '">' + (isPickup ? 'Pickup' : 'Delivery') + '</span>' +
-        (o.notified ? ' <span class="pill pill-done">Notified ✓</span>' : '') +
+        (o.delivered ? ' <span class="pill pill-done">Delivered ✓</span>' : o.notified ? ' <span class="pill pill-done">Notified ✓</span>' : '') +
         (o.outsideArea ? ' <span class="pill pill-warn">Outside delivery area (' + esc(o.zip) + ')</span>' : '') + '</div>' +
         '<span class="price">$' + o.total.toFixed(2) + '</span></div>' +
         '<ul class="admin-items">' + o.items.map(function (i) { return '<li>' + i.qty + ' × ' + esc(i.name) + '</li>'; }).join('') + '</ul>' +
@@ -58,7 +60,9 @@
         '<p class="admin-contact">' + (o.phone ? '<a href="' + telHref(o.phone) + '">' + esc(prettyPhone(o.phone)) + '</a>' : '<span class="muted">No phone</span>') + ' · ' +
         (o.email ? esc(o.email) : '<span class="muted">No email</span>') + '</p>' +
         '<div class="btn-row"><button class="btn ' + (o.notified ? 'btn-outline' : 'btn-primary') + '" type="button" data-send="' + esc(o.id) + '"' + (canSend ? '' : ' disabled') + '>' +
-        (o.notified ? 'Send again' : isPickup ? 'Ready for pickup' : 'On its way') + '</button></div>' +
+        (o.notified ? (isPickup ? 'Send again' : 'On its way again') : isPickup ? 'Ready for pickup' : 'On its way') + '</button>' +
+        (isPickup ? '' : '<button class="btn ' + (o.notified && !o.delivered ? 'btn-primary' : 'btn-outline') + '" type="button" data-send="' + esc(o.id) + '" data-kind="delivered"' + (o.email ? '' : ' disabled') + '>' +
+          (o.delivered ? 'Delivered again' : 'Delivered') + '</button>') + '</div>' +
         '<p class="form-status" data-status="' + esc(o.id) + '" hidden></p></article>';
     }).join('');
   }
@@ -69,21 +73,24 @@
     var btn = e.target.closest('[data-send]');
     if (!btn) return;
     var id = btn.getAttribute('data-send');
+    var kind = btn.getAttribute('data-kind') || '';
+    var label = btn.textContent;
     var o = all.filter(function (x) { return x.id === id; })[0];
     var st = $('[data-status="' + id + '"]');
-    if (o.notified && st.getAttribute('data-confirm') !== '1') {
-      st.className = 'form-status err'; st.hidden = false; st.setAttribute('data-confirm', '1');
-      st.textContent = 'Already notified. Tap "Send again" once more to send another email.';
+    var already = kind === 'delivered' ? o.delivered : o.notified;
+    if (already && st.getAttribute('data-confirm') !== kind + '1') {
+      st.className = 'form-status err'; st.hidden = false; st.setAttribute('data-confirm', kind + '1');
+      st.textContent = (kind === 'delivered' ? 'Already marked delivered. Tap "Delivered again"' : 'Already notified. Tap "' + label + '"') + ' once more to send another email.';
       return;
     }
     btn.disabled = true; btn.textContent = 'Sending…';
-    fetch('/api/admin/notify', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ orderId: id, note: $('[data-note]').value, pickupWindow: $('[data-pickup-window]').value, deliveryWindow: $('[data-delivery-window]').value }) })
+    fetch('/api/admin/notify', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ orderId: id, kind: kind, note: $('[data-note]').value, pickupWindow: $('[data-pickup-window]').value, deliveryWindow: $('[data-delivery-window]').value }) })
       .then(function (r) { return r.json().then(function (j) { if (!r.ok) throw new Error(j.error || 'Could not send.'); return j; }); })
       .then(function (j) {
-        o.notified = true; render();
+        o.notified = true; if (kind === 'delivered') o.delivered = true; render();
         var s = $('[data-status="' + id + '"]'); s.className = 'form-status ok'; s.textContent = 'Email sent to ' + j.to + '.'; s.hidden = false;
       })
-      .catch(function (err) { st.className = 'form-status err'; st.textContent = err.message; st.hidden = false; btn.disabled = false; btn.textContent = o.mode === 'pickup' ? 'Ready for pickup' : 'On its way'; });
+      .catch(function (err) { st.className = 'form-status err'; st.textContent = err.message; st.hidden = false; btn.disabled = false; btn.textContent = label; });
   });
   load();
 })();

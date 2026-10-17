@@ -44,3 +44,6 @@ _Last updated: October 14, 2026 (site live)_
 - Fix: /api/checkout never crashes into HTML (try/catch, 500 JSON). The order page reads the reply as text; if it isn't JSON (or the request fails at network level) it re-sends the order as a normal form post (`payload` field), which can pass a Cloudflare check; the server then redirects (303) to Square, or back to /order/?checkout_error=… which the page shows.
 - To check in Cloudflare: Security → Events for hummusyall.com around Oct 15 7 PM, and Pages → Functions logs.
 - Oct 15 evening: delivery checkouts failed with "Checkout is temporarily unavailable" (pickup OK). Cause (most likely): `pre_populated_data.buyer_address` (pre-filled ZIP) sent together with the order's SHIPMENT fulfillment, which Square rejects. Removed the pre-fill. Error messages now end with a short ref (Square error code) so a screenshot shows the cause.
+
+## Delivered button (Oct 17)
+- Orders page: delivery orders now have a "Delivered" button next to "On its way". It emails the customer that the order was left at their door (address, "put the hummus in the fridge soon", items, storing tips) and saves Square order metadata `delivered_at` (the order is not completed in Square, so it stays in the ops sheet Deliveries tab). The card then shows "Delivered ✓". Uses the existing Google script `notify` action; no script change needed.

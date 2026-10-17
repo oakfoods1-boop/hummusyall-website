@@ -1,6 +1,9 @@
-// POST /api/admin/notify  { orderId, note? }
-// Emails the customer that their pickup order is ready or their delivery is on its way,
-// then marks the order as prepared in Square so the orders page shows it was sent.
+// POST /api/admin/notify  { orderId, kind?, note? }
+// Emails the customer that their pickup order is ready or their delivery is on its way
+// (kind 'delivered': that the delivery was left at their door),
+// then marks the order in Square so the orders page shows it was sent.
+// "Delivered" is stored as order metadata delivered_at, not by completing the order,
+// so the order stays in the ops sheet's Deliveries tab.
 import { square, describeOrder } from '../../_lib/square.js';
 import site from '../../../data/site.json';
 import { prettyDate } from '../../_lib/fulfillment.js';
@@ -17,6 +20,8 @@ export async function onRequestPost({ request, env }) {
     const o = await describeOrder(env, order);
     if (!o) return json({ error: 'That is not a website order.' }, 400);
     if (!o.email) return json({ error: 'This order has no customer email. Call or text them instead.' }, 400);
+    const delivered = body.kind === 'delivered';
+    if (delivered && o.mode !== 'delivery') return json({ error: 'Only delivery orders can be marked delivered.' }, 400);
     if (o.mode === 'pickup' && !site.pickupAddress) return json({ error: 'Add the pickup address in data/site.json before sending pickup messages.' }, 400);
 
     const first = (o.name || '').split(' ')[0] || 'there';
@@ -27,11 +32,14 @@ export async function onRequestPost({ request, env }) {
     // Times can be changed on the orders page for days other than Sunday; otherwise the defaults from site.json.
     const pickupWindow = String(body.pickupWindow ?? site.pickupWindow ?? '').trim().slice(0, 60);
     const deliveryWindow = String(body.deliveryWindow ?? site.deliveryWindow ?? '').trim().slice(0, 60);
-    const subject = o.mode === 'pickup' ? "Your Hummus Y'all order is ready for pickup" : "Your Hummus Y'all order is on its way";
+    const subject = delivered ? "Your Hummus Y'all order has been delivered"
+      : o.mode === 'pickup' ? "Your Hummus Y'all order is ready for pickup" : "Your Hummus Y'all order is on its way";
     const text = [
       `Hi ${first},`,
       '',
-      o.mode === 'pickup'
+      delivered
+        ? `Your order was delivered today (${prettyDate(today)}) and is waiting at your door.${o.address ? `\n\n  ${o.address}` : ''}\n\nPlease put the hummus in the fridge soon.`
+        : o.mode === 'pickup'
         ? `Your order is ready! Pick it up today (${prettyDate(today)}) at:\n\n  ${site.pickupAddress}${pickupWindow ? `\n  Pickup time: ${pickupWindow}` : ''}`
         : `Your order is on its way and will arrive today (${prettyDate(today)})${deliveryWindow ? `, ${deliveryWindow}` : ''}.${o.address ? `\n\nDelivering to: ${o.address}` : ''}\nNot home? Leave a cooler outside and we'll take care of the rest.`,
       note ? `\n${note}` : '',
@@ -57,12 +65,15 @@ export async function onRequestPost({ request, env }) {
     const sent = await res.json().catch(() => ({}));
     if (!res.ok || !sent.ok) return json({ error: 'The email could not be sent. Check that the Google script is updated and deployed.' }, 502);
 
-    // Record it in Square: mark the pickup/delivery as prepared.
-    if (o.fulfillmentUid && !o.notified) {
+    // Record it in Square: mark the pickup/delivery as prepared, and note when it was delivered.
+    const update = {};
+    if (o.fulfillmentUid && !o.notified) update.fulfillments = [{ uid: o.fulfillmentUid, state: 'PREPARED' }];
+    if (delivered && !o.delivered) update.metadata = { delivered_at: new Date().toISOString() };
+    if (Object.keys(update).length) {
       try {
         await square(env, `/v2/orders/${o.id}`, {
           method: 'PUT',
-          body: { idempotency_key: crypto.randomUUID(), order: { location_id: order.location_id, version: o.version, fulfillments: [{ uid: o.fulfillmentUid, state: 'PREPARED' }] } },
+          body: { idempotency_key: crypto.randomUUID(), order: { location_id: order.location_id, version: o.version, ...update } },
         });
       } catch { /* email went out; the status just won't update */ }
     }

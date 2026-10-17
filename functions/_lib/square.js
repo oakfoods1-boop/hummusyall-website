@@ -51,6 +51,7 @@ export async function describeOrder(env, o) {
     mode: m[2],
     state: o.state,
     notified: ['PREPARED', 'COMPLETED'].includes(f.state),
+    delivered: !!(o.metadata && o.metadata.delivered_at),
     createdAt: o.created_at,
     total: (o.total_money?.amount || 0) / 100,
     name, email, phone,
