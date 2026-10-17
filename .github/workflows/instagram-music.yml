@@ -1,0 +1,33 @@
+# Downloads royalty-free tracks listed in integrations/instagram/music-request.json (Pixabay, free for
+# commercial use, checked "not Content ID registered") into integrations/instagram/music/ for reels.
+name: Instagram music fetch
+
+on:
+  push:
+    branches: [main]
+    paths: ['integrations/instagram/music-request.json']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download tracks
+        run: |
+          mkdir -p integrations/instagram/music
+          jq -c '.tracks[]' integrations/instagram/music-request.json | while read -r t; do
+            F=$(echo "$t" | jq -r .file); U=$(echo "$t" | jq -r .url)
+            [ -f "integrations/instagram/music/$F" ] && continue
+            curl -sSL --fail -A "Mozilla/5.0" -e "https://pixabay.com/" -o "integrations/instagram/music/$F" "$U" && echo "ok $F" || echo "failed $F"
+          done
+          ls -la integrations/instagram/music
+      - name: Save
+        run: |
+          git config user.name "hummusyall-bot"; git config user.email "oakfoods1@gmail.com"
+          git add integrations/instagram/music
+          git diff --cached --quiet || { git commit -qm "Instagram: add reel music"; git pull --rebase -q origin main; git push -q origin HEAD:main; }
