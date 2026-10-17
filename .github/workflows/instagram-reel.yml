@@ -1,0 +1,38 @@
+# Posts approved reels. Claude commits the finished video to public/ig/reels/<id>.mp4 and
+# integrations/instagram/reels/<id>.json with "status": "approved" once Alon says "post"; this job then
+# posts it to @hummusyall and writes back "posted" (with the link) or "failed" (with the reason).
+name: Instagram reel post
+
+on:
+  push:
+    branches: [main]
+    paths: ['integrations/instagram/reels/*.json']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: instagram-reel
+  cancel-in-progress: false
+
+jobs:
+  post:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      IG_USER_ID: '17841467835833598'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Post approved reels
+        env:
+          IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
+        run: node integrations/instagram/reel-post.mjs
+      - name: Save results
+        run: |
+          git config user.name "hummusyall-bot"; git config user.email "oakfoods1@gmail.com"
+          git add integrations/instagram/reels
+          git diff --cached --quiet || { git commit -qm "Instagram: reel post results [skip ci]"; git pull --rebase -q origin main; git push -q origin HEAD:main; }

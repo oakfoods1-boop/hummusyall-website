@@ -1,0 +1,92 @@
+{
+ "transition": 0.35,
+ "music": "integrations/instagram/music/greek-aegean-sunshine.mp3",
+ "shots": [
+  {
+   "src": "inbox/2026-10-16-b/IMG_6303.jpg",
+   "dur": 2.4,
+   "text": "It's not a dip.",
+   "focus": [
+    0.5,
+    0.5
+   ],
+   "zoom": "in"
+  },
+  {
+   "src": "inbox/2026-10-16-b/IMG_6789.jpg",
+   "dur": 2.3,
+   "text": "It's a meal.",
+   "focus": [
+    0.5,
+    0.7
+   ],
+   "zoom": "out"
+  },
+  {
+   "src": "inbox/2026-10-16-b/IMG_5803.jpg",
+   "dur": 2.3,
+   "text": "Made fresh every week",
+   "focus": [
+    0.55,
+    0.5
+   ],
+   "zoom": "in"
+  },
+  {
+   "src": "inbox/2026-10-16-b/IMG_5858.jpg",
+   "dur": 2.2,
+   "text": "Packed by hand",
+   "focus": [
+    0.62,
+    0.5
+   ],
+   "zoom": "out"
+  },
+  {
+   "src": "inbox/2026-10-16-b/IMG_6427.jpg",
+   "dur": 2.3,
+   "text": "From our family kitchen",
+   "focus": [
+    0.95,
+    0.2
+   ],
+   "zoom": "out"
+  },
+  {
+   "src": "inbox/2026-10-16-b/IMG_7092.jpg",
+   "dur": 2.5,
+   "text": "Six bowls.",
+   "sub": "All with tangy tahini sauce",
+   "focus": [
+    0.5,
+    0.5
+   ],
+   "zoom": "out"
+  },
+  {
+   "src": "inbox/2026-10-16-b/IMG_6498.jpg",
+   "dur": 2.4,
+   "text": "Find us at Triangle farmers markets",
+   "focus": [
+    0.55,
+    0.4
+   ],
+   "zoom": "in"
+  },
+  {
+   "src": "inbox/2026-10-16-b/IMG_6702.jpg",
+   "dur": 2.2,
+   "text": "Gypsy approved",
+   "focus": [
+    0.5,
+    0.45
+   ],
+   "zoom": "in"
+  }
+ ],
+ "end": {
+  "title": "Order online for Sunday delivery or pickup",
+  "url": "hummusyall.com",
+  "dur": 3.0
+ }
+}
