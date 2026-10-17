@@ -2,9 +2,14 @@
  "id": "2026-10-17-story-bazaar",
  "type": "story",
  "video": "public/ig/reels/2026-10-17-story-bazaar.mp4",
- "tags": ["thebazaarus"],
+ "tags": [
+  "thebazaarus"
+ ],
  "music": "Fun at the Farm (Mixkit)",
  "note": "Story: Hummus Y'all at The Bazaar, Carrboro Town Commons, Sun Oct 18 noon-5 PM; come hungry, samples onsite",
- "status": "approved",
- "approvedBy": "Alon in chat 2026-10-17 (post now with music, tag The Bazaar Carrboro)"
+ "status": "posted",
+ "approvedBy": "Alon in chat 2026-10-17 (post now with music, tag The Bazaar Carrboro)",
+ "postedAt": "2026-10-17T22:30:12.045Z",
+ "mediaId": "18125184844905532",
+ "permalink": "https://www.instagram.com/stories/hummusyall/4010225643501146183"
 }
