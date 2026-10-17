@@ -12,7 +12,8 @@ edit.json:
   ],
   "end": {"title": "Order for Sunday delivery", "url": "hummusyall.com", "dur": 3.0},
   "music": "path/track.mp3" | null,          # used when no shot keeps its own audio (Alon's rule:
-  "transition": 0.35                          #   his voice stays; otherwise royalty-free music)
+  "transition": 0.35,                         #   his voice stays; otherwise royalty-free music)
+  "style": "brand" | "pop" | "bold" | "script" | "editorial"   # text look; shots may override with their own "style"
 }
 Fonts/logo come from this repo (fonts/*.woff2 converted on the fly, public/img/logo.webp).
 """
@@ -30,13 +31,33 @@ def run(cmd):
         sys.stderr.write(r.stderr[-3000:]); raise SystemExit(f'ffmpeg failed: {" ".join(cmd[:6])}...')
 
 def fonts(tmp):
+    """All fonts/*.woff2 as TTF paths, keyed by file stem (e.g. 'anton-latin-400-normal')."""
     from fontTools.ttLib import TTFont
     out = {}
-    for key, name in [('display', 'bricolage-grotesque-latin-800-normal'), ('body', 'poppins-latin-600-normal'), ('light', 'poppins-latin-500-normal')]:
-        dst = os.path.join(tmp, name + '.ttf')
-        f = TTFont(os.path.join(HERE, 'fonts', name + '.woff2')); f.flavor = None; f.save(dst)
-        out[key] = dst
+    for n in os.listdir(os.path.join(HERE, 'fonts')):
+        if not n.endswith('.woff2'): continue
+        stem = n[:-6]; dst = os.path.join(tmp, stem + '.ttf')
+        f = TTFont(os.path.join(HERE, 'fonts', n)); f.flavor = None; f.save(dst); out[stem] = dst
+    alias = {'display': 'bricolage-grotesque-latin-800-normal', 'body': 'poppins-latin-600-normal', 'light': 'poppins-latin-500-normal',
+             'anton': 'anton-latin-400-normal', 'archivo': 'archivo-black-latin-400-normal', 'caveat': 'caveat-latin-700-normal',
+             'playfair': 'playfair-display-latin-800-italic', 'pacifico': 'pacifico-latin-400-normal'}
+    for k, v in alias.items(): out[k] = out[v]
     return out
+
+# Text looks. A reel picks one with "style" (default "brand"); any shot can override it with its own "style".
+#  brand     – cream pill, olive Bricolage (website look)
+#  pop       – chunky Archivo Black on bright boxes that change color every shot, slightly tilted, handwritten sub-line
+#  bold      – huge white Anton capitals with a black outline, no box (good for the hook)
+#  script    – white Pacifico script with a soft shadow
+#  editorial – Playfair italic on a dark see-through band across the screen
+POP = [('#FF5A36', '#FFFFFF'), ('#FFD23F', '#1B1B1B'), ('#2EC4B6', '#FFFFFF'), ('#FF8FAB', '#1B1B1B'), ('#3A86FF', '#FFFFFF'), ('#8AC926', '#1B1B1B')]
+ENDS = {  # end-card look per style: background, title font, title color, button bg/fg, body color
+    'brand': (OLIVE, 'display', CREAM, PAPRIKA, '#FFFFFF', '#F3EAD6'),
+    'pop': ('#FFD23F', 'archivo', '#1B1B1B', '#FF5A36', '#FFFFFF', '#1B1B1B'),
+    'bold': ('#111111', 'anton', '#FFFFFF', '#FFD23F', '#111111', '#DDDDDD'),
+    'script': ('#C8502A', 'pacifico', '#FFFFFF', '#FBF6EC', '#C8502A', '#FFF3E6'),
+    'editorial': ('#F4EDE4', 'playfair', '#1B1B1B', '#1B1B1B', '#FFFFFF', '#3A3A3A'),
+}
 
 def wrap(draw, text, font, maxw):
     words, lines, cur = text.split(), [], ''
@@ -47,50 +68,87 @@ def wrap(draw, text, font, maxw):
     if cur: lines.append(cur)
     return lines
 
-def text_png(path, F, text, sub=None, pos='low'):
-    """Transparent 1080x1920 layer: cream pill with olive headline (+ optional lime sub-pill)."""
-    img = Image.new('RGBA', (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(img)
+def _block(F, style, text, sub, idx):
+    """Render the text block (RGBA, tight) for one shot in the given style."""
+    tmp = Image.new('RGBA', (W, 900), (0, 0, 0, 0)); d = ImageDraw.Draw(tmp); y = 20
+    if style == 'pop':
+        bg, fg = POP[idx % len(POP)]
+        big = ImageFont.truetype(F['archivo'], 74); lines = wrap(d, text, big, W - 240) if text else []
+        for l in lines:
+            w = d.textlength(l, font=big) + 64
+            d.rectangle([(W - w) / 2, y, (W + w) / 2, y + 104], fill=bg); d.text((W / 2, y + 54), l, font=big, fill=fg, anchor='mm'); y += 104
+        if sub:
+            sf = ImageFont.truetype(F['caveat'], 64); w = d.textlength(sub, font=sf) + 50
+            d.rounded_rectangle([(W - w) / 2, y + 14, (W + w) / 2, y + 104], radius=16, fill='#FFFFFF'); d.text((W / 2, y + 58), sub, font=sf, fill='#1B1B1B', anchor='mm'); y += 110
+        return tmp.crop((0, 0, W, y + 20)), (-3 if idx % 2 else 2.5)
+    if style == 'bold':
+        big = ImageFont.truetype(F['anton'], 132); lines = wrap(d, (text or '').upper(), big, W - 160)
+        for l in lines:
+            d.text((W / 2, y + 70), l, font=big, fill='#FFFFFF', anchor='mm', stroke_width=7, stroke_fill='#111111'); y += 140
+        if sub:
+            sf = ImageFont.truetype(F['body'], 44); w = d.textlength(sub, font=sf) + 50
+            d.rectangle([(W - w) / 2, y + 6, (W + w) / 2, y + 80], fill='#FFD23F'); d.text((W / 2, y + 44), sub, font=sf, fill='#111111', anchor='mm'); y += 90
+        return tmp.crop((0, 0, W, y + 20)), 0
+    if style == 'script':
+        big = ImageFont.truetype(F['pacifico'], 84); lines = wrap(d, text or '', big, W - 200)
+        sh = Image.new('RGBA', tmp.size, (0, 0, 0, 0)); sd = ImageDraw.Draw(sh); yy = y
+        for l in lines: sd.text((W / 2 + 4, yy + 64), l, font=big, fill=(0, 0, 0, 170), anchor='mm'); yy += 120
+        from PIL import ImageFilter
+        tmp.alpha_composite(sh.filter(ImageFilter.GaussianBlur(6))); d = ImageDraw.Draw(tmp)
+        for l in lines: d.text((W / 2, y + 60), l, font=big, fill='#FFFFFF', anchor='mm'); y += 120
+        if sub:
+            sf = ImageFont.truetype(F['body'], 42); d.text((W / 2, y + 30), sub, font=sf, fill='#FFFFFF', anchor='mm', stroke_width=3, stroke_fill='#00000088'); y += 70
+        return tmp.crop((0, 0, W, y + 20)), 0
+    if style == 'editorial':
+        big = ImageFont.truetype(F['playfair'], 80); lines = wrap(d, text or '', big, W - 180)
+        h = len(lines) * 96 + (64 if sub else 0) + 50
+        d.rectangle([0, y, W, y + h], fill=(15, 15, 15, 165)); yy = y + 30
+        for l in lines: d.text((W / 2, yy + 44), l, font=big, fill='#FFFFFF', anchor='mm'); yy += 96
+        if sub: d.text((W / 2, yy + 26), sub, font=ImageFont.truetype(F['light'], 38), fill='#FFD9A8', anchor='mm')
+        return tmp.crop((0, 0, W, y + h + 20)), 0
+    # brand
     big = ImageFont.truetype(F['display'], 78); small = ImageFont.truetype(F['body'], 40)
     lines = wrap(d, text, big, W - 220) if text else []
-    lh = 88; pad_x, pad_y = 44, 30
-    blocks = []
     if lines:
-        bw = max(d.textlength(l, font=big) for l in lines) + 2 * pad_x; bh = len(lines) * lh + 2 * pad_y - 10
-        blocks.append(('big', lines, bw, bh))
-    if sub:
-        sw = d.textlength(sub, font=small) + 2 * 30; blocks.append(('sub', [sub], sw, 76))
-    total = sum(b[3] for b in blocks) + 18 * (len(blocks) - 1)
-    y = (1180 if pos == 'low' else 330) if pos in ('low', 'high') else 1180
-    y = min(y, 1500 - total)                     # keep clear of Instagram's caption/buttons area
-    for kind, ls, bw, bh in blocks:
-        x = (W - bw) / 2
-        if kind == 'big':
-            d.rounded_rectangle([x, y, x + bw, y + bh], radius=34, fill=CREAM)
-            for i, l in enumerate(ls):
-                d.text((W / 2, y + pad_y + i * lh + 38), l, font=big, fill=OLIVE, anchor='mm')
-        else:
-            d.rounded_rectangle([x, y, x + bw, y + bh], radius=38, fill=LIME)
-            d.text((W / 2, y + bh / 2 + 2), ls[0], font=small, fill=INK, anchor='mm')
+        bw = max(d.textlength(l, font=big) for l in lines) + 88; bh = len(lines) * 88 + 50
+        d.rounded_rectangle([(W - bw) / 2, y, (W + bw) / 2, y + bh], radius=34, fill=CREAM)
+        for i, l in enumerate(lines): d.text((W / 2, y + 30 + i * 88 + 38), l, font=big, fill=OLIVE, anchor='mm')
         y += bh + 18
+    if sub:
+        sw = d.textlength(sub, font=small) + 60
+        d.rounded_rectangle([(W - sw) / 2, y, (W + sw) / 2, y + 76], radius=38, fill=LIME); d.text((W / 2, y + 40), sub, font=small, fill=INK, anchor='mm'); y += 76
+    return tmp.crop((0, 0, W, y + 20)), 0
+
+def text_png(path, F, text, sub=None, pos='low', style='brand', idx=0):
+    """Transparent 1080x1920 layer with the shot's text in the chosen style."""
+    img = Image.new('RGBA', (W, H), (0, 0, 0, 0))
+    if text or sub:
+        block, angle = _block(F, style, text, sub, idx)
+        if angle: block = block.rotate(angle, resample=Image.BICUBIC, expand=True)
+        y = 1180 if pos != 'high' else 330
+        y = min(y, 1520 - block.height)            # keep clear of Instagram's caption/buttons area
+        img.alpha_composite(block, ((W - block.width) // 2, max(y, 200)))
     img.save(path)
 
-def end_png(path, F, title, url):
-    img = Image.new('RGB', (W, H), OLIVE); d = ImageDraw.Draw(img)
+def end_png(path, F, title, url, style='brand'):
+    bg, tfont, tcol, bbg, bfg, bodyc = ENDS.get(style, ENDS['brand'])
+    img = Image.new('RGB', (W, H), bg); d = ImageDraw.Draw(img)
     logo = Image.open(os.path.join(ROOT, 'public/img/logo.webp')).convert('RGBA').resize((300, 300))
     mask = Image.new('L', (300, 300), 0); ImageDraw.Draw(mask).ellipse([0, 0, 299, 299], fill=255)
-    img.paste(logo, ((W - 300) // 2, 520), mask)
-    d.text((W / 2, 930), "Hummus Y'all", font=ImageFont.truetype(F['display'], 96), fill=CREAM, anchor='mm')
+    img.paste(logo, ((W - 300) // 2, 500), mask)
+    name = "HUMMUS Y'ALL" if style == 'bold' else "Hummus Y'all"
+    d.text((W / 2, 920), name, font=ImageFont.truetype(F[tfont], 104 if style in ('bold', 'script') else 96), fill=tcol, anchor='mm')
     body = ImageFont.truetype(F['light'], 44)
     for i, l in enumerate(wrap(d, title, body, W - 200)):
-        d.text((W / 2, 1050 + i * 60), l, font=body, fill='#F3EAD6', anchor='mm')
+        d.text((W / 2, 1050 + i * 60), l, font=body, fill=bodyc, anchor='mm')
     bf = ImageFont.truetype(F['body'], 52); bw = d.textlength(url, font=bf) + 100
-    d.rounded_rectangle([(W - bw) / 2, 1190, (W + bw) / 2, 1300], radius=55, fill=PAPRIKA)
-    d.text((W / 2, 1246), url, font=bf, fill='white', anchor='mm')
+    d.rounded_rectangle([(W - bw) / 2, 1190, (W + bw) / 2, 1300], radius=55 if style != 'pop' else 8, fill=bbg)
+    d.text((W / 2, 1246), url, font=bf, fill=bfg, anchor='mm')
     img.save(path)
 
-def shot_clip(i, s, tmp, F):
+def shot_clip(i, s, tmp, F, style='brand'):
     out = os.path.join(tmp, f'shot{i:02d}.mp4'); dur = float(s.get('dur', 2.4)); n = int(round(dur * FPS))
-    layer = os.path.join(tmp, f'text{i:02d}.png'); text_png(layer, F, s.get('text'), s.get('sub'), s.get('textPos', 'low'))
+    layer = os.path.join(tmp, f'text{i:02d}.png'); text_png(layer, F, s.get('text'), s.get('sub'), s.get('textPos', 'low'), s.get('style', style), i)
     fx, fy = s.get('focus', [0.5, 0.5]); zin = s.get('zoom', 'in') == 'in'
     is_video = os.path.splitext(s['src'])[1].lower() in ('.mp4', '.mov', '.m4v')
     fade = f"[1]format=rgba,fade=in:st=0.25:d=0.35:alpha=1[t]"
@@ -110,10 +168,11 @@ def shot_clip(i, s, tmp, F):
 
 def build(edit, out):
     tmp = tempfile.mkdtemp(prefix='reel'); F = fonts(tmp); T = float(edit.get('transition', 0.35))
-    clips = [shot_clip(i, s, tmp, F) for i, s in enumerate(edit['shots'])]
+    style = edit.get('style', 'brand')
+    clips = [shot_clip(i, s, tmp, F, style) for i, s in enumerate(edit['shots'])]
     e = edit.get('end')
     if e:
-        p = os.path.join(tmp, 'end.png'); end_png(p, F, e.get('title', ''), e.get('url', 'hummusyall.com')); d = float(e.get('dur', 3.0))
+        p = os.path.join(tmp, 'end.png'); end_png(p, F, e.get('title', ''), e.get('url', 'hummusyall.com'), e.get('style', style)); d = float(e.get('dur', 3.0))
         ep = os.path.join(tmp, 'end.mp4')
         run(['ffmpeg', '-y', '-nostdin', '-loop', '1', '-framerate', str(FPS), '-t', str(d), '-i', p, '-vf', 'format=yuv420p,setsar=1', '-c:v', 'libx264', '-crf', '20', '-r', str(FPS), ep])
         clips.append((ep, d))

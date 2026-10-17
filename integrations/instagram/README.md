@@ -34,6 +34,9 @@ Flow: Alon drops raw videos/photos in Drive **Hummus Y'all Instagram / IG inbox*
    delivery or pickup · hummusyall.com". Look at a contact sheet / sample frames before sending. Photos get slow zoom;
    pick `focus` so faces/bowls stay in frame. Skip AI-generated images and tiny/blurry photos. Don't invent claims
    (menu facts only from data/menu.json; every bowl has "tangy tahini sauce").
+   **Look (Alon, 2026-10-16): don't always use the brand colors.** Set `"style"` per reel and vary it between reels
+   (pop / bold / script / editorial / brand), mixing in a different style on 1–2 shots (e.g. a bold hook). Logo stays on the end card.
+   Don't put `[skip ci]` in commits that should start a GitHub job (inbox/music requests, approved reels).
 3. **Audio rule (Alon)**: if a clip has Alon clearly talking, keep that clip's sound (`keepAudio`) and no music;
    otherwise use a track from `music/` (Pixabay, not Content ID registered), alternating tracks between reels.
    New tracks: add to `music-request.json` and push (`instagram-music.yml` downloads them). Instagram's own music
