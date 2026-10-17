@@ -1,9 +1,59 @@
 {
- "_note": "Royalty-free reel music (Pixabay content license: free for commercial use, no attribution; none of these are Content ID registered). Chosen by Alon 2026-10-16.",
+ "_note": "Royalty-free reel music. Pixabay content license / Mixkit Stock Music Free License: free for commercial use incl. social media marketing, no attribution. Pixabay picks checked 'not Content ID registered'. Chosen by Alon.",
  "tracks": [
-  {"file": "greek-aegean-sunshine.mp3", "title": "Greek Aegean Sunshine — Bouzouki Groove", "artist": "ChrisDjYogi", "page": "https://pixabay.com/music/upbeat-greek-aegean-sunshine-bouzouki-groove-421454/",
-   "url": "https://cdn.pixabay.com/download/audio/2025/10/16/audio_9fc5630a6c.mp3?filename=chrisdjyogi-greek-aegean-sunshine-bouzouki-groove-421454.mp3"},
-  {"file": "sun-kissed-bouzouki-groove.mp3", "title": "Sun-Kissed Bouzouki Groove — Whistles, Claps & Live Bass", "artist": "SoundsByAmelia", "page": "https://pixabay.com/music/upbeat-sun-kissed-bouzouki-groove-whistles-claps-amp-live-bass-422955/",
-   "url": "https://cdn.pixabay.com/download/audio/2025/10/19/audio_6fe76200a7.mp3?filename=soundsbyamelia-sun-kissed-bouzouki-groove-whistles-claps-amp-live-bass-422955.mp3"}
+  {
+   "file": "greek-aegean-sunshine.mp3",
+   "title": "Greek Aegean Sunshine — Bouzouki Groove",
+   "artist": "ChrisDjYogi",
+   "page": "https://pixabay.com/music/upbeat-greek-aegean-sunshine-bouzouki-groove-421454/",
+   "url": "https://cdn.pixabay.com/download/audio/2025/10/16/audio_9fc5630a6c.mp3?filename=chrisdjyogi-greek-aegean-sunshine-bouzouki-groove-421454.mp3"
+  },
+  {
+   "file": "sun-kissed-bouzouki-groove.mp3",
+   "title": "Sun-Kissed Bouzouki Groove — Whistles, Claps & Live Bass",
+   "artist": "SoundsByAmelia",
+   "page": "https://pixabay.com/music/upbeat-sun-kissed-bouzouki-groove-whistles-claps-amp-live-bass-422955/",
+   "url": "https://cdn.pixabay.com/download/audio/2025/10/19/audio_6fe76200a7.mp3?filename=soundsbyamelia-sun-kissed-bouzouki-groove-whistles-claps-amp-live-bass-422955.mp3"
+  },
+  {
+   "file": "mixkit-tears-of-joy.mp3",
+   "title": "Tears of Joy",
+   "artist": "Michael Ramir C.",
+   "source": "Mixkit (Stock Music Free License)",
+   "page": "https://mixkit.co/free-stock-music/",
+   "url": "https://assets.mixkit.co/music/839/839.mp3"
+  },
+  {
+   "file": "mixkit-happy-home.mp3",
+   "title": "Happy Home",
+   "artist": "Michael Ramir C.",
+   "source": "Mixkit (Stock Music Free License)",
+   "page": "https://mixkit.co/free-stock-music/",
+   "url": "https://assets.mixkit.co/music/801/801.mp3"
+  },
+  {
+   "file": "mixkit-music-and-life.mp3",
+   "title": "Music and Life",
+   "artist": "Michael Ramir C.",
+   "source": "Mixkit (Stock Music Free License)",
+   "page": "https://mixkit.co/free-stock-music/",
+   "url": "https://assets.mixkit.co/music/852/852.mp3"
+  },
+  {
+   "file": "mixkit-okay.mp3",
+   "title": "Okay",
+   "artist": "Michael Ramir C.",
+   "source": "Mixkit (Stock Music Free License)",
+   "page": "https://mixkit.co/free-stock-music/",
+   "url": "https://assets.mixkit.co/music/780/780.mp3"
+  },
+  {
+   "file": "mixkit-fun-at-the-farm.mp3",
+   "title": "Fun at the Farm",
+   "artist": "Michael Ramir C.",
+   "source": "Mixkit (Stock Music Free License)",
+   "page": "https://mixkit.co/free-stock-music/",
+   "url": "https://assets.mixkit.co/music/1063/1063.mp3"
+  }
  ]
 }
