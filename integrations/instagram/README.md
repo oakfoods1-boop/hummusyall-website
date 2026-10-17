@@ -36,6 +36,10 @@ Flow: Alon drops raw videos/photos in Drive **Hummus Y'all Instagram / IG inbox*
    (menu facts only from data/menu.json; every bowl has "tangy tahini sauce").
    **Look (Alon, 2026-10-16): don't always use the brand colors.** Set `"style"` per reel and vary it between reels
    (pop / bold / script / editorial / brand), mixing in a different style on 1–2 shots (e.g. a bold hook). Logo stays on the end card.
+   **Effects style (2026-10-17, Alon asked for "more effects")**: `reel_fx.py edit.json out.mp4` — beat-synced hard cuts
+   (`bpm`, `musicStart`, shot length in `beats`), zoom punch / white flash / whip blur / RGB glitch entrances, slow-mo or
+   fast `speed`, 3-strip `split` screen, kinetic word-by-word Anton text with a yellow `hl` word, a spinning round
+   `sticker` over a blurred shot, warm colour grade + grain, animated gradient end card. Alternate it with `reel.py` looks.
    Don't put `[skip ci]` in commits that should start a GitHub job (inbox/music requests, approved reels).
 3. **Audio rule (Alon)**: if a clip has Alon clearly talking, keep that clip's sound (`keepAudio`) and no music;
    otherwise use a track from `music/` (Pixabay, not Content ID registered), alternating tracks between reels.
