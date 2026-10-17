@@ -1,4 +1,4 @@
-// Posts every reel in integrations/instagram/reels/*.json whose status is "approved", or "scheduled" with postAt in the past.
+// Posts every reel (or video story, "type": "story") in integrations/instagram/reels/*.json whose status is "approved", or "scheduled" with postAt in the past.
 // The video must be committed under public/ig/reels/ (served by Cloudflare at https://www.hummusyall.com/ig/reels/…).
 // Needs IG_ACCESS_TOKEN (permanent Facebook Page token) and IG_USER_ID. Marks each one "posted" (or "failed").
 import { readdirSync, readFileSync, writeFileSync } from 'node:fs';
@@ -36,7 +36,19 @@ for (const f of readdirSync(dir).filter((n) => n.endsWith('.json') && !n.endsWit
       if (i > 40) throw new Error('video never went live: ' + videoUrl);
       await sleep(15000);
     }
-    const { id: container } = await api(`${ig}/media`, { media_type: 'REELS', video_url: videoUrl, caption: reel.caption || '', share_to_feed: 'true' });
+    // "type": "story" → a video story (no caption); "tags": ["handle", ...] → people tagged (retried without tags if Instagram refuses them)
+    const isStory = reel.type === 'story';
+    const params = isStory ? { media_type: 'STORIES', video_url: videoUrl }
+      : { media_type: 'REELS', video_url: videoUrl, caption: reel.caption || '', share_to_feed: 'true' };
+    const tags = (reel.tags || []).map((u) => String(u).replace(/^@/, ''));
+    if (tags.length) params.user_tags = JSON.stringify(tags.map((username) => (isStory ? { username } : { username, x: 0.5, y: 0.5 })));
+    let container;
+    try { ({ id: container } = await api(`${ig}/media`, params)); }
+    catch (e) {
+      if (!params.user_tags) throw e;
+      reel.tagError = String(e.message || e); delete params.user_tags;
+      ({ id: container } = await api(`${ig}/media`, params));
+    }
     let status = '';
     for (let i = 0; i < 60; i++) {    // Instagram processes the video (usually 30 s – 3 min)
       await sleep(10000);
