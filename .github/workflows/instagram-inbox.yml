@@ -33,7 +33,7 @@ jobs:
           mkdir -p /tmp/raw "/tmp/out/inbox/$BATCH"
           jq -c '.files[]' "$REQ" | while read -r f; do
             ID=$(echo "$f" | jq -r .id); NAME=$(echo "$f" | jq -r .name)
-            SAFE=$(echo "$NAME" | tr -c 'A-Za-z0-9._-' '_'); BASE="${SAFE%.*}"; EXT=$(echo "${SAFE##*.}" | tr 'A-Z' 'a-z')
+            SAFE=$(printf '%s' "$NAME" | tr -c 'A-Za-z0-9._-' '_'); BASE="${SAFE%.*}"; EXT=$(printf '%s' "${SAFE##*.}" | tr 'A-Z' 'a-z')
             RAW="/tmp/raw/$ID.$EXT"
             curl -sSL --fail -o "$RAW" "https://drive.usercontent.google.com/download?id=$ID&export=download&confirm=t" || { echo "skip $NAME (download failed)"; continue; }
             OUT="/tmp/out/inbox/$BATCH"
