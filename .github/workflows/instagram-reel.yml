@@ -1,12 +1,14 @@
 # Posts approved reels. Claude commits the finished video to public/ig/reels/<id>.mp4 and
 # integrations/instagram/reels/<id>.json with "status": "approved" once Alon says "post"; this job then
-# posts it to @hummusyall and writes back "posted" (with the link) or "failed" (with the reason).
+# posts it to @hummusyall ("scheduled" + postAt: posted by the hourly run after that time) and writes back "posted" (with the link) or "failed" (with the reason).
 name: Instagram reel post
 
 on:
   push:
     branches: [main]
     paths: ['integrations/instagram/reels/*.json']
+  schedule:
+    - cron: '20 * * * *'   # hourly check for reels whose scheduled time (postAt) has come
   workflow_dispatch:
 
 permissions:

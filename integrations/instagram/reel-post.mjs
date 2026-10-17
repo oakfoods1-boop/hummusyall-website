@@ -1,4 +1,4 @@
-// Posts every reel in integrations/instagram/reels/*.json whose status is "approved".
+// Posts every reel in integrations/instagram/reels/*.json whose status is "approved", or "scheduled" with postAt in the past.
 // The video must be committed under public/ig/reels/ (served by Cloudflare at https://www.hummusyall.com/ig/reels/…).
 // Needs IG_ACCESS_TOKEN (permanent Facebook Page token) and IG_USER_ID. Marks each one "posted" (or "failed").
 import { readdirSync, readFileSync, writeFileSync } from 'node:fs';
@@ -26,7 +26,8 @@ async function api(path, params, method = 'POST') {
 let posted = 0;
 for (const f of readdirSync(dir).filter((n) => n.endsWith('.json') && !n.endsWith('.edit.json'))) {
   const p = join(dir, f); const reel = JSON.parse(readFileSync(p, 'utf8'));
-  if (reel.status !== 'approved') continue;
+  const due = reel.status === 'scheduled' && reel.postAt && Date.parse(reel.postAt) <= Date.now();
+  if (reel.status !== 'approved' && !due) continue;
   const videoUrl = `${SITE}/${reel.video.replace(/^public\//, '')}`;
   try {
     for (let i = 0; ; i++) {          // wait for Cloudflare to deploy the video

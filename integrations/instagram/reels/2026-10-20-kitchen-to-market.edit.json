@@ -1,0 +1,93 @@
+{
+ "transition": 0.3,
+ "music": "integrations/instagram/music/sun-kissed-bouzouki-groove.mp3",
+ "shots": [
+  {
+   "src": "inbox/2026-10-16-videos2/IMG_6368.mp4",
+   "start": 4.3,
+   "dur": 2.6,
+   "text": "Fresh every week",
+   "focus": [
+    0.5,
+    0.5
+   ],
+   "style": "bold"
+  },
+  {
+   "src": "inbox/2026-10-16-videos2/IMG_5805.mp4",
+   "start": 0.8,
+   "dur": 2.4,
+   "text": "Topped by hand",
+   "focus": [
+    0.5,
+    0.5
+   ]
+  },
+  {
+   "src": "inbox/2026-10-16-videos2/IMG_6368.mp4",
+   "start": 9.4,
+   "dur": 2.2,
+   "text": "The finishing touch",
+   "focus": [
+    0.5,
+    0.5
+   ]
+  },
+  {
+   "src": "inbox/2026-10-16-videos2/IMG_6542.mp4",
+   "start": 5.0,
+   "dur": 2.8,
+   "text": "Ready for the market",
+   "focus": [
+    0.5,
+    0.5
+   ],
+   "style": "script"
+  },
+  {
+   "src": "inbox/2026-10-16-videos2/IMG_7508.mp4",
+   "start": 1.0,
+   "dur": 2.4,
+   "text": "Then off to the market",
+   "focus": [
+    0.5,
+    0.5
+   ]
+  },
+  {
+   "src": "inbox/2026-10-16-videos2/IMG_5716.mp4",
+   "start": 2.0,
+   "dur": 2.4,
+   "text": "Saturdays at Triangle farmers markets",
+   "focus": [
+    0.5,
+    0.5
+   ]
+  },
+  {
+   "src": "inbox/2026-10-16-videos2/IMG_5655.mp4",
+   "start": 8.3,
+   "dur": 2.4,
+   "text": "Come grab a taste",
+   "focus": [
+    0.5,
+    0.5
+   ]
+  },
+  {
+   "src": "inbox/2026-10-16-videos2/IMG_7368.mp4",
+   "start": 0.6,
+   "dur": 2.0,
+   "focus": [
+    0.5,
+    0.5
+   ]
+  }
+ ],
+ "end": {
+  "title": "Order online for Sunday delivery or pickup",
+  "url": "hummusyall.com",
+  "dur": 3.0
+ },
+ "style": "pop"
+}

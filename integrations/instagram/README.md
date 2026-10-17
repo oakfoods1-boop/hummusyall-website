@@ -45,5 +45,6 @@ Flow: Alon drops raw videos/photos in Drive **Hummus Y'all Instagram / IG inbox*
 5. **Post**: copy the MP4 to `public/ig/reels/<id>.mp4` (keep < 20 MB), write `reels/<id>.json`
    ({id, video, caption, music, status:"approved"}) + `reels/<id>.edit.json`, push → `instagram-reel.yml` posts it
    (media_type REELS, share_to_feed) and writes back status posted + permalink, or failed + error. Check the JSON after ~3 min.
+   To post later instead: status "scheduled" + "postAt" (ISO time with -04:00/-05:00); the hourly run posts it after that time.
 6. **Tidy**: move the used files from IG inbox to **IG used** (folder 1VMM-cvZKoDrxp26oFmh5Qwd-ggGYpoyt) with the Drive connector.
 First reel posted 2026-10-16: https://www.instagram.com/reel/Dek66CdDj_B/ (photos batch 2026-10-16-b).
