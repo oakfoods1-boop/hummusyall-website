@@ -1,0 +1,55 @@
+# Copies clips/photos from the "IG inbox" Drive folder (shared "anyone with the link") into the ig-inbox branch,
+# shrunk to editing size, so Claude can cut reels from them. Triggered when integrations/instagram/inbox-request.json
+# changes on main: {"batch": "YYYY-MM-DD-x", "files": [{"id": "<drive file id>", "name": "IMG_1.MOV"}]}.
+name: Instagram inbox fetch
+
+on:
+  push:
+    branches: [main]
+    paths: ['integrations/instagram/inbox-request.json']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: instagram-inbox
+  cancel-in-progress: false
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Tools
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg imagemagick libheif-examples jq >/dev/null
+      - name: Download and shrink
+        run: |
+          REQ=integrations/instagram/inbox-request.json
+          BATCH=$(jq -r .batch "$REQ")
+          mkdir -p /tmp/raw "/tmp/out/inbox/$BATCH"
+          jq -c '.files[]' "$REQ" | while read -r f; do
+            ID=$(echo "$f" | jq -r .id); NAME=$(echo "$f" | jq -r .name)
+            SAFE=$(echo "$NAME" | tr -c 'A-Za-z0-9._-' '_'); BASE="${SAFE%.*}"; EXT=$(echo "${SAFE##*.}" | tr 'A-Z' 'a-z')
+            RAW="/tmp/raw/$ID.$EXT"
+            curl -sSL --fail -o "$RAW" "https://drive.usercontent.google.com/download?id=$ID&export=download&confirm=t" || { echo "skip $NAME (download failed)"; continue; }
+            OUT="/tmp/out/inbox/$BATCH"
+            case "$EXT" in
+              heic|heif) heif-convert -q 92 "$RAW" "/tmp/raw/$ID.jpg" >/dev/null && convert "/tmp/raw/$ID.jpg" -auto-orient -resize '2048x2048>' -quality 88 "$OUT/$BASE.jpg" ;;
+              jpg|jpeg|png|webp) convert "$RAW" -auto-orient -resize '2048x2048>' -quality 88 "$OUT/$BASE.jpg" ;;
+              mov|mp4|m4v|avi|mkv|3gp) ffmpeg -nostdin -loglevel error -y -i "$RAW" -vf "scale='if(gt(iw,ih),-2,1080)':'if(gt(iw,ih),1080,-2)',fps=30" -c:v libx264 -preset veryfast -crf 24 -pix_fmt yuv420p -c:a aac -b:a 128k -movflags +faststart "$OUT/$BASE.mp4" ;;
+              *) echo "skip $NAME (unknown type)";;
+            esac
+            echo "ok $NAME"
+          done
+          echo "$(jq -c . "$REQ")" > "/tmp/out/inbox/$BATCH/request.json"
+          du -sh "/tmp/out/inbox/$BATCH"
+      - name: Save to ig-inbox branch
+        run: |
+          git config user.name "hummusyall-bot"; git config user.email "oakfoods1@gmail.com"
+          if git ls-remote --exit-code origin ig-inbox >/dev/null; then git fetch -q origin ig-inbox && git switch -q ig-inbox; else git switch -q --orphan ig-inbox && git rm -rq --cached . 2>/dev/null || true; find . -mindepth 1 -maxdepth 1 ! -name .git -exec rm -rf {} +; fi
+          cp -r /tmp/out/inbox .
+          git add inbox && git commit -qm "Inbox batch $(ls -t inbox | head -1)" && git push -q origin ig-inbox
