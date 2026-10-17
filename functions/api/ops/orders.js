@@ -34,6 +34,7 @@ export async function onRequestGet({ request, env }) {
         phone: o.phone,
         address: o.address,
         notified: o.notified,
+        delivered: o.delivered,
         note: o.note || '',
         items: o.items.map((i) => ({ name: i.name, qty: i.qty, col: columnByName[(i.name || '').toLowerCase()] || '' })),
       }));

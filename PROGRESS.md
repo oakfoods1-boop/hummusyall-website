@@ -47,3 +47,4 @@ _Last updated: October 14, 2026 (site live)_
 
 ## Delivered button (Oct 17)
 - Orders page: delivery orders now have a "Delivered" button next to "On its way". It emails the customer that the order was left at their door (address, "put the hummus in the fridge soon", items, storing tips) and saves Square order metadata `delivered_at` (the order is not completed in Square, so it stays in the ops sheet Deliveries tab). The card then shows "Delivered ✓". Uses the existing Google script `notify` action; no script change needed.
+- Ops sheet (script v7, Oct 17): `/api/ops/orders` now sends `delivered`; the sheet ticks Done on delivered website orders at the next sync. Change in the live script is one line in webOrderRow_: `vals: [false, safeText_(o.number)` → `vals: [o.delivered === true, safeText_(o.number)`.

@@ -1,5 +1,7 @@
 /**
  * Hummus Y'all — market operations sheet + after-market report form
+ * Version 7 (10/17/2026): a website delivery marked "Delivered" on the orders page gets its Done box
+ * ticked automatically on the next sync (manual Done ticks are still kept).
  * Version 6 (10/14/2026): website orders (hummusyall.com) flow into the Pickups / Deliveries tabs
  * automatically every 15 minutes (and from the menu: "Sync website orders now"). Squarespace CSV
  * rows and website rows live side by side; Done ticks are kept.
@@ -656,7 +658,7 @@ function colLetter_(n) {
 }
 
 // ======================================================================
-// Website orders → Pickups / Deliveries (version 6)
+// Website orders → Pickups / Deliveries (version 7)
 // ======================================================================
 function syncWebOrdersMenu() {
   var ui = SpreadsheetApp.getUi();
@@ -725,7 +727,7 @@ function webOrderRow_(o, tz, unknown) {
   var notes = 'Website order for ' + day + (o.note ? ' · Note: ' + o.note : '') + (o.notified ? ' · customer notified' : '');
   return {
     when: when,
-    vals: [false, safeText_(o.number), when || '', safeText_(o.name || ''), formatPhone_(o.phone), o.mode === 'pickup' ? safeText_(place) : place]
+    vals: [o.delivered === true, safeText_(o.number), when || '', safeText_(o.name || ''), formatPhone_(o.phone), o.mode === 'pickup' ? safeText_(place) : place]
           .concat(itemVals).concat([safeText_(other.join(', ')), safeText_(notes), ''])
   };
 }
