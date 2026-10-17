@@ -1,0 +1,109 @@
+{
+ "style": "fx",
+ "bpm": 152,
+ "music": "integrations/instagram/music/mixkit-okay.mp3",
+ "musicStart": 26.52,
+ "accent": [
+  "#FF3D7F",
+  "#00C2FF",
+  "#FFB800"
+ ],
+ "shots": [
+  {
+   "src": "inbox/2026-10-17-a/IMG_7540.mp4",
+   "start": 0.3,
+   "beats": 8,
+   "in": "glitch",
+   "text": "IT'S MARKET DAY",
+   "hl": "MARKET",
+   "textPos": "high"
+  },
+  {
+   "src": "inbox/2026-10-17-a/IMG_5110.mp4",
+   "start": 12.5,
+   "beats": 4,
+   "in": "punch",
+   "text": "HOT TOPPINGS",
+   "hl": "HOT"
+  },
+  {
+   "src": "inbox/2026-10-16-videos2/IMG_6368.mp4",
+   "start": 5.0,
+   "beats": 6,
+   "speed": 0.5,
+   "in": "whip",
+   "text": "SLOW-MO DRIZZLE",
+   "hl": "DRIZZLE"
+  },
+  {
+   "src": "inbox/2026-10-16-videos2/IMG_6542.mp4",
+   "start": 8.0,
+   "beats": 4,
+   "in": "punch",
+   "text": "LOADED",
+   "sub": "every bowl comes with pita"
+  },
+  {
+   "split": [
+    {
+     "src": "inbox/2026-10-17-a/IMG_7540.mp4",
+     "start": 14.5
+    },
+    {
+     "src": "inbox/2026-10-17-a/IMG_7540.mp4",
+     "start": 16.6
+    },
+    {
+     "src": "inbox/2026-10-16-videos2/IMG_6542.mp4",
+     "start": 13.0
+    }
+   ],
+   "beats": 6,
+   "in": "flash",
+   "text": "PICK YOUR BOWL",
+   "hl": "BOWL"
+  },
+  {
+   "src": "inbox/2026-10-17-a/IMG_7540.mp4",
+   "start": 4.3,
+   "beats": 4,
+   "in": "whip",
+   "text": "GRAB THE DIPS",
+   "hl": "DIPS"
+  },
+  {
+   "src": "inbox/2026-10-17-a/IMG_7540.mp4",
+   "start": 8.6,
+   "beats": 6,
+   "in": "glitch",
+   "blur": true,
+   "sticker": "inbox/2026-10-17-a/Garlic_aioli.jpg",
+   "text": "NEW",
+   "hl": "NEW",
+   "sub": "Garlic aioli · egg-free"
+  },
+  {
+   "src": "inbox/2026-10-17-a/IMG_7540.mp4",
+   "start": 32.0,
+   "beats": 6,
+   "speed": 1.2,
+   "in": "whip",
+   "text": "SATURDAYS AT TRIANGLE MARKETS",
+   "hl": "SATURDAYS"
+  },
+  {
+   "src": "inbox/2026-10-17-a/4d50e48e.mp4",
+   "start": 1.0,
+   "beats": 4,
+   "speed": 1.4,
+   "in": "punch",
+   "text": "SEE YOU THERE",
+   "hl": "YOU"
+  }
+ ],
+ "end": {
+  "title": "Order online for Sunday delivery or pickup",
+  "url": "hummusyall.com",
+  "beats": 8
+ }
+}
