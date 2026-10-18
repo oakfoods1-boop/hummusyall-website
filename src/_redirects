@@ -3,6 +3,11 @@
 /shop/*          /order/      301
 /cart            /order/      301
 /new-page-2      /#markets    301
+/home            /            301
+/new-page        /            301
+/privacy-policy  /            301
+/catering-1      /catering/   301
+/menu            /order/      301
 /markets         /#markets    301
 /markets/        /#markets    301
 /contact-6       /catering/#inquiry 301

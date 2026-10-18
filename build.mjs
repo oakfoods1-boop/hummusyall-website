@@ -54,6 +54,27 @@ const blocks = {
     markets, schedule,
   }).replace(/</g, '\\u003c')}</script>`,
 
+  // Structured data for Google (business + full menu with prices + "Order online" action), built from data/*.json
+  structuredData: () => {
+    const item = (x) => ({ '@type': 'MenuItem', name: x.name + (x.size ? ` (${x.size})` : ''), description: x.description,
+      offers: { '@type': 'Offer', price: String(x.price), priceCurrency: 'USD', url: `${site.url}/order/#${x.id}` } });
+    const ld = {
+      '@context': 'https://schema.org', '@type': 'FoodEstablishment', '@id': `${site.url}/#business`,
+      name: site.name, legalName: site.legalName, slogan: site.tagline, url: site.url,
+      logo: `${site.url}/img/logo.webp`, image: `${site.url}/img/og-image.jpg`, email: site.email,
+      servesCuisine: ['Mediterranean', 'Israeli', 'Vegan'], priceRange: '$$',
+      areaServed: ['Raleigh', 'Durham', 'Cary', 'Apex', 'Chapel Hill', 'Hillsborough', 'Morrisville', 'Mebane', 'Greensboro'].map((name) => ({ '@type': 'City', name })),
+      address: { '@type': 'PostalAddress', addressLocality: 'Cary', addressRegion: 'NC', addressCountry: 'US' },
+      sameAs: [site.instagram, site.facebook],
+      hasMenu: { '@type': 'Menu', name: 'Hummus Y\'all menu', url: `${site.url}/order/`, hasMenuSection: [
+        { '@type': 'MenuSection', name: 'Hummus bowls', hasMenuItem: menu.bowls.filter((b) => b.available).map(item) },
+        { '@type': 'MenuSection', name: 'Dips & extras', hasMenuItem: menu.extras.filter((x) => x.available).map(item) },
+      ] },
+      potentialAction: { '@type': 'OrderAction', target: { '@type': 'EntryPoint', urlTemplate: `${site.url}/order/`, actionPlatform: ['http://schema.org/DesktopWebPlatform', 'http://schema.org/MobileWebPlatform'] }, deliveryMethod: ['http://purl.org/goodrelations/v1#DeliveryModeOwnFleet', 'http://purl.org/goodrelations/v1#DeliveryModePickUp'] },
+    };
+    return `<script type="application/ld+json">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script>`;
+  },
+
   email: () => site.email,
   instagram: () => site.instagram,
   facebook: () => site.facebook,
@@ -122,7 +143,7 @@ for (const file of readdirSync(join(root, 'src/pages'))) {
 }
 
 // SEO + hosting files
-writeFileSync(join(dist, 'sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${pages.map((p) => `  <url><loc>${site.url}${p}</loc></url>`).join('\n')}\n</urlset>\n`);
+writeFileSync(join(dist, 'sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${pages.map((p) => `  <url><loc>${site.url}${p}</loc><lastmod>${new Date().toISOString().slice(0, 10)}</lastmod></url>`).join('\n')}\n</urlset>\n`);
 writeFileSync(join(dist, 'robots.txt'), `User-agent: *\nAllow: /\nDisallow: /admin/\nSitemap: ${site.url}/sitemap.xml\n`);
 if (existsSync(join(root, 'src/_redirects'))) cpSync(join(root, 'src/_redirects'), join(dist, '_redirects'));
 if (existsSync(join(root, 'src/_headers'))) cpSync(join(root, 'src/_headers'), join(dist, '_headers'));
