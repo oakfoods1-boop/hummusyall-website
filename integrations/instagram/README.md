@@ -54,3 +54,5 @@ Flow: Alon drops raw videos/photos in Drive **Hummus Y'all Instagram / IG inbox*
 First reel posted 2026-10-16: https://www.instagram.com/reel/Dek66CdDj_B/ (photos batch 2026-10-16-b).
 Video stories (with music) and tags: a `reels/<id>.json` with `"type": "story"` posts the MP4 as a story (no caption);
 `"tags": ["handle"]` tags accounts (Instagram accepted @thebazaarus on a story, 2026-10-17). Location stickers aren't possible via the API.
+Collab: `"collaborators": ["handle"]` (reels only, max 3) sends Collab invites; once accepted the reel shows on their profile and in their followers' feeds.
+Alon's rule (2026-10-19): only invite a market as collaborator when the reel actually shows his booth at that market; no blanket market tags.

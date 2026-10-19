@@ -42,11 +42,14 @@ for (const f of readdirSync(dir).filter((n) => n.endsWith('.json') && !n.endsWit
       : { media_type: 'REELS', video_url: videoUrl, caption: reel.caption || '', share_to_feed: 'true' };
     const tags = (reel.tags || []).map((u) => String(u).replace(/^@/, ''));
     if (tags.length) params.user_tags = JSON.stringify(tags.map((username) => (isStory ? { username } : { username, x: 0.5, y: 0.5 })));
+    // "collaborators": ["handle", ...] → Collab invites (reels/feed only, max 3; they must accept). Retried without if refused.
+    const collabs = isStory ? [] : (reel.collaborators || []).map((u) => String(u).replace(/^@/, '')).slice(0, 3);
+    if (collabs.length) params.collaborators = JSON.stringify(collabs);
     let container;
     try { ({ id: container } = await api(`${ig}/media`, params)); }
     catch (e) {
-      if (!params.user_tags) throw e;
-      reel.tagError = String(e.message || e); delete params.user_tags;
+      if (!params.user_tags && !params.collaborators) throw e;
+      reel.tagError = String(e.message || e); delete params.user_tags; delete params.collaborators;
       ({ id: container } = await api(`${ig}/media`, params));
     }
     let status = '';
