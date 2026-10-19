@@ -10,6 +10,7 @@ import menu from '../../data/menu.json';
 import site from '../../data/site.json';
 import { nextFulfillment, prettyDate } from '../_lib/fulfillment.js';
 import { getAvailability } from '../_lib/availability.js';
+import { extrasStatus } from '../_lib/extras.js';
 
 // Noon in North Carolina on the given YYYY-MM-DD, as an RFC 3339 timestamp (handles daylight saving).
 const noonNC = (iso) => {
@@ -63,11 +64,34 @@ async function checkout({ request, env, waitUntil }, body) {
     .filter((i) => i.item && i.qty > 0 && i.qty <= 50);
   if (!items.length) return json({ error: 'Your order is empty.' }, 400);
 
-  // Items not being made this week (Plan tab of the operations sheet).
-  const { unavailable } = await getAvailability(env, waitUntil);
-  const out = items.filter((i) => unavailable.includes(i.item.id)).map((i) => i.item.name);
-  if (out.length) {
-    return json({ error: `Sorry, ${out.join(' and ')} ${out.length > 1 ? "aren't" : "isn't"} available this week. Please remove ${out.length > 1 ? 'them' : 'it'} from your order.`, unavailable: items.filter((i) => unavailable.includes(i.item.id)).map((i) => i.item.id) }, 409);
+  // Which day: the usual Sunday, or one of the extra days with leftover bowls (functions/_lib/extras.js).
+  const sunday = nextFulfillment(site);
+  const asked = /^\d{4}-\d{2}-\d{2}$/.test(String(body.day || '')) ? String(body.day) : '';
+  const extraDay = asked && asked !== sunday;
+  let date = sunday, windowText = '';
+  if (extraDay) {
+    const extras = await extrasStatus(env);
+    if (!extras || !extras.days.includes(asked)) {
+      return json({ error: 'Sorry, that day is no longer available. Please choose another day.', dayClosed: true }, 409);
+    }
+    const left = (id) => ((extras.unlimited || []).includes(id) ? 50 : extras.remaining[id] || 0);
+    const none = items.filter((i) => left(i.item.id) === 0).map((i) => i.item.name);
+    const short = items.filter((i) => left(i.item.id) > 0 && left(i.item.id) < i.qty);
+    if (none.length || short.length) {
+      const parts = [];
+      if (none.length) parts.push(`${none.join(' and ')} ${none.length > 1 ? "aren't" : "isn't"} available that day`);
+      if (short.length) parts.push('we only have ' + short.map((i) => `${left(i.item.id)} × ${i.item.name}`).join(' and ') + ' left');
+      return json({ error: `Sorry, ${parts.join(', and ')}. Please change your order.`, remaining: extras.remaining, unlimited: extras.unlimited || [] }, 409);
+    }
+    date = asked;
+    windowText = extras.window;
+  } else {
+    // Items not being made this week (Plan tab of the operations sheet).
+    const { unavailable } = await getAvailability(env, waitUntil);
+    const out = items.filter((i) => unavailable.includes(i.item.id)).map((i) => i.item.name);
+    if (out.length) {
+      return json({ error: `Sorry, ${out.join(' and ')} ${out.length > 1 ? "aren't" : "isn't"} available this week. Please remove ${out.length > 1 ? 'them' : 'it'} from your order.`, unavailable: items.filter((i) => unavailable.includes(i.item.id)).map((i) => i.item.id) }, 409);
+    }
   }
 
   const zips = (site.deliveryZips || []).map(String);
@@ -79,15 +103,16 @@ async function checkout({ request, env, waitUntil }, body) {
   // Customer's comment (optional): plain text, one paragraph, max 250 characters.
   const note = String(body.note || '').replace(/[\u0000-\u001f\u007f]+/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 250);
 
-  const date = nextFulfillment(site);
   if (!date) return json({ error: 'No upcoming fulfillment date is open right now.' }, 409);
   const when = prettyDate(date);
+  const pickupWindow = extraDay ? windowText : site.pickupWindow;
+  const deliveryWindow = extraDay ? (windowText ? 'between ' + windowText.replace(/\s*[–-]\s*/, ' and ') : '') : site.deliveryWindow;
 
   // Item notes show on Square's emailed receipt (when "Show item notes" is on in Square's receipt settings).
   // The first item also tells the customer to expect our follow-up email.
   const followUp = mode === 'pickup'
-    ? `Pickup ${when}${site.pickupWindow ? ', ' + site.pickupWindow : ''} in ${site.pickupLocation}. Once your order is ready, we'll email you the pickup address and instructions.`
-    : `Delivery ${when}${site.deliveryWindow ? ', ' + site.deliveryWindow : ''}. We'll email you when your order is on its way. Not home? Leave a cooler outside.`;
+    ? `Pickup ${when}${pickupWindow ? ', ' + pickupWindow : ''} in ${site.pickupLocation}. Once your order is ready, we'll email you the pickup address and instructions.`
+    : `Delivery ${when}${deliveryWindow ? ', ' + deliveryWindow : ''}. We'll email you when your order is on its way. Not home? Leave a cooler outside.`;
   const lineItems = items.map(({ item, qty }, i) => ({
     name: item.name + (item.size ? ` (${item.size})` : ''),
     quantity: String(qty),

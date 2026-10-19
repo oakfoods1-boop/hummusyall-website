@@ -28,5 +28,21 @@
     </div>
 
     <div class="admin-list" data-orders><p class="muted">Loading orders…</p></div>
+
+    <details class="card extras-admin" data-extras-admin>
+      <summary><h2>Extra bowls (leftovers)</h2><span class="pill" data-extras-pill>Off</span></summary>
+      <div class="stack" style="gap:16px">
+        <p class="muted">Have bowls left after the weekend? Enter what you have now and the days you can do pickup or delivery. The website offers them on those days until they sell out. Sunday orders work as usual.</p>
+        <p class="note" data-extras-status hidden></p>
+        <div class="field"><span class="label">Days</span><div class="extras-days" data-extras-days></div></div>
+        <div class="field"><label for="x-window">Pickup and delivery time on those days</label><input id="x-window" data-extras-window></div>
+        <div class="field"><span class="label">How many you have now</span><div class="extras-items" data-extras-items></div></div>
+        <div class="btn-row">
+          <button class="btn btn-primary" type="button" data-extras-save>Save and show on the website</button>
+          <button class="btn btn-outline" type="button" data-extras-off>Turn off</button>
+        </div>
+        <p class="form-status" data-extras-msg hidden></p>
+      </div>
+    </details>
   </div>
 </section>

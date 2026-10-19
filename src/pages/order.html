@@ -8,6 +8,7 @@
       </div>
 
       <div class="note" data-orders-closed hidden></div>
+      <div class="note note-extra" data-extras-note hidden></div>
 
       <p class="note">Choose your bowls below, then pick <strong>delivery ($8)</strong> or <strong>free pickup in {{pickupLocation}}</strong> in your order summary.</p>
 
@@ -39,6 +40,10 @@
         <h2>Your order</h2>
         <p class="muted" data-empty>No bowls yet. Tap + to add.</p>
         <div class="summary-lines" data-lines></div>
+        <fieldset class="fulfil day-pick" data-day-pick hidden>
+          <legend>Which day?</legend>
+          <div class="fulfil-options" data-day-options></div>
+        </fieldset>
         <fieldset class="fulfil" data-fulfil>
           <legend>How would you like your order?</legend>
           <div class="fulfil-options">

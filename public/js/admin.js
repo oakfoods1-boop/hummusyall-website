@@ -24,6 +24,7 @@
         var keep = dayEl.value;
         dayEl.innerHTML = days.length ? days.map(function (d) { return '<option value="' + d + '">' + prettyDay(d) + '</option>'; }).join('') : '<option value="">No orders yet</option>';
         if (keep && days.indexOf(keep) !== -1) dayEl.value = keep;
+        if (typeof applyWindows === 'function') applyWindows();
         var warn = $('[data-settings-warning]');
         warn.hidden = !!settings.pickupAddress;
         warn.textContent = 'The pickup address is not set yet, so "Ready for pickup" emails are turned off. Send Claude the pickup address and time window.';
@@ -93,4 +94,74 @@
       .catch(function (err) { st.className = 'form-status err'; st.textContent = err.message; st.hidden = false; btn.disabled = false; btn.textContent = label; });
   });
   load();
+
+  // ---------- Extra bowls (leftovers offered on days other than Sunday) ----------
+  var HYD = window.HY || {};
+  var xBox = $('[data-extras-admin]');
+  var items = ((HYD.menu && HYD.menu.bowls) || []).concat((HYD.menu && HYD.menu.extras) || []);
+  var xWindow = '';
+  function ncToday() { return new Intl.DateTimeFormat('en-CA', { timeZone: 'America/New_York' }).format(new Date()); }
+  function addDays(isoDay, n) { var d = new Date(isoDay + 'T12:00:00Z'); d.setUTCDate(d.getUTCDate() + n); return d.toISOString().slice(0, 10); }
+  function showExtras(v) {
+    var cfg = v.config || {}, sold = v.sold || {}, open = v.open || [];
+    xWindow = cfg.window || v.defaultWindow || '';
+    var pill = $('[data-extras-pill]');
+    pill.textContent = open.length ? 'On' : 'Off';
+    pill.className = 'pill' + (open.length ? ' pill-new' : '');
+    var st = $('[data-extras-status]');
+    if (!v.enabled) { st.hidden = false; st.textContent = 'Needs a one-time setup in Cloudflare before it can be used (ask Claude).'; }
+    else if (open.length) {
+      var left = Object.keys(cfg.stock || {}).map(function (id) {
+        var it = items.filter(function (i) { return i.id === id; })[0];
+        var n = (cfg.stock[id] || 0) - (sold[id] || 0);
+        return (it ? it.name : id) + ': ' + Math.max(0, n) + ' left' + (sold[id] ? ' (' + sold[id] + ' sold)' : '');
+      });
+      st.hidden = false;
+      st.innerHTML = '<strong>On the website now</strong> for ' + open.map(prettyDay).map(esc).join(' and ') + '.<br>' + left.map(esc).join(' · ');
+    } else { st.hidden = true; }
+    // Days: today and the next 5 days, except Sunday
+    var today = ncToday(), days = [];
+    for (var i = 0; days.length < 5 && i < 7; i++) { var d = addDays(today, i); if (new Date(d + 'T12:00:00Z').getUTCDay() !== 0) days.push(d); }
+    var chosen = (cfg.days || []).filter(function (d) { return open.indexOf(d) !== -1; });
+    if (!chosen.length) chosen = days.slice(0, 2);
+    $('[data-extras-days]').innerHTML = days.map(function (d) {
+      return '<label class="check"><input type="checkbox" value="' + d + '"' + (chosen.indexOf(d) !== -1 ? ' checked' : '') + '> ' + esc(d === today ? 'Today · ' + prettyDay(d) : prettyDay(d)) + '</label>';
+    }).join('');
+    var w = $('[data-extras-window]'); w.value = xWindow;
+    $('[data-extras-items]').innerHTML = items.filter(function (i) { return i.available !== false; }).map(function (i) {
+      var n = open.length ? Math.max(0, ((cfg.stock || {})[i.id] || 0) - (sold[i.id] || 0)) : '';
+      return '<label class="extras-item"><span>' + esc(i.name) + (i.size ? ' <span class="muted">' + esc(i.size) + '</span>' : '') + '</span>' +
+        '<input type="number" inputmode="numeric" min="0" max="500" data-stock="' + i.id + '" value="' + (n || '') + '" placeholder="0"></label>';
+    }).join('');
+    if (open.length) xBox.open = true;
+    applyWindows();
+  }
+  function xMsg(text, ok) { var m = $('[data-extras-msg]'); m.className = 'form-status ' + (ok ? 'ok' : 'err'); m.textContent = text; m.hidden = false; }
+  function xLoad() {
+    fetch('/api/admin/extras', { cache: 'no-store' }).then(function (r) { return r.json(); }).then(showExtras).catch(function () {});
+  }
+  function xSend(body, done) {
+    fetch('/api/admin/extras', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
+      .then(function (r) { return r.json().then(function (j) { if (!r.ok) throw new Error(j.error || 'Could not save.'); return j; }); })
+      .then(function (j) { showExtras(j); xMsg(done, true); })
+      .catch(function (e) { xMsg(e.message, false); });
+  }
+  // Emails for orders on an extra day use that day's time window.
+  function applyWindows() {
+    var day = dayEl.value;
+    if (!day || new Date(day + 'T12:00:00Z').getUTCDay() === 0 || !xWindow) return;
+    $('[data-pickup-window]').value = xWindow;
+    $('[data-delivery-window]').value = 'between ' + xWindow.replace(/\s*[–-]\s*/, ' and ');
+  }
+  if (xBox) {
+    dayEl.addEventListener('change', applyWindows);
+    $('[data-extras-save]').addEventListener('click', function () {
+      var stock = {};
+      Array.prototype.forEach.call(document.querySelectorAll('[data-stock]'), function (inp) { var v = parseInt(inp.value, 10); if (v > 0) stock[inp.getAttribute('data-stock')] = v; });
+      var days = Array.prototype.map.call(document.querySelectorAll('[data-extras-days] input:checked'), function (c) { return c.value; });
+      xSend({ days: days, stock: stock, window: $('[data-extras-window]').value }, 'Saved. The website shows these bowls now (it can take up to a minute).');
+    });
+    $('[data-extras-off]').addEventListener('click', function () { xSend({ off: true }, 'Turned off. The website is back to Sunday only.'); });
+    xLoad();
+  }
 })();

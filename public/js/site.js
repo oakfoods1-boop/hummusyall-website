@@ -68,6 +68,28 @@
     if (bar) bar.innerHTML = '<strong>' + escapeHtml(HY.site.ordersClosedMessage) + '</strong>';
   }
 
+  // ---------- Extra bowls (leftovers on offer for days other than Sunday) ----------
+  // /api/extras answers { extras: null } normally; when Alon switches extras on (private orders page):
+  // { extras: { days: ['YYYY-MM-DD'], window: '9 AM – 7 PM', remaining: { itemId: n } } }
+  function dayLabel(isoDay, longForm) {
+    var today = iso(nowInNC()), t = nowInNC(); t.setDate(t.getDate() + 1);
+    var d = new Date(isoDay + 'T12:00:00');
+    var name = isoDay === today ? 'Today' : isoDay === iso(t) ? 'Tomorrow' : d.toLocaleDateString('en-US', { weekday: 'long' });
+    return longForm ? name + ', ' + d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : name;
+  }
+  var extrasPromise = (HY.site && HY.site.ordersOpen === false) ? Promise.resolve(null)
+    : fetch('/api/extras', { cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : {}; }).then(function (j) { return j.extras || null; }).catch(function () { return null; });
+  extrasPromise.then(function (x) {
+    var bar = $('[data-announce]');
+    if (!x || !bar) return;
+    var names = x.days.map(function (d) { return dayLabel(d, false); });
+    var when = names.length > 1 ? names.slice(0, -1).join(', ') + ' & ' + names[names.length - 1] : names[0];
+    bar.classList.add('announce-extra');
+    var whenText = /^(Today|Tomorrow)/.test(when) ? when.replace('Today', 'today').replace('Tomorrow', 'tomorrow') : 'on ' + when;
+    bar.innerHTML = '<strong>Extra bowls ' + escapeHtml(whenText) + '!</strong> Pickup or delivery' +
+      (x.window ? ', ' + escapeHtml(x.window) : '') + ' · while they last · <a href="/order/">Order now</a>';
+  });
+
   function escapeHtml(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
   function money(n) { return '$' + (Number.isInteger(n) ? n : n.toFixed(2)); }
 
@@ -135,11 +157,54 @@
     };
     var fulfil = $('[data-fulfil]');
     var nextLong = next ? next.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' }) : 'Sunday';
+    // Extra days (leftover bowls): the customer picks the day; Sunday stays the default.
+    var extras = null, sundayIso = next ? iso(next) : null;
+    var dayPick = $('[data-day-pick]'), dayOpts = $('[data-day-options]');
+    var dayMsg = document.createElement('p'); dayMsg.className = 'fulfil-note'; dayMsg.hidden = true;
+    if (dayPick) dayPick.appendChild(dayMsg);
+    var inText = function (d) { var n = dayLabel(d, false); return n === 'Today' || n === 'Tomorrow' ? n.toLowerCase() : n; };
+    var isExtra = function () { return !!(extras && state.day && state.day !== sundayIso && extras.days.indexOf(state.day) !== -1); };
+    var limitFor = function (id) { return !isExtra() || (extras.unlimited || []).indexOf(id) !== -1 ? 50 : (extras.remaining[id] || 0); };
+    var dayLong = function () { return isExtra() ? new Date(state.day + 'T12:00:00').toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' }) : nextLong; };
+    var pickupWin = function () { return isExtra() ? extras.window : HY.site.pickupWindow; };
+    var deliveryWin = function () { return isExtra() ? (extras.window ? 'between ' + extras.window.replace(/\s*[–-]\s*/, ' and ') : '') : HY.site.deliveryWindow; };
+    // Keep the cart within what's left for the chosen day; say what changed.
+    var fitCart = function () {
+      if (!isExtra()) { dayMsg.hidden = true; return; }
+      var cut = [];
+      all.forEach(function (i) {
+        var q = state.qty[i.id] || 0, lim = limitFor(i.id);
+        if (q > lim) { state.qty[i.id] = lim; cut.push(lim ? 'only ' + lim + ' × ' + i.name : i.name + ' (Sunday only)'); }
+      });
+      dayMsg.hidden = !cut.length;
+      dayMsg.textContent = cut.length ? 'We changed your order for ' + inText(state.day) + ': ' + cut.join(', ') + '.' : '';
+    };
+    var renderDays = function () {
+      if (!dayPick) return;
+      dayPick.hidden = !extras;
+      if (!extras) return;
+      var opts = extras.days.map(function (d) {
+        return { d: d, top: dayLabel(d, true), sub: 'Limited · ' + (extras.window || '') };
+      }).concat(sundayIso ? [{ d: sundayIso, top: nextLong, sub: 'Full menu' }] : []);
+      dayOpts.innerHTML = opts.map(function (o) {
+        var on = (state.day || sundayIso) === o.d;
+        return '<button type="button" class="fulfil-opt' + (o.d !== sundayIso ? ' opt-extra' : '') + '" aria-pressed="' + on + '" data-day="' + o.d + '"><strong>' + escapeHtml(o.top) + '</strong><span>' + escapeHtml(o.sub) + '</span></button>';
+      }).join('');
+    };
     var render = function () {
       var lines = [], sub = 0, count = 0;
       all.forEach(function (i) {
         var q = state.qty[i.id] || 0;
         var out = $('[data-q="' + i.id + '"]'); if (out) out.textContent = q;
+        var el = $('[data-item="' + i.id + '"]');
+        if (el && !el.classList.contains('is-out')) {
+          var lim = limitFor(i.id), lab = $('.day-limit', el);
+          if (!lab) { lab = document.createElement('span'); lab.className = 'day-limit'; var ctl = $('.qty', el); if (ctl) ctl.parentNode.insertBefore(lab, ctl); }
+          lab.hidden = !isExtra() || lim >= 50;
+          lab.textContent = !isExtra() ? '' : lim > 0 ? 'Only ' + lim + ' left for ' + inText(state.day) : 'Sunday only';
+          el.classList.toggle('is-day-out', isExtra() && lim === 0);
+          var inc = $('[data-inc="' + i.id + '"]'); if (inc) inc.disabled = isExtra() && q >= lim;
+        }
         if (q > 0) { lines.push('<div><span>' + q + ' × ' + escapeHtml(i.name) + '</span><span>' + money(q * i.price) + '</span></div>'); sub += q * i.price; count += q; }
       });
       $('[data-lines]').innerHTML = lines.join('');
@@ -154,8 +219,10 @@
       $('[data-tax-label]').textContent = 'Sales tax (' + rate + '%)';
       $('[data-tax]').textContent = '$' + (taxCents / 100).toFixed(2);
       $('[data-total]').textContent = '$' + total.toFixed(2);
-      $('[data-total-note]').textContent = state.mode === 'delivery' ? 'Delivery on ' + nextLong
-        : state.mode === 'pickup' ? 'Pickup in ' + HY.site.pickupLocation + ' on ' + nextLong : '';
+      $('[data-total-note]').textContent = state.mode === 'delivery' ? 'Delivery on ' + dayLong()
+        : state.mode === 'pickup' ? 'Pickup in ' + HY.site.pickupLocation + ' on ' + dayLong() : '';
+      $$('[data-next-day]').forEach(function (el) { el.textContent = isExtra() ? dayLabel(state.day, false) : (next ? next.toLocaleDateString('en-US', { weekday: 'long' }) : 'Sunday'); });
+      $$('[data-day]').forEach(function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-day') === (isExtra() ? state.day : sundayIso))); });
       var closed = HY.site.ordersOpen === false || !next;
       var btn = $('[data-checkout]');
       var zs = zipStatus();
@@ -171,8 +238,8 @@
       $$('[data-mode]').forEach(function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-mode') === state.mode)); });
       modeNote.hidden = !state.mode;
       modeNote.textContent = state.mode === 'delivery'
-        ? 'We deliver on ' + nextLong + (HY.site.deliveryWindow ? ', ' + HY.site.deliveryWindow : '') + '. Not home? Leave a cooler outside. You\'ll enter your address at checkout.'
-        : state.mode === 'pickup' ? 'Pick up in ' + HY.site.pickupLocation + ' on ' + nextLong + (HY.site.pickupWindow ? ', ' + HY.site.pickupWindow : '') + '. We\'ll email you the address as soon as your order is ready.' : '';
+        ? 'We deliver on ' + dayLong() + (deliveryWin() ? ', ' + deliveryWin() : '') + '. Not home? Leave a cooler outside. You\'ll enter your address at checkout.'
+        : state.mode === 'pickup' ? 'Pick up in ' + HY.site.pickupLocation + ' on ' + dayLong() + (pickupWin() ? ', ' + pickupWin() : '') + '. We\'ll email you the address as soon as your order is ready.' : '';
       var bar = $('[data-mobile-bar]');
       if (bar) { bar.hidden = count === 0; document.body.classList.toggle('has-bar', count > 0); $('[data-bar-count]').textContent = count + (count === 1 ? ' item' : ' items'); $('[data-bar-total]').textContent = '$' + total.toFixed(2); }
       save();
@@ -181,13 +248,14 @@
     if (closedEl && (HY.site.ordersOpen === false || !next)) { closedEl.hidden = false; closedEl.textContent = HY.site.ordersClosedMessage; }
 
     document.addEventListener('click', function (e) {
-      var t = e.target.closest('[data-inc],[data-dec],[data-mode]');
-      if (!t) return;
+      var t = e.target.closest('[data-inc],[data-dec],[data-mode],[data-day]');
+      if (!t || t.disabled) return;
       if (t.hasAttribute('data-mode')) state.mode = t.getAttribute('data-mode');
+      else if (t.hasAttribute('data-day')) { state.day = t.getAttribute('data-day'); fitCart(); }
       else {
         var id = t.getAttribute('data-inc') || t.getAttribute('data-dec');
         var q = (state.qty[id] || 0) + (t.hasAttribute('data-inc') ? 1 : -1);
-        state.qty[id] = Math.max(0, Math.min(50, q));
+        state.qty[id] = Math.max(0, Math.min(limitFor(id), q));
       }
       render();
     });
@@ -205,6 +273,22 @@
       showCount();
       noteEl.addEventListener('input', function () { state.note = noteEl.value.slice(0, 250); showCount(); save(); });
     }
+    var showExtras = function (x) {
+      extras = x;
+      if (extras && state.day && extras.days.indexOf(state.day) === -1) state.day = null;
+      if (!extras) state.day = null;
+      var note = $('[data-extras-note]');
+      if (note) {
+        note.hidden = !extras;
+        if (extras) {
+          var names = extras.days.map(function (d) { return dayLabel(d, true); });
+          note.innerHTML = '<strong>Extra bowls available ' + escapeHtml(names.join(' and ')) + '.</strong> Pickup or delivery' +
+            (extras.window ? ', ' + escapeHtml(extras.window) : '') + ', while they last. Choose the day in your order summary.';
+        }
+      }
+      fitCart(); renderDays(); render();
+    };
+    extrasPromise.then(showExtras);
     zipInput.addEventListener('input', function () {
       var v = zipInput.value.replace(/\D/g, '').slice(0, 5);
       if (zipInput.value !== v) zipInput.value = v;
@@ -246,7 +330,7 @@
       if (zipStatus() === 'incomplete') { zipInput.focus(); zipField.scrollIntoView({ behavior: 'smooth', block: 'center' }); return; }
       checkout.disabled = true; checkout.textContent = 'Opening secure checkout…';
       var items = Object.keys(state.qty).filter(function (k) { return state.qty[k] > 0 && byId[k]; }).map(function (k) { return { id: k, qty: state.qty[k] }; });
-      var payload = JSON.stringify({ items: items, mode: state.mode, zip: state.mode === 'delivery' ? state.zip || '' : '', note: (state.note || '').trim() });
+      var payload = JSON.stringify({ items: items, mode: state.mode, day: isExtra() ? state.day : '', zip: state.mode === 'delivery' ? state.zip || '' : '', note: (state.note || '').trim() });
       // If the answer isn't JSON (e.g. a Cloudflare security check page), send the same order as a
       // normal page load instead: the browser can pass the check and the server redirects to Square.
       var viaPage = function () {
@@ -265,6 +349,8 @@
         .then(function (res) {
           if (!res.j) { viaPage(); return; }
           if (res.j && res.j.unavailable) { markUnavailable(res.j.unavailable); res.j.unavailable.forEach(function (id) { state.qty[id] = 0; }); }
+          if (res.j && res.j.remaining && extras) { extras.remaining = res.j.remaining; extras.unlimited = res.j.unlimited || extras.unlimited; fitCart(); }
+          if (res.j && res.j.dayClosed) { fetch('/api/extras', { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (j) { showExtras(j.extras || null); }).catch(function () {}); }
           if (!res.ok || !res.j.url) throw new Error(res.j && res.j.error || 'Checkout is not available right now.');
           window.location.href = res.j.url;
         })

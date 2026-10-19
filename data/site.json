@@ -26,6 +26,9 @@
     { "name": "Wake County", "percentage": "2" },
     { "name": "Wake County Transit", "percentage": "0.5" }
   ],
+  "_extras": "Extra bowls (leftovers) for days other than Sunday are switched on from the private orders page. extraWindow = default pickup/delivery time on those days; same-day orders close at extraSameDayCutoff (NC time).",
+  "extraWindow": "9 AM – 7 PM",
+  "extraSameDayCutoff": { "hour": 17, "minute": 0 },
   "ordersOpen": true,
   "ordersClosedMessage": "Online ordering is paused this week. Find us at a farmers market!"
 }
