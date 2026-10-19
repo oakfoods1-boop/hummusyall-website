@@ -6,5 +6,14 @@
  "style": "pop (bold hook, script shot)",
  "status": "scheduled",
  "postAt": "2026-10-20T12:00:00-04:00",
- "approvedBy": "Alon in chat 2026-10-16 (schedule for Tuesday)"
+ "approvedBy": "Alon in chat 2026-10-16 (schedule for Tuesday); tags added by Alon in chat 2026-10-19 (tag all markets)",
+ "tags": [
+  "enoriverfarmersmarket",
+  "apex_farmers_market",
+  "wwfarmersmkt",
+  "midtownfarmers",
+  "gsocurbmarket",
+  "downtownmebanefarmersmarket",
+  "thebazaarus"
+ ]
 }
