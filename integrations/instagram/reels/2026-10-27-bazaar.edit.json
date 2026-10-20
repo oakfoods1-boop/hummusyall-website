@@ -1,0 +1,85 @@
+{
+ "style": "editorial",
+ "transition": 0.3,
+ "music": "integrations/instagram/music/mixkit-happy-home.mp3",
+ "shots": [
+  {
+   "src": "inbox/2026-10-20-a/IMG_7553.mp4",
+   "start": 2.0,
+   "dur": 2.6,
+   "text": "Hummus bowls, ready to go",
+   "style": "bold",
+   "focus": [
+    0.5,
+    0.4
+   ]
+  },
+  {
+   "src": "inbox/2026-10-20-a/IMG_7553.mp4",
+   "start": 10.6,
+   "dur": 2.5,
+   "text": "Sunday at The Bazaar",
+   "focus": [
+    0.5,
+    0.5
+   ]
+  },
+  {
+   "src": "inbox/2026-10-20-a/IMG_7553.mp4",
+   "start": 13.0,
+   "dur": 2.4,
+   "text": "Carrboro Town Commons",
+   "focus": [
+    0.5,
+    0.5
+   ]
+  },
+  {
+   "src": "inbox/2026-10-20-a/IMG_7553.mp4",
+   "start": 29.4,
+   "dur": 2.3,
+   "focus": [
+    0.5,
+    0.5
+   ]
+  },
+  {
+   "src": "inbox/2026-10-20-a/IMG_7553.mp4",
+   "start": 32.6,
+   "dur": 2.1,
+   "text": "Look for this sign",
+   "style": "script",
+   "focus": [
+    0.5,
+    0.5
+   ],
+   "textPos": "high"
+  },
+  {
+   "src": "inbox/2026-10-20-a/IMG_7553.mp4",
+   "start": 34.6,
+   "dur": 2.2,
+   "text": "Restaurant-style hummus bowls",
+   "focus": [
+    0.5,
+    0.5
+   ],
+   "textPos": "high"
+  },
+  {
+   "src": "inbox/2026-10-20-a/IMG_7553.mp4",
+   "start": 36.6,
+   "dur": 2.2,
+   "text": "Come grab a bowl",
+   "focus": [
+    0.5,
+    0.5
+   ]
+  }
+ ],
+ "end": {
+  "title": "Order online for Sunday delivery or pickup",
+  "url": "hummusyall.com",
+  "dur": 3.0
+ }
+}
