@@ -4,8 +4,7 @@
  "caption": "It's market day 🥙🔥 Hot toppings, loaded bowls, and something new on the table: our Garlic Aioli, made with avocado oil and totally egg-free. Find us at Triangle farmers markets on Saturday or order online for Sunday delivery: hummusyall.com\n\n#hummus #hummusbowl #farmersmarket #marketday #garlicaioli #raleighfood #durhamfood #trianglefood #ncfood #mediterraneanfood",
  "music": "Okay (Mixkit)",
  "style": "fx (reel_fx.py)",
- "status": "failed",
+ "status": "approved",
  "postAt": "2026-10-22T12:00:00-04:00",
- "approvedBy": "Alon in chat 2026-10-17 (schedule for Thursday)",
- "error": "17841467835833598/media_publish: Fatal"
+ "approvedBy": "Alon in chat 2026-10-17 (schedule for Thursday); retry approved by Alon 2026-10-22 evening after media_publish Fatal"
 }

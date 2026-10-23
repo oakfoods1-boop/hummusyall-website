@@ -60,7 +60,11 @@ for (const f of readdirSync(dir).filter((n) => n.endsWith('.json') && !n.endsWit
       if (status === 'ERROR' || status === 'EXPIRED') throw new Error('Instagram could not process the video (' + status + ')');
     }
     if (status !== 'FINISHED') throw new Error('Instagram processing timed out');
-    const { id } = await api(`${ig}/media_publish`, { creation_id: container });
+    let id;                            // media_publish sometimes fails with a passing "Fatal" error: wait and retry
+    for (let i = 0; ; i++) {
+      try { ({ id } = await api(`${ig}/media_publish`, { creation_id: container })); break; }
+      catch (e) { if (i >= 3) throw e; console.log('publish retry', i + 1, String(e.message || e)); await sleep(30000 * (i + 1)); }
+    }
     const info = await api(id, { fields: 'permalink' }, 'GET').catch(() => ({}));
     Object.assign(reel, { status: 'posted', postedAt: new Date().toISOString(), mediaId: id, permalink: info.permalink || '' });
     posted++;
