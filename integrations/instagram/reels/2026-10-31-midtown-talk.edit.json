@@ -1,0 +1,19 @@
+{
+ "audio": "inbox/2026-10-24-a/IMG_7568.mp4", "words": "inbox/2026-10-24-a/IMG_7568.words.json",
+ "fix": {"balls": "bowls", "suhg": "schug", "sauteed": "sautéed", "mushroom": "mushrooms"},
+ "pieces": [
+  {"a": [2.45, 6.50]},
+  {"a": [6.72, 10.50], "zoom": 1.15, "focus": [0.5, 0.3]},
+  {"a": [10.60, 13.20]},
+  {"a": [13.20, 15.66], "v": "inbox/2026-10-24-a/IMG_7569.mp4", "vs": 18.0, "zoom": 1.04},
+  {"a": [15.66, 18.44], "zoom": 1.12, "focus": [0.5, 0.35]},
+  {"a": [18.44, 21.36]},
+  {"a": [21.36, 23.80], "v": "inbox/2026-10-24-a/IMG_7569.mp4", "vs": 9.3, "zoom": 1.04},
+  {"a": [24.12, 25.80], "v": "inbox/2026-10-24-a/IMG_7569.mp4", "vs": 6.5, "zoom": 1.04},
+  {"a": [25.90, 29.66], "zoom": 1.12, "focus": [0.5, 0.5]},
+  {"a": [29.66, 33.55]}
+ ],
+ "hook": {"text": "Market morning at Midtown", "hl": "MIDTOWN", "dur": 3.2},
+ "accent": "#FFE14D",
+ "end": {"title": "Order online for Sunday delivery or pickup", "url": "hummusyall.com", "style": "pop", "dur": 2.6}
+}
