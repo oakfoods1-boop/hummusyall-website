@@ -27,12 +27,12 @@ jobs:
         run: |
           set -o pipefail
           REQ=integrations/instagram/transcribe-request.json
-          BATCH=$(jq -r .batch "$REQ")
+          BATCH=$(jq -r .batch "$REQ"); FILES=$(jq -r '.files[]' "$REQ")
           cp integrations/instagram/transcribe.py /tmp/transcribe.py
           git config user.name "hummusyall-bot"; git config user.email "oakfoods1@gmail.com"
           git fetch -q origin +ig-inbox:refs/remotes/origin/ig-inbox
           git switch -q -c work origin/ig-inbox
-          echo "files: $(jq -c .files "$REQ")"; ls -la "inbox/$BATCH"; python3 -u /tmp/transcribe.py "inbox/$BATCH" $(jq -r '.files[]' "$REQ") 2>&1 | tee "inbox/$BATCH/transcribe.log"
+          python3 -u /tmp/transcribe.py "inbox/$BATCH" $FILES 2>&1 | tee "inbox/$BATCH/transcribe.log"
           git add inbox && git commit -qm "Transcripts $BATCH" && git push -q origin HEAD:ig-inbox
       - name: Save log on failure
         if: failure()
