@@ -2,16 +2,12 @@ files: ['IMG_7568.mp4', 'IMG_7569.mp4', 'IMG_7567.mp4']
 loading model
 Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
 transcribing inbox/2026-10-24-a/IMG_7568.mp4
-Traceback (most recent call last):
-  File "/tmp/transcribe.py", line 12, in <module>
-    segs, info = m.transcribe(p, word_timestamps=True, vad_filter=True)
-                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/runner/.local/lib/python3.12/site-packages/faster_whisper/transcribe.py", line 876, in transcribe
-    audio = decode_audio(audio, sampling_rate=sampling_rate)
-            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/runner/.local/lib/python3.12/site-packages/faster_whisper/audio.py", line 46, in decode_audio
-    with av.open(input_file, mode="r", metadata_errors="ignore") as container:
-         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "av/container/core.py", line 479, in av.container.core.open
-TypeError: open() got an unexpected keyword argument 'metadata_errors'
-EXIT 1
+[0;93m2026-10-24 18:31:05.828815862 [W:onnxruntime:Default, device_discovery.cc:95 GetPciBusId] Skipping pci_bus_id for PCI path at "/sys/devices/LNXSYSTM:00/LNXSYBUS:00/ACPI0004:00/MSFT1000:00/5620e0c7-8062-4dce-aeb7-520c7ef76171" because filename "5620e0c7-8062-4dce-aeb7-520c7ef76171" did not match expected pattern of [0-9a-f]+:[0-9a-f]+:[0-9a-f]+[.][0-9a-f]+[m
+got 6
+IMG_7568.mp4 6 segments
+transcribing inbox/2026-10-24-a/IMG_7569.mp4
+got 4
+IMG_7569.mp4 4 segments
+transcribing inbox/2026-10-24-a/IMG_7567.mp4
+got 5
+IMG_7567.mp4 5 segments
