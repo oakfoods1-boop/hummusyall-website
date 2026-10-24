@@ -25,14 +25,13 @@ jobs:
         run: pip install -q faster-whisper
       - name: Transcribe and save
         run: |
-          set -o pipefail
-          REQ=integrations/instagram/transcribe-request.json
+                    REQ=integrations/instagram/transcribe-request.json
           BATCH=$(jq -r .batch "$REQ"); FILES=$(jq -r '.files[]' "$REQ")
           cp integrations/instagram/transcribe.py /tmp/transcribe.py
           git config user.name "hummusyall-bot"; git config user.email "oakfoods1@gmail.com"
           git fetch -q origin +ig-inbox:refs/remotes/origin/ig-inbox
           git switch -q -c work origin/ig-inbox
-          python3 -u /tmp/transcribe.py "inbox/$BATCH" $FILES 2>&1 | tee "inbox/$BATCH/transcribe.log"
+          python3 -u /tmp/transcribe.py "inbox/$BATCH" $FILES > "inbox/$BATCH/transcribe.log" 2>&1 || echo "EXIT $?" >> "inbox/$BATCH/transcribe.log"; cat "inbox/$BATCH/transcribe.log"
           git add inbox && git commit -qm "Transcripts $BATCH" && git push -q origin HEAD:ig-inbox
       - name: Save log on failure
         if: failure()
