@@ -25,7 +25,7 @@ jobs:
         run: pip install -q faster-whisper
       - name: Transcribe and save
         run: |
-                    REQ=integrations/instagram/transcribe-request.json
+          REQ=integrations/instagram/transcribe-request.json
           BATCH=$(jq -r .batch "$REQ"); FILES=$(jq -r '.files[]' "$REQ")
           cp integrations/instagram/transcribe.py /tmp/transcribe.py
           git config user.name "hummusyall-bot"; git config user.email "oakfoods1@gmail.com"
