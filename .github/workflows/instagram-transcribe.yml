@@ -32,7 +32,7 @@ jobs:
           git config user.name "hummusyall-bot"; git config user.email "oakfoods1@gmail.com"
           git fetch -q origin +ig-inbox:refs/remotes/origin/ig-inbox
           git switch -q -c work origin/ig-inbox
-          python3 /tmp/transcribe.py "inbox/$BATCH" $(jq -r '.files[]' "$REQ") 2>&1 | tee "inbox/$BATCH/transcribe.log"
+          echo "files: $(jq -c .files "$REQ")"; ls -la "inbox/$BATCH"; python3 -u /tmp/transcribe.py "inbox/$BATCH" $(jq -r '.files[]' "$REQ") 2>&1 | tee "inbox/$BATCH/transcribe.log"
           git add inbox && git commit -qm "Transcripts $BATCH" && git push -q origin HEAD:ig-inbox
       - name: Save log on failure
         if: failure()
