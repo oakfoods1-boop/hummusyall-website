@@ -27,7 +27,7 @@ jobs:
         run: |
           REQ=integrations/instagram/transcribe-request.json
           BATCH=$(jq -r .batch "$REQ")
-          git fetch -q origin ig-inbox
+          git fetch -q origin +ig-inbox:refs/remotes/origin/ig-inbox
           mkdir -p /tmp/w && git archive origin/ig-inbox "inbox/$BATCH" | tar -x -C /tmp/w
           jq -r '.files[]' "$REQ" > /tmp/files.txt
           python3 - "$BATCH" <<'PY'
@@ -50,6 +50,6 @@ jobs:
           BATCH=$(jq -r .batch integrations/instagram/transcribe-request.json)
           cp /tmp/w/inbox/$BATCH/*.words.json /tmp/
           git config user.name "hummusyall-bot"; git config user.email "oakfoods1@gmail.com"
-          git switch -q -c ig-inbox-tmp origin/ig-inbox
+          git fetch -q origin +ig-inbox:refs/remotes/origin/ig-inbox && git switch -q -c ig-inbox-tmp origin/ig-inbox
           cp /tmp/*.words.json "inbox/$BATCH/"
           git add inbox && git commit -qm "Transcripts $BATCH" && git push -q origin HEAD:ig-inbox
