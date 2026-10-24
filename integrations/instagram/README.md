@@ -56,3 +56,10 @@ Video stories (with music) and tags: a `reels/<id>.json` with `"type": "story"` 
 `"tags": ["handle"]` tags accounts (Instagram accepted @thebazaarus on a story, 2026-10-17). Location stickers aren't possible via the API.
 Collab: `"collaborators": ["handle"]` (reels only, max 3) sends Collab invites; once accepted the reel shows on their profile and in their followers' feeds.
 Alon's rule (2026-10-19): only invite a market as collaborator when the reel actually shows his booth at that market; no blanket market tags.
+
+Talking reels with subtitles (2026-10-24): when Alon talks to camera, run the clip through `instagram-transcribe.yml`
+(edit `transcribe-request.json` {batch, files}; it writes `<clip>.words.json` with word timings next to the clip in ig-inbox;
+the cloud workspace can't download Whisper models itself). Then `reel_talk.py edit.json out.mp4`: his own sound (cleaned,
+loudness -14 LUFS), pauses cut out, punch-in zooms on jump cuts, B-roll cutaways from other clips while he keeps talking,
+word-by-word captions with the spoken word highlighted, hook line on top, end card. Use `fix` for transcript slips
+(Whisper hears "bowls" as "balls" and "schug" as "suhg").
