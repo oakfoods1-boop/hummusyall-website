@@ -1,0 +1,55 @@
+# Speech-to-text for reel subtitles. Triggered when integrations/instagram/transcribe-request.json changes:
+# {"batch": "<ig-inbox batch>", "files": ["IMG_1.mp4"]}. Writes inbox/<batch>/<name>.words.json (word timings) to ig-inbox.
+name: Instagram transcribe
+
+on:
+  push:
+    branches: [main]
+    paths: ['integrations/instagram/transcribe-request.json']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: instagram-inbox
+  cancel-in-progress: false
+
+jobs:
+  transcribe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Tools
+        run: pip install -q faster-whisper && sudo apt-get install -y -qq jq >/dev/null
+      - name: Transcribe
+        run: |
+          REQ=integrations/instagram/transcribe-request.json
+          BATCH=$(jq -r .batch "$REQ")
+          git fetch -q origin ig-inbox
+          mkdir -p /tmp/w && git archive origin/ig-inbox "inbox/$BATCH" | tar -x -C /tmp/w
+          jq -r '.files[]' "$REQ" > /tmp/files.txt
+          python3 - "$BATCH" <<'PY'
+          import json, sys
+          from faster_whisper import WhisperModel
+          batch = sys.argv[1]
+          m = WhisperModel("medium.en", device="cpu", compute_type="int8")
+          for name in open("/tmp/files.txt").read().split():
+              p = f"/tmp/w/inbox/{batch}/{name}"
+              segs, info = m.transcribe(p, word_timestamps=True, vad_filter=True, language="en")
+              out = []
+              for s in segs:
+                  out.append({"start": s.start, "end": s.end, "text": s.text.strip(),
+                              "words": [{"w": w.word.strip(), "s": w.start, "e": w.end, "p": w.probability} for w in (s.words or [])]})
+              json.dump({"file": name, "segments": out}, open(p.rsplit(".", 1)[0] + ".words.json", "w"), indent=1)
+              print(name, len(out), "segments")
+          PY
+      - name: Save
+        run: |
+          BATCH=$(jq -r .batch integrations/instagram/transcribe-request.json)
+          cp /tmp/w/inbox/$BATCH/*.words.json /tmp/
+          git config user.name "hummusyall-bot"; git config user.email "oakfoods1@gmail.com"
+          git switch -q -c ig-inbox-tmp origin/ig-inbox
+          cp /tmp/*.words.json "inbox/$BATCH/"
+          git add inbox && git commit -qm "Transcripts $BATCH" && git push -q origin HEAD:ig-inbox
