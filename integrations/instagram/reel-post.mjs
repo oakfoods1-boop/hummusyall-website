@@ -40,6 +40,8 @@ for (const f of readdirSync(dir).filter((n) => n.endsWith('.json') && !n.endsWit
     const isStory = reel.type === 'story';
     const params = isStory ? { media_type: 'STORIES', video_url: videoUrl }
       : { media_type: 'REELS', video_url: videoUrl, caption: reel.caption || '', share_to_feed: 'true' };
+    // "thumbOffset": milliseconds → which frame Instagram uses as the reel cover (default is the first frame)
+    if (!isStory && reel.thumbOffset != null) params.thumb_offset = String(reel.thumbOffset);
     const tags = (reel.tags || []).map((u) => String(u).replace(/^@/, ''));
     if (tags.length) params.user_tags = JSON.stringify(tags.map((username) => (isStory ? { username } : { username, x: 0.5, y: 0.5 })));
     // "collaborators": ["handle", ...] → Collab invites (reels/feed only, max 3; they must accept). Retried without if refused.
