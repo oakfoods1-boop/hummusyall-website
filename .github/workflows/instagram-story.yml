@@ -27,7 +27,7 @@ concurrency:
 
 jobs:
   story:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04   # pinned: Playwright browser install fails on the Ubuntu 26 "latest" image (Oct 2026)
     timeout-minutes: 25
     env:
       IG_USER_ID: '17841467835833598'
