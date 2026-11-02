@@ -23,11 +23,19 @@ async function api(path, params, method = 'POST') {
   return j;
 }
 
+// GitHub's hourly schedule often starts 20–40 min late, so a run picks up anything scheduled within the next
+// LEAD_MIN minutes and waits until its exact postAt before posting (runs start every 30 min; see the workflow).
+const LEAD_MS = Number(process.env.LEAD_MIN || 45) * 60000;
+const at = (f) => { try { return Date.parse(JSON.parse(readFileSync(join(dir, f), 'utf8')).postAt) || 0; } catch { return 0; } };
 let posted = 0;
-for (const f of readdirSync(dir).filter((n) => n.endsWith('.json') && !n.endsWith('.edit.json'))) {
+for (const f of readdirSync(dir).filter((n) => n.endsWith('.json') && !n.endsWith('.edit.json')).sort((a, b) => at(a) - at(b))) {
   const p = join(dir, f); const reel = JSON.parse(readFileSync(p, 'utf8'));
-  const due = reel.status === 'scheduled' && reel.postAt && Date.parse(reel.postAt) <= Date.now();
+  const due = reel.status === 'scheduled' && reel.postAt && Date.parse(reel.postAt) <= Date.now() + LEAD_MS;
   if (reel.status !== 'approved' && !due) continue;
+  if (reel.status === 'scheduled') {
+    const wait = Date.parse(reel.postAt) - Date.now();
+    if (wait > 0) { console.log(`${f}: waiting ${Math.round(wait / 60000)} min until ${reel.postAt}`); await sleep(wait); }
+  }
   const videoUrl = `${SITE}/${reel.video.replace(/^public\//, '')}`;
   try {
     for (let i = 0; ; i++) {          // wait for Cloudflare to deploy the video

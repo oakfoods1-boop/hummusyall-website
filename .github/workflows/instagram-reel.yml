@@ -8,7 +8,8 @@ on:
     branches: [main]
     paths: ['integrations/instagram/reels/*.json']
   schedule:
-    - cron: '20 * * * *'   # hourly check for reels whose scheduled time (postAt) has come
+    - cron: '5,35 * * * *'   # every 30 min; GitHub often starts these 20–40 min late, so each run also takes reels due
+                           # in the next 45 min and waits for the exact postAt (reel-post.mjs LEAD_MIN)
   workflow_dispatch:
 
 permissions:
@@ -20,8 +21,8 @@ concurrency:
 
 jobs:
   post:
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
+    runs-on: ubuntu-24.04
+    timeout-minutes: 75
     env:
       IG_USER_ID: '17841467835833598'
     steps:
