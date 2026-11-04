@@ -12,7 +12,8 @@
           <li>Farmers market operators: set up, sell, and represent the brand</li>
           <li>Business development &amp; sales (remote): partnerships, wholesale and catering accounts</li>
         </ul>
-        <p><strong>Job type:</strong> 1099 contract<br><strong>Schedule:</strong> Thursdays, Fridays and Saturdays, as needed</p>
+        <p><strong>Job type:</strong> 1099 contract<br><strong>Schedule:</strong> as needed. Kitchen shifts are usually Thursdays and Fridays; farmers markets are Saturdays and Sundays.</p>
+        <p><strong>Farmers market pay:</strong> base pay per market + gas allowance + sold-out bonus, paid weekly. Before joining, you'll shadow a market day to see if it's a fit for you.</p>
         <p><strong>Requirements:</strong> valid driver's license and a car. Experience in sales, customer service, delivery or food service is a plus. Strong communication skills and a proactive attitude.</p>
       </div>
       <img src="/img/team-plating.webp" alt="Team members plating hummus bowls" class="photo" style="height:320px" loading="lazy" width="768" height="1100">
@@ -27,19 +28,70 @@
         <div class="field"><label for="j-email">Email <span class="req">*</span></label><input id="j-email" name="email" type="email" autocomplete="email" required></div>
         <div class="field"><label for="j-phone">Phone <span class="req">*</span></label><input id="j-phone" name="phone" type="tel" autocomplete="tel" required></div>
       </div>
-      <fieldset class="field">
-        <legend>Which roles interest you?</legend>
+      <div class="field"><label for="j-town">Town / city you live in <span class="req">*</span></label><input id="j-town" name="town" autocomplete="address-level2" required></div>
+      <fieldset class="field" data-required>
+        <legend>Which roles interest you? <span class="req">*</span></legend>
         <div class="choices">
           <label><input type="checkbox" name="roles" value="Kitchen staff"> Kitchen</label>
           <label><input type="checkbox" name="roles" value="Farmers market operator"> Farmers markets</label>
           <label><input type="checkbox" name="roles" value="Sales"> Sales</label>
         </div>
       </fieldset>
+      <fieldset class="field" data-required>
+        <legend>Which days can you usually work? <span class="req">*</span></legend>
+        <div class="choices">
+          <label><input type="checkbox" name="days" value="Thursday"> Thu</label>
+          <label><input type="checkbox" name="days" value="Friday"> Fri</label>
+          <label><input type="checkbox" name="days" value="Saturday"> Sat</label>
+          <label><input type="checkbox" name="days" value="Sunday"> Sun</label>
+        </div>
+      </fieldset>
+      <fieldset class="field">
+        <legend>Which markets could you get to?</legend>
+        <span class="hint">Market operators pick up at our kitchen in Hillsborough.</span>
+        <div class="choices">
+          <label><input type="checkbox" name="markets" value="Eno River (Hillsborough)"> Eno River (Hillsborough)</label>
+          <label><input type="checkbox" name="markets" value="Downtown Mebane"> Mebane</label>
+          <label><input type="checkbox" name="markets" value="Midtown Raleigh"> Midtown Raleigh</label>
+          <label><input type="checkbox" name="markets" value="Western Wake (Cary)"> Western Wake (Cary)</label>
+          <label><input type="checkbox" name="markets" value="Apex"> Apex</label>
+          <label><input type="checkbox" name="markets" value="Greensboro Curb Market"> Greensboro</label>
+          <label><input type="checkbox" name="markets" value="Durham events"> Durham events</label>
+        </div>
+      </fieldset>
       <div class="row">
         <div class="field"><label for="j-license">Driver's license? <span class="req">*</span></label><select id="j-license" name="license" required><option value="">Select</option><option>Yes</option><option>No</option></select></div>
         <div class="field"><label for="j-car">Have a car? <span class="req">*</span></label><select id="j-car" name="car" required><option value="">Select</option><option>Yes</option><option>No</option></select></div>
       </div>
-      <div class="field"><label for="j-about">Tell us a little about yourself</label><textarea id="j-about" name="message"></textarea></div>
+      <div class="row">
+        <div class="field"><label for="j-lift">Can you lift about 40 lbs? <span class="req">*</span></label><select id="j-lift" name="lift40lbs" required><option value="">Select</option><option>Yes</option><option>No</option></select></div>
+        <div class="field"><label for="j-age">Are you 18 or older? <span class="req">*</span></label><select id="j-age" name="over18" required><option value="">Select</option><option>Yes</option><option>No</option></select></div>
+      </div>
+      <div class="row">
+        <div class="field"><label for="j-servsafe">ServSafe Food Handler certificate?</label><select id="j-servsafe" name="servsafe"><option value="">Select</option><option>Yes</option><option>No, but willing to get one</option><option>No</option></select></div>
+        <div class="field"><label for="j-start">When could you start? <span class="req">*</span></label><select id="j-start" name="canStart" required><option value="">Select</option><option>Right away</option><option>Within 2 weeks</option><option>Within a month</option><option>Next spring</option></select></div>
+      </div>
+      <div class="field"><label for="j-exp">Farmers market, food service, retail or cash-handling experience <span class="req">*</span></label><textarea id="j-exp" name="experience" required placeholder="Where, what you did, and for how long. &quot;None yet&quot; is fine too."></textarea></div>
+      <div class="row">
+        <div class="field"><label for="j-heard">How did you hear about us? <span class="req">*</span></label><select id="j-heard" name="heardFrom" required>
+          <option value="">Select</option>
+          <option data-src="instagram">Hummus Y'all Instagram</option>
+          <option data-src="facebook">Hummus Y'all Facebook</option>
+          <option data-src="booth">Sign at our market booth</option>
+          <option data-src="newsletter">Farmers market newsletter</option>
+          <option data-src="indeed">Indeed</option>
+          <option data-src="fbgroup">Facebook group</option>
+          <option data-src="nextdoor">Nextdoor</option>
+          <option data-src="craigslist">Craigslist</option>
+          <option data-src="school">School job board (Handshake, etc.)</option>
+          <option data-src="referral">Friend or Hummus Y'all team member</option>
+          <option data-src="website">Our website</option>
+          <option>Other</option>
+        </select></div>
+        <div class="field"><label for="j-heard-more">Who referred you / other details</label><input id="j-heard-more" name="heardDetails"></div>
+      </div>
+      <div class="field"><label for="j-about">Anything else you'd like us to know?</label><textarea id="j-about" name="message"></textarea></div>
+      <input type="hidden" name="source">
       <div class="visually-hidden" aria-hidden="true"><label>Leave empty <input name="website" tabindex="-1" autocomplete="off"></label></div>
       <button class="btn btn-primary" type="submit">Apply</button>
       <p class="form-status" role="status" hidden></p>

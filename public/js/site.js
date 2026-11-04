@@ -366,9 +366,18 @@
   // ---------- Forms (catering inquiry, job applications) ----------
   $$('form[data-form]').forEach(function (form) {
     var status = $('.form-status', form);
+    // ?src=indeed (etc.) on the link: remember where the applicant came from and preselect "How did you hear about us?"
+    var src = (new URLSearchParams(location.search).get('src') || '').toLowerCase().replace(/[^a-z0-9_-]/g, '').slice(0, 40);
+    var srcInput = $('input[name="source"]', form);
+    if (src && srcInput) {
+      srcInput.value = src;
+      var opt = $('select[name="heardFrom"] option[data-src="' + src + '"]', form);
+      if (opt) opt.selected = true;
+    }
     form.addEventListener('submit', function (e) {
       e.preventDefault();
       var firstBad = $$('[required]', form).filter(function (f) { return !f.value.trim() || (f.type === 'email' && !/^\S+@\S+\.\S+$/.test(f.value)); })[0];
+      if (!firstBad) firstBad = $$('fieldset[data-required]', form).filter(function (fs) { return !$('input:checked', fs); }).map(function (fs) { return $('input', fs); })[0];
       $$('[aria-invalid]', form).forEach(function (f) { f.removeAttribute('aria-invalid'); });
       if (firstBad) {
         firstBad.setAttribute('aria-invalid', 'true'); firstBad.focus();
@@ -379,7 +388,7 @@
       var btn = $('button[type="submit"]', form); var label = btn.textContent;
       btn.disabled = true; btn.textContent = 'Sending…';
       fetch('/api/form', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) })
-        .then(function (r) { if (!r.ok) throw new Error(); form.reset(); status.className = 'form-status ok'; status.textContent = 'Thank you! We got your message and will be in touch soon.'; })
+        .then(function (r) { if (!r.ok) throw new Error(); form.reset(); if (srcInput) srcInput.value = src; status.className = 'form-status ok'; status.textContent = 'Thank you! We got your message and will be in touch soon.'; })
         .catch(function () { status.className = 'form-status err'; status.innerHTML = 'Sorry, that didn\'t go through. Please email us at <a href="mailto:alon@hummusyall.com">alon@hummusyall.com</a>.'; })
         .finally(function () { status.hidden = false; btn.disabled = false; btn.textContent = label; });
     });
