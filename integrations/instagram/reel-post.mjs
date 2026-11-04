@@ -1,4 +1,4 @@
-// Posts every reel (or video story, "type": "story") in integrations/instagram/reels/*.json whose status is "approved", or "scheduled" with postAt in the past.
+// Posts every reel (or video story, "type": "story"; or single-image feed post, "type": "image" with "image": "public/ig/posts/<id>.jpg") in integrations/instagram/reels/*.json whose status is "approved", or "scheduled" with postAt in the past.
 // The video must be committed under public/ig/reels/ (served by Cloudflare at https://www.hummusyall.com/ig/reels/…).
 // Needs IG_ACCESS_TOKEN (permanent Facebook Page token) and IG_USER_ID. Marks each one "posted" (or "failed").
 import { readdirSync, readFileSync, writeFileSync } from 'node:fs';
@@ -36,20 +36,22 @@ for (const f of readdirSync(dir).filter((n) => n.endsWith('.json') && !n.endsWit
     const wait = Date.parse(reel.postAt) - Date.now();
     if (wait > 0) { console.log(`${f}: waiting ${Math.round(wait / 60000)} min until ${reel.postAt}`); await sleep(wait); }
   }
-  const videoUrl = `${SITE}/${reel.video.replace(/^public\//, '')}`;
+  const isImage = reel.type === 'image';
+  const videoUrl = `${SITE}/${(isImage ? reel.image : reel.video).replace(/^public\//, '')}`;
   try {
-    for (let i = 0; ; i++) {          // wait for Cloudflare to deploy the video
+    for (let i = 0; ; i++) {          // wait for Cloudflare to deploy the video (or image)
       const r = await fetch(videoUrl, { method: 'HEAD' }).catch(() => null);
-      if (r && r.ok && (r.headers.get('content-type') || '').includes('video')) break;
-      if (i > 40) throw new Error('video never went live: ' + videoUrl);
+      if (r && r.ok && (r.headers.get('content-type') || '').includes(isImage ? 'image' : 'video')) break;
+      if (i > 40) throw new Error('file never went live: ' + videoUrl);
       await sleep(15000);
     }
     // "type": "story" → a video story (no caption); "tags": ["handle", ...] → people tagged (retried without tags if Instagram refuses them)
     const isStory = reel.type === 'story';
-    const params = isStory ? { media_type: 'STORIES', video_url: videoUrl }
+    const params = isImage ? { image_url: videoUrl, caption: reel.caption || '' }   // single-image feed post (JPEG)
+      : isStory ? { media_type: 'STORIES', video_url: videoUrl }
       : { media_type: 'REELS', video_url: videoUrl, caption: reel.caption || '', share_to_feed: 'true' };
     // "thumbOffset": milliseconds → which frame Instagram uses as the reel cover (default is the first frame)
-    if (!isStory && reel.thumbOffset != null) params.thumb_offset = String(reel.thumbOffset);
+    if (!isStory && !isImage && reel.thumbOffset != null) params.thumb_offset = String(reel.thumbOffset);
     const tags = (reel.tags || []).map((u) => String(u).replace(/^@/, ''));
     if (tags.length) params.user_tags = JSON.stringify(tags.map((username) => (isStory ? { username } : { username, x: 0.5, y: 0.5 })));
     // "collaborators": ["handle", ...] → Collab invites (reels/feed only, max 3; they must accept). Retried without if refused.
@@ -67,7 +69,7 @@ for (const f of readdirSync(dir).filter((n) => n.endsWith('.json') && !n.endsWit
       await sleep(10000);
       status = (await api(container, { fields: 'status_code,status' }, 'GET')).status_code;
       if (status === 'FINISHED') break;
-      if (status === 'ERROR' || status === 'EXPIRED') throw new Error('Instagram could not process the video (' + status + ')');
+      if (status === 'ERROR' || status === 'EXPIRED') throw new Error('Instagram could not process the ' + (isImage ? 'image' : 'video') + ' (' + status + ')');
     }
     if (status !== 'FINISHED') throw new Error('Instagram processing timed out');
     let id;                            // media_publish sometimes fails with a passing "Fatal" error: wait and retry
