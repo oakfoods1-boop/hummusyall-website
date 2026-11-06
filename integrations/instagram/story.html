@@ -51,7 +51,7 @@ body{width:1080px;height:1920px;overflow:hidden;font-family:P;background:#000}
 #poster .stamp{position:absolute;right:300px;top:720px;z-index:3;width:220px;height:220px;border-radius:50%;background:var(--lime);color:#1a1a1a;display:flex;align-items:center;justify-content:center;text-align:center;font:400 40px/1 A;text-transform:uppercase;transform:rotate(-14deg);box-shadow:0 10px 30px rgba(0,0,0,.3)}
 #poster .top{position:absolute;left:70px;top:230px;display:flex;align-items:center;gap:18px;font:600 30px/1 P;letter-spacing:.14em;text-transform:uppercase}
 #poster .top img{width:84px;height:84px}
-#poster h1{position:absolute;left:66px;top:350px;width:600px;font:400 var(--hs,170px)/.9 A;z-index:2;text-transform:uppercase;letter-spacing:-.01em}
+#poster h1{position:absolute;left:66px;top:350px;width:600px;font:400 170px/.9 A;z-index:2;text-transform:uppercase;letter-spacing:-.01em}
 #poster h1 span{display:block;width:max-content;white-space:nowrap}
 #poster h1 em{display:block;width:max-content;white-space:nowrap;font-style:normal;color:#1C1C1C;-webkit-text-stroke:0}
 #poster .date{position:absolute;left:70px;top:960px;font:400 54px/1 A;text-transform:uppercase;letter-spacing:.04em;background:#1C1C1C;color:#FFF3E0;padding:14px 26px}
@@ -122,7 +122,7 @@ body{width:1080px;height:1920px;overflow:hidden;font-family:P;background:#000}
 #chalk::before{content:"";position:absolute;inset:34px;border:16px solid #7A5634;border-radius:12px;box-shadow:inset 0 0 40px rgba(0,0,0,.5)}
 #chalk .ph{position:absolute;right:90px;top:220px;width:400px;height:400px;border-radius:50%;border:6px dashed rgba(244,241,230,.85);outline:14px solid rgba(244,241,230,.08)}
 #chalk .top{position:absolute;left:100px;top:230px;font:700 54px/1 C;color:var(--lime)}
-#chalk h1{position:absolute;left:96px;top:310px;width:560px;font:700 150px/.9 C;letter-spacing:-.01em}
+#chalk h1{position:absolute;left:96px;top:310px;width:560px;overflow-wrap:normal;font:700 150px/.9 C;letter-spacing:-.01em}
 #chalk h1 em{font-style:normal;color:#F2B9A1}
 #chalk .squig{position:absolute;left:100px;top:640px;width:520px}
 #chalk .date{position:absolute;left:100px;top:700px;font:700 64px/1 C;color:#C9D6C4}
@@ -171,7 +171,7 @@ body{width:1080px;height:1920px;overflow:hidden;font-family:P;background:#000}
   <div class="top"><img class="logo" src="../../public/img/logo.webp" alt="">Hummus Y'all</div>
   <div class="ph" data-p="0"></div>
   <div class="stamp" data-t="kicker"></div>
-  <h1><span data-t="line1"></span><em data-t="line2"></em></h1>
+  <h1 data-maxh="330"><span data-t="line1"></span><em data-t="line2"></em></h1>
   <div class="date" data-t="date"></div>
   <div class="mk"></div>
   <div class="cta"><span data-t="cta"></span><strong>hummusyall.com</strong></div>
@@ -181,7 +181,7 @@ body{width:1080px;height:1920px;overflow:hidden;font-family:P;background:#000}
   <div class="frame"><div class="ph" data-p="0"></div><div class="cap" data-t="kicker"></div></div>
   <div class="tape"></div>
   <img class="logo" src="../../public/img/logo.webp" alt="">
-  <h1><span data-t="line1"></span> <em data-t="line2"></em></h1>
+  <h1 data-maxh="95"><span data-t="line1"></span> <em data-t="line2"></em></h1>
   <div class="date" data-t="date"></div>
   <div class="mk"></div>
   <div class="cta"><span data-t="cta"></span><strong>hummusyall.com</strong></div>
@@ -191,7 +191,7 @@ body{width:1080px;height:1920px;overflow:hidden;font-family:P;background:#000}
   <div class="ph" data-p="0"></div>
   <div class="mast">Hummus Y'all</div>
   <div class="kick"><span data-t="kicker"></span> · <span data-t="date"></span></div>
-  <h1><span data-t="line1"></span><br><span data-t="line2"></span></h1>
+  <h1 data-maxh="265"><span data-t="line1"></span><br><span data-t="line2"></span></h1>
   <div class="mk"></div>
   <div class="cta"><span data-t="cta"></span><strong>hummusyall.com</strong></div>
 </section>
@@ -200,7 +200,7 @@ body{width:1080px;height:1920px;overflow:hidden;font-family:P;background:#000}
   <div class="ph" data-p="0"></div>
   <img class="logo" src="../../public/img/logo.webp" alt="">
   <div class="badge" data-t="kicker"></div>
-  <h1><span data-t="line1"></span><br><em data-t="line2"></em></h1>
+  <h1 data-maxh="205"><span data-t="line1"></span><br><em data-t="line2"></em></h1>
   <div class="date" data-t="date"></div>
   <div class="mk"></div>
   <div class="cta"><span data-t="cta"></span><strong>hummusyall.com</strong></div>
@@ -209,7 +209,7 @@ body{width:1080px;height:1920px;overflow:hidden;font-family:P;background:#000}
 <section class="story" id="chalk">
   <div class="ph" data-p="0"></div>
   <div class="top" data-t="kicker"></div>
-  <h1><span data-t="line1"></span><br><em data-t="line2"></em></h1>
+  <h1 data-maxh="320"><span data-t="line1"></span><br><em data-t="line2"></em></h1>
   <svg class="squig" viewBox="0 0 520 30"><path d="M4 18 Q 40 4 76 16 T 148 16 T 220 16 T 292 16 T 364 16 T 436 16 T 512 14" fill="none" stroke="#DFE777" stroke-width="7" stroke-linecap="round"/></svg>
   <div class="date" data-t="date"></div>
   <div class="mk"></div>
@@ -220,7 +220,7 @@ body{width:1080px;height:1920px;overflow:hidden;font-family:P;background:#000}
   <div class="grid"><div class="ph" data-p="0"></div><div class="ph" data-p="1"></div><div class="ph" data-p="2"></div></div>
   <img class="logo" src="../../public/img/logo.webp" alt="">
   <div class="kick"><span data-t="kicker"></span> · <span data-t="date"></span></div>
-  <h1><span data-t="line1"></span> <em data-t="line2"></em></h1>
+  <h1 data-maxh="118"><span data-t="line1"></span> <em data-t="line2"></em></h1>
   <div class="mk"></div>
   <div class="cta"><span data-t="cta"></span><strong>hummusyall.com</strong></div>
 </section>
@@ -251,7 +251,8 @@ window.fill = (D) => {
 // Shrink the market list until it clears the bottom line. Returns true when it fits.
 window.fit = () => {
   const s0 = document.querySelector('.story.on'), h = s0.querySelector('h1');
-  if (s0.id === 'poster') { let hs = 170; while (hs > 110 && [...h.children].some((c) => c.getBoundingClientRect().width > 600 || c.getBoundingClientRect().height > hs * 1.05)) { hs -= 6; h.style.setProperty('--hs', hs + 'px'); } }
+  const mh = +h.dataset.maxh;
+  if (mh) { let hs = parseFloat(getComputedStyle(h).fontSize); for (let i = 0; i < 40 && (h.getBoundingClientRect().height > mh || h.scrollWidth > h.clientWidth + 2); i++) { hs *= 0.95; h.style.fontSize = hs + 'px'; } }
   const s = s0, mk = s.querySelector('.mk'), cta = s.querySelector('.cta');
   let fs = parseFloat(getComputedStyle(mk).fontSize);
   const ok = () => mk.getBoundingClientRect().bottom < cta.getBoundingClientRect().top - 24;

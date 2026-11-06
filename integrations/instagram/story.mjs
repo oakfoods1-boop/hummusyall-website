@@ -46,7 +46,7 @@ const HEADS = [
   { kicker: 'This Saturday', line1: 'Find us at', line2: 'the market', cta: "Can't make it? Order for Sunday delivery" },
   { kicker: 'Come hungry', line1: 'Where to', line2: 'find us', cta: 'Order online for Sunday delivery or pickup' },
   { kicker: 'Saturday plans', line1: 'Hummus', line2: 'run!', cta: 'Not around Saturday? We deliver Sundays' },
-  { kicker: 'Fresh this week', line1: 'Bowls on', line2: 'the road', cta: "Can't make it? Order for Sunday delivery" },
+  { kicker: 'Fresh this week', line1: 'Farmers market', line2: 'schedule', cta: "Can't make it? Order for Sunday delivery" },
   { kicker: 'See you Saturday', line1: 'Grab a bowl', line2: 'near you', cta: 'Or order online for Sunday delivery' },
 ];
 const STYLE_KICKER = { poster: 'Fresh every week', pop: 'Loaded bowls!' }; // short badge texts for the round stamp / sticker
