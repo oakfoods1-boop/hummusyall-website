@@ -1,57 +1,261 @@
 <!doctype html><html><head><meta charset="utf-8">
-<!-- Saturday market story, 1080×1920. Filled in by story.mjs (window.STORY). Brand colors match public/css/site.css. -->
+<!-- Saturday market story, 1080×1920. Filled in by story.mjs via window.fill(data).
+     Several looks ("styles"); story.mjs rotates style, photo and headline every week so the story is never the same twice.
+     data = { style, date, markets:[{name,color,hours,town}], photos:[img paths], head:{kicker,line1,line2}, cta }
+     Keep text inside y 210–1710 (Instagram covers the top and bottom with its own buttons). -->
 <style>
 @font-face{font-family:B;src:url(fonts/bricolage-grotesque-latin-700-normal.woff2);font-weight:700}
 @font-face{font-family:B;src:url(fonts/bricolage-grotesque-latin-800-normal.woff2);font-weight:800}
 @font-face{font-family:P;src:url(fonts/poppins-latin-400-normal.woff2);font-weight:400}
 @font-face{font-family:P;src:url(fonts/poppins-latin-500-normal.woff2);font-weight:500}
 @font-face{font-family:P;src:url(fonts/poppins-latin-600-normal.woff2);font-weight:600}
+@font-face{font-family:A;src:url(fonts/anton-latin-400-normal.woff2)}
+@font-face{font-family:AB;src:url(fonts/archivo-black-latin-400-normal.woff2)}
+@font-face{font-family:C;src:url(fonts/caveat-latin-700-normal.woff2)}
+@font-face{font-family:PF;src:url(fonts/playfair-display-latin-800-italic.woff2);font-style:italic}
+@font-face{font-family:PC;src:url(fonts/pacifico-latin-400-normal.woff2)}
 :root{--cream:#FBF6EC;--sand:#F3EAD6;--olive:#2F4A2A;--ink:#24301F;--paprika:#C8502A;--lime:#DFE777}
 *{box-sizing:border-box;margin:0;padding:0}
-body{width:1080px;height:1920px;overflow:hidden;font-family:P;background:var(--olive)}
-.story{position:relative;width:1080px;height:1920px;background:var(--olive);color:var(--cream)}
-.photo{position:absolute;inset:0 0 auto 0;height:820px;background:url(../../public/img/hero.webp) center 45%/cover}
-.photo::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(28,46,25,.55) 0%,rgba(28,46,25,0) 30%,rgba(47,74,42,0) 62%,var(--olive) 100%)}
-.brand{position:absolute;top:150px;left:72px;right:72px;display:flex;align-items:center;gap:22px;z-index:2}
-.brand img{width:104px;height:104px;border-radius:50%;background:var(--cream);box-shadow:0 6px 24px rgba(0,0,0,.25)}
-.brand span{font:800 46px/1 B;color:var(--cream);text-shadow:0 2px 14px rgba(0,0,0,.35)}
-.body{position:absolute;left:72px;right:72px;top:620px;z-index:2}
-.kicker{display:inline-block;background:var(--lime);color:var(--ink);font:600 30px/1 P;letter-spacing:.12em;text-transform:uppercase;padding:16px 28px;border-radius:999px}
-h1{font:800 116px/.95 B;letter-spacing:-.02em;margin:26px 0 8px;color:var(--cream)}
-h1 em{font-style:normal;color:var(--lime)}
-.date{font:500 40px/1.2 P;color:var(--sand);margin-bottom:38px}
-.markets{display:flex;flex-direction:column;gap:22px}
-.m{display:flex;align-items:center;gap:28px;background:var(--cream);color:var(--ink);border-radius:30px;padding:30px 36px}
-.dot{flex:none;width:26px;height:26px;border-radius:50%;background:var(--c)}
-.m .name{font:800 46px/1.05 B;color:var(--olive)}
-.m .sub{font:500 30px/1.3 P;color:#4A5644;margin-top:6px}
-/* 4+ markets: smaller cards so everything fits above the button */
-.many .body{top:560px} .many h1{font-size:100px} .many .date{margin-bottom:28px}
-.many .markets{gap:14px} .many .m{padding:20px 32px;border-radius:24px} .many .m .name{font-size:38px} .many .m .sub{font-size:26px;margin-top:2px}
-/* 5+ markets */
-.lots .body{top:470px} .lots h1{font-size:88px} .lots .date{margin-bottom:20px} .lots .markets{gap:10px} .lots .m{padding:14px 30px} .lots .m .name{font-size:34px} .lots .m .sub{font-size:24px}
-.cta{position:absolute;left:72px;right:72px;bottom:210px;text-align:center;z-index:2}
-.cta p{font:500 32px/1.35 P;color:var(--sand)}
-.cta strong{display:inline-block;margin-top:14px;background:var(--paprika);color:#fff;font:600 38px/1 P;padding:24px 44px;border-radius:999px}
+body{width:1080px;height:1920px;overflow:hidden;font-family:P;background:#000}
+.story{display:none;position:relative;width:1080px;height:1920px;overflow:hidden}
+.story.on{display:block}
+.ph{background-size:cover;background-position:center}
+.logo{border-radius:50%;background:var(--cream)}
+.mk{font-size:var(--fs,1em)}
+
+/* ───────── brand: the original look (olive, cream cards) ───────── */
+#brand{background:var(--olive);color:var(--cream)}
+#brand .ph{position:absolute;inset:0 0 auto 0;height:820px;background-position:center 45%}
+#brand .ph::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(28,46,25,.55) 0%,rgba(28,46,25,0) 30%,rgba(47,74,42,0) 62%,var(--olive) 100%)}
+#brand .brandrow{position:absolute;top:220px;left:72px;display:flex;align-items:center;gap:22px}
+#brand .brandrow img{width:104px;height:104px;box-shadow:0 6px 24px rgba(0,0,0,.25)}
+#brand .brandrow span{font:800 46px/1 B;text-shadow:0 2px 14px rgba(0,0,0,.35)}
+#brand .body{position:absolute;left:72px;right:72px;top:600px}
+#brand .kicker{display:inline-block;background:var(--lime);color:var(--ink);font:600 30px/1 P;letter-spacing:.12em;text-transform:uppercase;padding:16px 28px;border-radius:999px}
+#brand h1{font:800 112px/.95 B;letter-spacing:-.02em;margin:26px 0 8px}
+#brand h1 em{font-style:normal;color:var(--lime)}
+#brand .date{font:500 40px/1.2 P;color:var(--sand);margin-bottom:34px}
+#brand .mk{display:flex;flex-direction:column;gap:.45em;font-size:var(--fs,48px)}
+#brand .m{display:flex;align-items:center;gap:.6em;background:var(--cream);color:var(--ink);border-radius:.62em;padding:.55em .75em}
+#brand .dot{flex:none;width:.55em;height:.55em;border-radius:50%;background:var(--c)}
+#brand .name{font:800 .96em/1.05 B;color:var(--olive)}
+#brand .sub{font:500 .63em/1.3 P;color:#4A5644;margin-top:.12em}
+#brand .cta{position:absolute;left:72px;right:72px;bottom:230px;text-align:center}
+#brand .cta p{font:500 32px/1.35 P;color:var(--sand)}
+#brand .cta strong{display:inline-block;margin-top:14px;background:var(--paprika);color:#fff;font:600 38px/1 P;padding:24px 44px;border-radius:999px}
+
+/* ───────── poster: big Anton type on paprika, round photo ───────── */
+#poster{background:#B8391D;color:#FFF3E0}
+#poster::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(-35deg,rgba(255,255,255,.035) 0 26px,transparent 26px 52px)}
+#poster .ph{position:absolute;width:540px;height:540px;right:-90px;top:300px;border-radius:50%;border:14px solid #FFF3E0;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+#poster .stamp{position:absolute;right:300px;top:720px;z-index:3;width:220px;height:220px;border-radius:50%;background:var(--lime);color:#1a1a1a;display:flex;align-items:center;justify-content:center;text-align:center;font:400 40px/1 A;text-transform:uppercase;transform:rotate(-14deg);box-shadow:0 10px 30px rgba(0,0,0,.3)}
+#poster .top{position:absolute;left:70px;top:230px;display:flex;align-items:center;gap:18px;font:600 30px/1 P;letter-spacing:.14em;text-transform:uppercase}
+#poster .top img{width:84px;height:84px}
+#poster h1{position:absolute;left:66px;top:350px;width:600px;font:400 var(--hs,170px)/.9 A;z-index:2;text-transform:uppercase;letter-spacing:-.01em}
+#poster h1 span{display:block;width:max-content;white-space:nowrap}
+#poster h1 em{display:block;width:max-content;white-space:nowrap;font-style:normal;color:#1C1C1C;-webkit-text-stroke:0}
+#poster .date{position:absolute;left:70px;top:960px;font:400 54px/1 A;text-transform:uppercase;letter-spacing:.04em;background:#1C1C1C;color:#FFF3E0;padding:14px 26px}
+#poster .mk{position:absolute;left:70px;right:70px;top:1070px;display:flex;flex-direction:column;gap:.28em;font-size:var(--fs,58px)}
+#poster .m{display:flex;align-items:center;gap:.45em;border-bottom:4px solid rgba(255,243,224,.35);padding-bottom:.26em}
+#poster .num{flex:none;width:1.25em;height:1.25em;background:var(--c);color:#fff;font:400 .7em/1.8em A;text-align:center;border:3px solid #FFF3E0}
+#poster .num{display:flex;align-items:center;justify-content:center;line-height:1}
+#poster .name{font:400 1em/1 A;text-transform:uppercase}
+#poster .sub{font:500 .46em/1.25 P;opacity:.9;margin-top:.16em}
+#poster .cta{position:absolute;left:70px;right:70px;bottom:225px;display:flex;align-items:center;justify-content:space-between;background:#1C1C1C;color:#FFF3E0;padding:26px 36px;font:500 30px/1.2 P}
+#poster .cta strong{font:400 48px/1 A;color:var(--lime);letter-spacing:.02em}
+
+/* ───────── polaroid: cream paper, taped photo, handwriting ───────── */
+#polaroid{background:#F4ECDD;color:var(--ink)}
+#polaroid::before{content:"";position:absolute;inset:0;background-image:radial-gradient(rgba(47,74,42,.12) 2px,transparent 2.5px);background-size:34px 34px}
+#polaroid .frame{position:absolute;left:150px;top:215px;width:780px;height:820px;background:#fff;padding:34px 34px 0;transform:rotate(-3.5deg);box-shadow:0 24px 50px rgba(60,40,10,.25)}
+#polaroid .frame .ph{width:100%;height:640px}
+#polaroid .frame .cap{font:700 70px/1 C;color:var(--paprika);text-align:center;margin-top:30px}
+#polaroid .tape{position:absolute;width:250px;height:64px;background:rgba(223,231,119,.85);top:190px;left:420px;transform:rotate(4deg)}
+#polaroid .logo{position:absolute;width:150px;height:150px;right:70px;top:930px;transform:rotate(8deg);box-shadow:0 8px 24px rgba(0,0,0,.2)}
+#polaroid h1{position:absolute;left:80px;right:80px;top:1080px;font:800 76px/1 B;color:var(--olive);letter-spacing:-.01em}
+#polaroid h1 em{font:700 92px/1 C;color:var(--paprika);font-style:normal}
+#polaroid .date{position:absolute;left:84px;top:1180px;font:600 30px/1 P;letter-spacing:.12em;text-transform:uppercase;color:#6B7A5E}
+#polaroid .mk{position:absolute;left:80px;right:80px;top:1235px;display:flex;flex-direction:column;font-size:var(--fs,46px)}
+#polaroid .m{display:flex;align-items:center;gap:.5em;padding:.32em 0;border-bottom:3px dashed rgba(47,74,42,.25)}
+#polaroid .pin{flex:none;width:.5em;height:.5em;border-radius:50%;background:var(--c);box-shadow:inset -4px -4px 0 rgba(0,0,0,.18);transform:translateY(-.05em)}
+#polaroid .name{font:800 .92em/1.05 B;color:var(--olive)}
+#polaroid .sub{font:700 .85em/1 C;color:var(--paprika);white-space:nowrap;margin-left:auto}
+#polaroid .town{font:500 .5em/1.2 P;color:#6B7A5E;display:block;margin-top:.12em}
+#polaroid .cta{position:absolute;left:80px;right:80px;bottom:220px;text-align:center;font:500 30px/1.3 P;color:var(--olive)}
+#polaroid .cta strong{display:inline-block;margin-left:10px;background:var(--olive);color:var(--cream);font:600 34px/1 P;padding:20px 34px;border-radius:999px}
+
+/* ───────── editorial: full-bleed photo, Playfair italic, thin rules ───────── */
+#editorial{background:#111;color:#fff}
+#editorial .ph{position:absolute;inset:0}
+#editorial .ph::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.55) 0%,rgba(0,0,0,.05) 22%,rgba(0,0,0,.1) 38%,rgba(10,10,8,.82) 58%,rgba(10,10,8,.94) 100%)}
+#editorial .mast{position:absolute;left:70px;right:70px;top:225px;display:flex;align-items:center;gap:20px;font:600 26px/1 P;letter-spacing:.28em;text-transform:uppercase}
+#editorial .mast::before,#editorial .mast::after{content:"";flex:1;height:2px;background:rgba(255,255,255,.7)}
+#editorial .kick{position:absolute;left:70px;top:870px;font:600 28px/1 P;letter-spacing:.24em;text-transform:uppercase;color:var(--lime)}
+#editorial h1{position:absolute;left:66px;right:70px;top:915px;font:italic 800 124px/1 PF;letter-spacing:-.01em}
+#editorial .mk{position:absolute;left:70px;right:70px;top:1190px;font-size:var(--fs,50px)}
+#editorial .m{display:flex;align-items:baseline;justify-content:space-between;gap:.5em;border-top:2px solid rgba(255,255,255,.35);padding:.36em 0}
+#editorial .m:last-child{border-bottom:2px solid rgba(255,255,255,.35)}
+#editorial .name{font:italic 800 .92em/1.05 PF}
+#editorial .town{font:500 .5em/1.3 P;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.72);margin-top:.2em}
+#editorial .hrs{flex:none;font:500 .56em/1 P;color:var(--lime);white-space:nowrap}
+#editorial .cta{position:absolute;left:70px;right:70px;bottom:230px;display:flex;justify-content:space-between;align-items:baseline;font:500 28px/1 P;letter-spacing:.06em;color:rgba(255,255,255,.8)}
+#editorial .cta strong{font:italic 800 46px/1 PF;color:#fff;border-bottom:4px solid var(--lime);padding-bottom:6px}
+
+/* ───────── pop: lime + black, chunky stickers ───────── */
+#pop{background:var(--lime);color:#111}
+#pop .ph{position:absolute;left:70px;right:70px;top:225px;height:640px;border:9px solid #111;border-radius:44px;box-shadow:18px 18px 0 #111;transform:rotate(1.5deg)}
+#pop .badge{position:absolute;left:46px;top:800px;background:#E8462F;color:#fff;font:400 44px/1 AB;padding:22px 30px;border:7px solid #111;border-radius:22px;transform:rotate(-6deg);box-shadow:8px 8px 0 #111}
+#pop .logo{position:absolute;right:56px;top:180px;width:150px;height:150px;border:7px solid #111;transform:rotate(10deg)}
+#pop h1{position:absolute;left:70px;right:70px;top:935px;font:400 100px/.98 AB;letter-spacing:-.02em;text-transform:uppercase}
+#pop h1 em{font-style:normal;background:#111;color:var(--lime);padding:0 16px}
+#pop .date{position:absolute;left:72px;top:1150px;font:600 34px/1 P}
+#pop .mk{position:absolute;left:70px;right:70px;top:1215px;display:grid;grid-template-columns:1fr 1fr;gap:.36em;font-size:var(--fs,40px)}
+#pop .m{background:#fff;border:6px solid #111;border-radius:.6em;box-shadow:7px 7px 0 #111;padding:.42em .5em .46em;border-top:.4em solid var(--c)}
+#pop .mk.one .m{grid-column:1/-1}
+#pop .name{font:400 .82em/1.05 AB}
+#pop .sub{font:600 .56em/1.25 P;margin-top:.2em;color:#333}
+#pop .cta{position:absolute;left:70px;right:70px;bottom:225px;background:#111;color:#fff;border-radius:999px;padding:24px 40px;display:flex;justify-content:space-between;align-items:center;font:600 30px/1 P}
+#pop .cta strong{font:400 40px/1 AB;color:var(--lime)}
+
+/* ───────── chalk: market chalkboard ───────── */
+#chalk{background:radial-gradient(ellipse at 50% 40%,#2E3A30 0%,#1C241D 70%,#141A15 100%);color:#F4F1E6}
+#chalk::before{content:"";position:absolute;inset:34px;border:16px solid #7A5634;border-radius:12px;box-shadow:inset 0 0 40px rgba(0,0,0,.5)}
+#chalk .ph{position:absolute;right:90px;top:220px;width:400px;height:400px;border-radius:50%;border:6px dashed rgba(244,241,230,.85);outline:14px solid rgba(244,241,230,.08)}
+#chalk .top{position:absolute;left:100px;top:230px;font:700 54px/1 C;color:var(--lime)}
+#chalk h1{position:absolute;left:96px;top:310px;width:560px;font:700 150px/.9 C;letter-spacing:-.01em}
+#chalk h1 em{font-style:normal;color:#F2B9A1}
+#chalk .squig{position:absolute;left:100px;top:640px;width:520px}
+#chalk .date{position:absolute;left:100px;top:700px;font:700 64px/1 C;color:#C9D6C4}
+#chalk .mk{position:absolute;left:100px;right:100px;top:820px;font-size:var(--fs,74px)}
+#chalk .m{padding:.18em 0 .3em}
+#chalk .row{display:flex;align-items:baseline;gap:.25em}
+#chalk .name{font:700 1em/1 C;color:#fff}
+#chalk .lead{flex:1;border-bottom:5px dotted rgba(244,241,230,.4);transform:translateY(-.15em);min-width:.5em}
+#chalk .hrs{font:700 .78em/1 C;color:var(--lime);white-space:nowrap}
+#chalk .town{font:700 .6em/1.1 C;color:#AFC0AA}
+#chalk .town i{display:inline-block;width:.42em;height:.42em;border-radius:50%;background:var(--c);margin-right:.25em;font-style:normal}
+#chalk .cta{position:absolute;left:100px;right:100px;bottom:230px;border:5px dashed rgba(242,185,161,.9);border-radius:28px;padding:24px 30px;text-align:center;font:700 58px/1.1 C;color:#F2B9A1}
+#chalk .cta strong{color:#fff}
+#chalk .logo{position:absolute;left:100px;top:1555px;width:0;height:0}
+
+/* ───────── collage: 3-photo grid on cream, clean list ───────── */
+#collage{background:var(--sand);color:var(--ink)}
+#collage .grid{position:absolute;left:60px;right:60px;top:215px;height:760px;display:grid;grid-template-columns:1.35fr 1fr;grid-template-rows:1fr 1fr;gap:16px}
+#collage .grid .ph{border-radius:30px}
+#collage .grid .ph:first-child{grid-row:1/3}
+#collage .logo{position:absolute;right:30px;top:180px;width:150px;height:150px;border:8px solid var(--sand);transform:rotate(8deg)}
+#collage .kick{position:absolute;left:66px;top:1010px;font:600 28px/1 P;letter-spacing:.16em;text-transform:uppercase;color:var(--paprika)}
+#collage h1{position:absolute;left:62px;right:62px;top:1052px;font:800 96px/1 B;letter-spacing:-.025em;color:var(--olive)}
+#collage h1 em{font-style:normal;color:var(--paprika)}
+#collage .mk{position:absolute;left:62px;right:62px;top:1180px;display:flex;flex-direction:column;gap:.3em;font-size:var(--fs,44px)}
+#collage .m{display:flex;align-items:center;gap:.5em;background:#fff;border-radius:.5em;padding:.4em .6em;border-left:.32em solid var(--c)}
+#collage .name{font:800 .9em/1.05 B;color:var(--olive)}
+#collage .sub{font:500 .58em/1.25 P;color:#5D6857;margin-top:.1em}
+#collage .cta{position:absolute;left:62px;right:62px;bottom:225px;text-align:center;font:500 30px/1.3 P;color:var(--olive)}
+#collage .cta strong{display:block;margin:14px auto 0;width:max-content;background:var(--paprika);color:#fff;font:600 36px/1 P;padding:22px 42px;border-radius:999px}
 </style></head><body>
-<div class="story" id="story">
-  <div class="photo"></div>
-  <div class="brand"><img src="../../public/img/logo.webp" alt=""><span>Hummus Y'all</span></div>
+
+<section class="story" id="brand">
+  <div class="ph" data-p="0"></div>
+  <div class="brandrow"><img class="logo" src="../../public/img/logo.webp" alt=""><span>Hummus Y'all</span></div>
   <div class="body">
-    <span class="kicker">This Saturday</span>
-    <h1>Find us at<br><em>the market</em></h1>
-    <div class="date" id="date"></div>
-    <div class="markets" id="markets"></div>
+    <span class="kicker" data-t="kicker"></span>
+    <h1><span data-t="line1"></span><br><em data-t="line2"></em></h1>
+    <div class="date" data-t="date"></div>
+    <div class="mk"></div>
   </div>
-  <div class="cta"><p>Can't make it? Order for Sunday delivery</p><strong>hummusyall.com</strong></div>
-</div>
+  <div class="cta"><p data-t="cta"></p><strong>hummusyall.com</strong></div>
+</section>
+
+<section class="story" id="poster">
+  <div class="top"><img class="logo" src="../../public/img/logo.webp" alt="">Hummus Y'all</div>
+  <div class="ph" data-p="0"></div>
+  <div class="stamp" data-t="kicker"></div>
+  <h1><span data-t="line1"></span><em data-t="line2"></em></h1>
+  <div class="date" data-t="date"></div>
+  <div class="mk"></div>
+  <div class="cta"><span data-t="cta"></span><strong>hummusyall.com</strong></div>
+</section>
+
+<section class="story" id="polaroid">
+  <div class="frame"><div class="ph" data-p="0"></div><div class="cap" data-t="kicker"></div></div>
+  <div class="tape"></div>
+  <img class="logo" src="../../public/img/logo.webp" alt="">
+  <h1><span data-t="line1"></span> <em data-t="line2"></em></h1>
+  <div class="date" data-t="date"></div>
+  <div class="mk"></div>
+  <div class="cta"><span data-t="cta"></span><strong>hummusyall.com</strong></div>
+</section>
+
+<section class="story" id="editorial">
+  <div class="ph" data-p="0"></div>
+  <div class="mast">Hummus Y'all</div>
+  <div class="kick"><span data-t="kicker"></span> · <span data-t="date"></span></div>
+  <h1><span data-t="line1"></span><br><span data-t="line2"></span></h1>
+  <div class="mk"></div>
+  <div class="cta"><span data-t="cta"></span><strong>hummusyall.com</strong></div>
+</section>
+
+<section class="story" id="pop">
+  <div class="ph" data-p="0"></div>
+  <img class="logo" src="../../public/img/logo.webp" alt="">
+  <div class="badge" data-t="kicker"></div>
+  <h1><span data-t="line1"></span><br><em data-t="line2"></em></h1>
+  <div class="date" data-t="date"></div>
+  <div class="mk"></div>
+  <div class="cta"><span data-t="cta"></span><strong>hummusyall.com</strong></div>
+</section>
+
+<section class="story" id="chalk">
+  <div class="ph" data-p="0"></div>
+  <div class="top" data-t="kicker"></div>
+  <h1><span data-t="line1"></span><br><em data-t="line2"></em></h1>
+  <svg class="squig" viewBox="0 0 520 30"><path d="M4 18 Q 40 4 76 16 T 148 16 T 220 16 T 292 16 T 364 16 T 436 16 T 512 14" fill="none" stroke="#DFE777" stroke-width="7" stroke-linecap="round"/></svg>
+  <div class="date" data-t="date"></div>
+  <div class="mk"></div>
+  <div class="cta"><span data-t="cta"></span> → <strong>hummusyall.com</strong></div>
+</section>
+
+<section class="story" id="collage">
+  <div class="grid"><div class="ph" data-p="0"></div><div class="ph" data-p="1"></div><div class="ph" data-p="2"></div></div>
+  <img class="logo" src="../../public/img/logo.webp" alt="">
+  <div class="kick"><span data-t="kicker"></span> · <span data-t="date"></span></div>
+  <h1><span data-t="line1"></span> <em data-t="line2"></em></h1>
+  <div class="mk"></div>
+  <div class="cta"><span data-t="cta"></span><strong>hummusyall.com</strong></div>
+</section>
+
 <script>
+const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+// One market row per style.
+const ROW = {
+  brand: (m) => `<div class="m" style="--c:${esc(m.color)}"><span class="dot"></span><div><div class="name">${esc(m.name)}</div><div class="sub">${esc(m.town)} · ${esc(m.hours)}</div></div></div>`,
+  poster: (m, i) => `<div class="m" style="--c:${esc(m.color)}"><span class="num">${i + 1}</span><div><div class="name">${esc(m.name)}</div><div class="sub">${esc(m.town)} · ${esc(m.hours)}</div></div></div>`,
+  polaroid: (m) => `<div class="m" style="--c:${esc(m.color)}"><span class="pin"></span><div><span class="name">${esc(m.name)}</span><span class="town">${esc(m.town)}</span></div><span class="sub">${esc(m.hours)}</span></div>`,
+  editorial: (m) => `<div class="m"><div><div class="name">${esc(m.name)}</div><div class="town">${esc(m.town)}</div></div><span class="hrs">${esc(m.hours)}</span></div>`,
+  pop: (m) => `<div class="m" style="--c:${esc(m.color)}"><div class="name">${esc(m.name)}</div><div class="sub">${esc(m.town)}<br>${esc(m.hours)}</div></div>`,
+  chalk: (m) => `<div class="m" style="--c:${esc(m.color)}"><div class="row"><span class="name">${esc(m.name.replace(/ Farmers( Curb)? Market$/, ''))}</span><span class="lead"></span><span class="hrs">${esc(m.hours)}</span></div><div class="town"><i></i>${esc(m.name.match(/Farmers( Curb)? Market$/) ? m.name.match(/Farmers( Curb)? Market$/)[0] + ' · ' : '')}${esc(m.town)}</div></div>`,
+  collage: (m) => `<div class="m" style="--c:${esc(m.color)}"><div><div class="name">${esc(m.name)}</div><div class="sub">${esc(m.town)} · ${esc(m.hours)}</div></div></div>`,
+};
 window.fill = (D) => {
-  const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-  document.getElementById('story').classList.toggle('many', D.markets.length > 3);
-  document.getElementById('story').classList.toggle('lots', D.markets.length > 4);
-  document.getElementById('date').textContent = D.date;
-  document.getElementById('markets').innerHTML = D.markets.map((m) =>
-    `<div class="m" style="--c:${esc(m.color)}"><span class="dot"></span><div><div class="name">${esc(m.name)}</div><div class="sub">${esc(m.town)} · ${esc(m.hours)}</div></div></div>`).join('');
+  const s = document.getElementById(D.style) || document.getElementById('brand');
+  s.classList.add('on');
+  s.querySelectorAll('[data-t]').forEach((el) => { el.textContent = (D.head && D.head[el.dataset.t]) ?? D[el.dataset.t] ?? ''; });
+  s.querySelectorAll('[data-p]').forEach((el) => { const p = (D.photos || [])[+el.dataset.p]; if (p) el.style.backgroundImage = `url("${p.src}")`; if (p && p.pos) el.style.backgroundPosition = p.pos; });
+  const mk = s.querySelector('.mk');
+  mk.innerHTML = D.markets.map((m, i) => (ROW[s.id] || ROW.brand)(m, i)).join('');
+  mk.classList.toggle('one', D.markets.length % 2 === 1);
+  if (s.id === 'pop' && D.markets.length % 2 === 1) mk.lastElementChild.style.gridColumn = '1/-1';
+  return s.id;
+};
+// Shrink the market list until it clears the bottom line. Returns true when it fits.
+window.fit = () => {
+  const s0 = document.querySelector('.story.on'), h = s0.querySelector('h1');
+  if (s0.id === 'poster') { let hs = 170; while (hs > 110 && [...h.children].some((c) => c.getBoundingClientRect().width > 600 || c.getBoundingClientRect().height > hs * 1.05)) { hs -= 6; h.style.setProperty('--hs', hs + 'px'); } }
+  const s = s0, mk = s.querySelector('.mk'), cta = s.querySelector('.cta');
+  let fs = parseFloat(getComputedStyle(mk).fontSize);
+  const ok = () => mk.getBoundingClientRect().bottom < cta.getBoundingClientRect().top - 24;
+  for (let i = 0; i < 40 && !ok(); i++) { fs *= 0.96; mk.style.setProperty('--fs', fs + 'px'); }
+  return ok();
 };
 </script></body></html>

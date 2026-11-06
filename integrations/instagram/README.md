@@ -4,7 +4,10 @@
 - `.github/workflows/instagram-story.yml` runs Friday evening (≈7 PM New York, so the 24-hour story is up through Saturday) and posts a 1080×1920 story
   ("Find us at the market") listing the coming Saturday's markets from the operations sheet Plan tab
   (read through `/api/schedule`, same data as the homepage). No markets planned → nothing is posted.
-- Design: `story.html` (brand colors/fonts from the site, photo `public/img/hero.webp`). Layout shrinks for 4 and 5+ markets.
+- Design: `story.html` has 7 looks — poster, polaroid, editorial, pop, chalk, collage, brand (Alon, 2026-11-06: not generic,
+  vary the style every time). `story.mjs` rotates the look, the photo (site photos in `public/img/`) and the headline by week
+  number, so consecutive weeks never match and a preview matches what posts. Long lineups shrink to fit (`window.fit`).
+  Preview another look: `node story.mjs render --style chalk` (or `--variant 1`); `SCHEDULE_FILE=x.json` renders from a saved schedule.
   Town line: `town` from `data/markets.json`, or `storyTown` when set (Midtown → "North Hills, Raleigh").
 - `story.mjs render` makes `public/ig/story-<date>.jpg`; the workflow commits it so Cloudflare serves it at
   `https://www.hummusyall.com/ig/story-<date>.jpg` (Instagram needs a public JPEG URL), then `story.mjs post` posts it
