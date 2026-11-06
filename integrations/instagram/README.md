@@ -1,7 +1,7 @@
 # Instagram automation
 
 ## Saturday market story
-- `.github/workflows/instagram-story.yml` runs Friday evening (≈7 PM New York, so the 24-hour story is up through Saturday) and posts a 1080×1920 story
+- `.github/workflows/instagram-story.yml` runs Friday at 3 PM New York (Alon, 2026-11-06; the 24-hour story stays up through Saturday's markets) and posts a 1080×1920 story
   ("Find us at the market") listing the coming Saturday's markets from the operations sheet Plan tab
   (read through `/api/schedule`, same data as the homepage). No markets planned → nothing is posted.
 - Design: `story.html` has 7 looks — poster, polaroid, editorial, pop, chalk, collage, brand (Alon, 2026-11-06: not generic,
@@ -12,7 +12,7 @@
 - `story.mjs render` makes `public/ig/story-<date>.jpg`; the workflow commits it so Cloudflare serves it at
   `https://www.hummusyall.com/ig/story-<date>.jpg` (Instagram needs a public JPEG URL), then `story.mjs post` posts it
   through the Instagram Graph API (container `media_type=STORIES` → `media_publish`) and records it in `state.json`.
-- Manual run: GitHub → Actions → "Instagram Saturday story (posted Friday 7 PM)" → Run workflow → `preview` (image only, download from the run)
+- Manual run: GitHub → Actions → "Instagram Saturday story (posted Friday 3 PM)" → Run workflow → `preview` (image only, download from the run)
   or `post` (posts now).
 
 ## Meta setup (done 2026-10-16)

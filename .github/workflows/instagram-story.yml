@@ -1,15 +1,15 @@
-# Posts the "Find us at the market" Instagram story every Friday evening (about 7 PM New York time), so it is up
+# Posts the Saturday-markets Instagram story every Friday at 3 PM New York time (Alon, 2026-11-06), so it is up
 # for 24 hours through Saturday's markets. It lists the coming Saturday's markets
 # from this week's lineup on the operations sheet Plan tab (via https://www.hummusyall.com/api/schedule).
 # Run it by hand from the Actions tab: "preview" only makes the image (download it from the run page),
 # "post" posts it right away. Needs the IG_ACCESS_TOKEN secret (permanent Facebook Page token).
-name: Instagram Saturday story (posted Friday 7 PM)
+name: Instagram Saturday story (posted Friday 3 PM)
 
 on:
   schedule:
-    - cron: '0 23 * * 5'    # UTC; the "Decide" step only posts on Friday between 7 and 10 PM New York time,
-    - cron: '0 0 * * 6'     # so this covers both daylight (7 PM = 23:00 UTC) and standard time (7 PM = 00:00 UTC).
-    - cron: '0 1 * * 6'     # Extra runs skip once posted.
+    - cron: '0 19 * * 5'    # UTC; the "Decide" step only posts on Friday between 3 and 6 PM New York time,
+    - cron: '0 20 * * 5'    # so this covers both daylight (3 PM = 19:00 UTC) and standard time (3 PM = 20:00 UTC).
+    - cron: '0 21 * * 5'    # Extra runs skip once posted (GitHub often starts scheduled runs late).
   workflow_dispatch:
     inputs:
       mode:
@@ -39,7 +39,7 @@ jobs:
         run: |
           if [ "${{ github.event_name }}" = "schedule" ]; then
             H=$(TZ=America/New_York date +%-H); D=$(TZ=America/New_York date +%u)
-            if [ "$D" = "5" ] && [ "$H" -ge 19 ] && [ "$H" -lt 22 ]; then echo "mode=post" >> "$GITHUB_OUTPUT"; else echo "mode=skip" >> "$GITHUB_OUTPUT"; fi
+            if [ "$D" = "5" ] && [ "$H" -ge 15 ] && [ "$H" -lt 18 ]; then echo "mode=post" >> "$GITHUB_OUTPUT"; else echo "mode=skip" >> "$GITHUB_OUTPUT"; fi
           else
             echo "mode=${{ inputs.mode }}" >> "$GITHUB_OUTPUT"
           fi
