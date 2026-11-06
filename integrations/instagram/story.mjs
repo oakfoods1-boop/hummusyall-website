@@ -113,11 +113,13 @@ if (mode === 'render') {
   const token = process.env.IG_ACCESS_TOKEN, ig = process.env.IG_USER_ID;
   if (!token || !ig) throw new Error('IG_ACCESS_TOKEN / IG_USER_ID missing');
   if (state.lastStory === date && !rest.includes('--again')) { out({ status: 'already-posted', date }); process.exit(0); }
-  const url = `${SITE}/ig/story-${date}.jpg`;
-  // Wait for Cloudflare to finish deploying the image (usually about a minute).
+  // --video posts the MP4 (with music) made by `render --video`; otherwise the JPEG.
+  const video = rest.includes('--video');
+  const url = `${SITE}/ig/story-${date}.${video ? 'mp4' : 'jpg'}`;
+  // Wait for Cloudflare to finish deploying the file (usually about a minute).
   for (let i = 0; ; i++) {
     const r = await fetch(url, { method: 'HEAD' }).catch(() => null);
-    if (r && r.ok && (r.headers.get('content-type') || '').includes('image')) break;
+    if (r && r.ok && /image|video/.test(r.headers.get('content-type') || '')) break;
     if (i > 40) throw new Error('image never went live: ' + url);
     await sleep(15000);
   }
@@ -127,15 +129,15 @@ if (mode === 'render') {
     if (!r.ok || j.error) throw new Error(`${path}: ${j.error ? j.error.message : r.status}`);
     return j;
   };
-  const { id: container } = await call(`${ig}/media`, { media_type: 'STORIES', image_url: url });
-  for (let i = 0; i < 30; i++) {
+  const { id: container } = await call(`${ig}/media`, video ? { media_type: 'STORIES', video_url: url } : { media_type: 'STORIES', image_url: url });
+  for (let i = 0; i < 60; i++) {
     const s = await (await fetch(`${GRAPH}/${container}?fields=status_code&access_token=${encodeURIComponent(token)}`)).json();
     if (s.status_code === 'FINISHED') break;
-    if (s.status_code === 'ERROR') throw new Error('Instagram could not process the image');
+    if (s.status_code === 'ERROR') throw new Error('Instagram could not process the story file');
     await sleep(5000);
   }
   const { id } = await call(`${ig}/media_publish`, { creation_id: container });
-  writeFileSync(STATE, JSON.stringify({ ...state, lastStory: date, lastStoryId: id, lastStoryStyle: look(date).style }, null, 2) + '\n');
+  writeFileSync(STATE, JSON.stringify({ ...state, lastStory: date, lastStoryId: id, lastStoryStyle: look(date).style, lastStoryKind: video ? 'video' : 'image' }, null, 2) + '\n');
   out({ status: 'posted', date, media: id });
 } else {
   throw new Error('mode must be render or post');

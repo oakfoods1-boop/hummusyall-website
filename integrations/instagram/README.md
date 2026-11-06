@@ -9,11 +9,15 @@
   number, so consecutive weeks never match and a preview matches what posts. Long lineups shrink to fit (`window.fit`).
   Preview another look: `node story.mjs render --style chalk` (or `--variant 1`); `SCHEDULE_FILE=x.json` renders from a saved schedule.
   Town line: `town` from `data/markets.json`, or `storyTown` when set (Midtown → "North Hills, Raleigh").
-- `story.mjs render` makes `public/ig/story-<date>.jpg`; the workflow commits it so Cloudflare serves it at
-  `https://www.hummusyall.com/ig/story-<date>.jpg` (Instagram needs a public JPEG URL), then `story.mjs post` posts it
-  through the Instagram Graph API (container `media_type=STORIES` → `media_publish`) and records it in `state.json`.
-- Manual run: GitHub → Actions → "Instagram Saturday story (posted Friday 3 PM)" → Run workflow → `preview` (image only, download from the run)
-  or `post` (posts now).
+- **Video story with music (Alon, 2026-11-06)**: the job runs `story.mjs render --video` → a 12 s MP4 (30 fps, photo slowly zooms,
+  headline, then each market, then the website line come in one by one; `window.animate`/`window.seek` in story.html drive it frame
+  by frame) with a track from `music/` (rotates by week; `--music file.mp3` to pick), plus the still JPEG. Both are committed to
+  `public/ig/` so Cloudflare serves `https://www.hummusyall.com/ig/story-<date>.mp4`, then `story.mjs post --video` posts it
+  (container `media_type=STORIES`, `video_url`) and records it in `state.json`. Instagram's own music can't be added via the API, so
+  the music is baked into the video. The API can't delete a story either.
+- Text size: Alon wants times/towns easy to read — keep the market list and hours large when changing a look.
+- Manual run: GitHub → Actions → "Instagram Saturday story (posted Friday 3 PM)" → Run workflow → `preview` (files only, download
+  from the run) or `post` (posts now; tick `again` to post even if a story already went out for that Saturday).
 
 ## Meta setup (done 2026-10-16)
 - Meta developer app "Hummus Yall Posting" (app ID 1124727760515281, business portfolio hummusyall), use case

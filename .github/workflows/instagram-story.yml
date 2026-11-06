@@ -17,6 +17,10 @@ on:
         type: choice
         options: [preview, post]
         default: preview
+      again:
+        description: 'post even if a story already went out for this Saturday'
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -51,23 +55,27 @@ jobs:
 
       - name: Install browser
         if: steps.gate.outputs.mode != 'skip'
-        run: npm i --no-save playwright@1.56.0 && npx playwright install --with-deps chromium
+        run: |
+          npm i --no-save playwright@1.56.0 && npx playwright install --with-deps chromium
+          command -v ffmpeg || (sudo apt-get update -q && sudo apt-get install -yq ffmpeg)
 
       - name: Make the story image
         id: render
         if: steps.gate.outputs.mode != 'skip'
-        run: node integrations/instagram/story.mjs render
+        run: node integrations/instagram/story.mjs render --video
 
       - name: Save the image on this run's page
         if: startsWith(steps.render.outputs.status, 'rendered')
         uses: actions/upload-artifact@v4
         with:
           name: story-${{ steps.render.outputs.date }}
-          path: public/ig/story-${{ steps.render.outputs.date }}.jpg
+          path: |
+            public/ig/story-${{ steps.render.outputs.date }}.jpg
+            public/ig/story-${{ steps.render.outputs.date }}.mp4
 
       - name: Put the image on the website
         id: publish
-        if: steps.gate.outputs.mode == 'post' && startsWith(steps.render.outputs.status, 'rendered') && steps.render.outputs.posted == 'no'
+        if: steps.gate.outputs.mode == 'post' && startsWith(steps.render.outputs.status, 'rendered') && (steps.render.outputs.posted == 'no' || inputs.again)
         run: |
           git config user.name "hummusyall-bot"
           git config user.email "oakfoods1@gmail.com"
@@ -80,7 +88,7 @@ jobs:
         env:
           IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
         run: |
-          node integrations/instagram/story.mjs post --date "${{ steps.render.outputs.date }}"
+          node integrations/instagram/story.mjs post --video --date "${{ steps.render.outputs.date }}" ${{ github.event_name == 'workflow_dispatch' && inputs.again && '--again' || '' }}
           git add integrations/instagram/state.json
           git diff --cached --quiet || git commit -m "Instagram story posted for ${{ steps.render.outputs.date }}"
           git pull --rebase -q origin main && git push -q origin HEAD:main
