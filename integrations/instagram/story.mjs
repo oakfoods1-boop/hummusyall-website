@@ -86,6 +86,27 @@ if (mode === 'render') {
   const outFile = arg('--out') || file;
   mkdirSync(dirname(resolve(root, outFile)), { recursive: true });
   await page.screenshot({ path: resolve(root, outFile), type: 'jpeg', quality: 90 });
+  if (rest.includes('--video')) {
+    // 12 s video story with music: photo slowly zooms, headline/markets/button come in one by one.
+    const { execFileSync } = await import('node:child_process');
+    const { mkdtempSync, readdirSync, rmSync } = await import('node:fs');
+    const { tmpdir } = await import('node:os');
+    const DUR = 12, FPS = 30, tmp = mkdtempSync(join(tmpdir(), 'story-'));
+    await page.evaluate(() => window.animate());
+    for (let f = 0; f < DUR * FPS; f++) {
+      await page.evaluate((t) => window.seek(t), f / FPS);
+      await page.screenshot({ path: join(tmp, `f${String(f).padStart(4, '0')}.jpg`), type: 'jpeg', quality: 92 });
+    }
+    const tracks = readdirSync(join(here, 'music')).filter((x) => x.endsWith('.mp3')).sort();
+    const music = arg('--music') || tracks[(((weekNo(date) * 7) % tracks.length) + tracks.length) % tracks.length];
+    const mp4 = outFile.replace(/\.jpg$/, '.mp4');
+    execFileSync('ffmpeg', ['-y', '-loglevel', 'error', '-framerate', String(FPS), '-i', join(tmp, 'f%04d.jpg'), '-i', join(here, 'music', music),
+      '-filter_complex', `[1:a]atrim=0:${DUR},afade=t=in:d=0.4,afade=t=out:st=${DUR - 1.5}:d=1.5,loudnorm=I=-14:TP=-1.5[a]`,
+      '-map', '0:v', '-map', '[a]', '-c:v', 'libx264', '-preset', 'veryfast', '-crf', '20', '-pix_fmt', 'yuv420p', '-c:a', 'aac', '-b:a', '160k',
+      '-movflags', '+faststart', '-t', String(DUR), resolve(root, mp4)]);
+    rmSync(tmp, { recursive: true, force: true });
+    out({ video: mp4, music });
+  }
   await browser.close();
   out({ status: fits ? 'rendered' : 'rendered-overflow', date, file: outFile, style: L.style, markets: day.markets.length, posted: state.lastStory === date ? 'yes' : 'no' });
 } else if (mode === 'post') {
