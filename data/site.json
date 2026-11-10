@@ -7,7 +7,7 @@
   "instagram": "https://www.instagram.com/hummusyall/",
   "facebook": "https://www.facebook.com/profile.php?id=61561486542995",
 
-  "_orders": "Online orders are fulfilled on Sundays. Orders close Friday 11:59 PM (orderCutoff, weekday 5 = Friday); after that, new orders are for the following Sunday. The site shows the next Sunday automatically. Add a date to skipDates to skip a week (the site then shows the Sunday after).",
+  "_orders": "Online orders are fulfilled on Sundays. Orders close Friday 11:59 PM (orderCutoff, weekday 5 = Friday); after that, new orders are for the following Sunday. The site shows the next Sunday automatically. Weeks off: Alon ticks Sundays to skip on the private orders page (\"Weeks off\", stored in KV); skipDates here is only used until he saves there once.",
   "fulfillmentWeekday": 0,
   "orderCutoff": { "weekday": 5, "hour": 23, "minute": 59 },
   "skipDates": ["2026-11-15", "2026-11-22", "2026-11-29"],

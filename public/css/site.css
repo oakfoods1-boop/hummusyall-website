@@ -278,3 +278,5 @@ fieldset.field { border: 0; padding: 0; margin: 0; }
 .extras-item { display: flex; align-items: center; justify-content: space-between; gap: 12px; font-weight: 500; }
 .extras-item input { width: 84px; flex: none; }
 .extras-days .check input { width: 18px; height: 18px; min-height: 0; padding: 0; margin: 0; flex: none; accent-color: var(--olive); }
+.skip-warn { color: var(--paprika, #C8502A); font-weight: 600; }
+.extras-admin summary .pill { white-space: nowrap; flex: none; }

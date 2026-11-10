@@ -9,6 +9,7 @@
 import menu from '../../data/menu.json';
 import site from '../../data/site.json';
 import { nextFulfillment, prettyDate } from '../_lib/fulfillment.js';
+import { skipDates } from '../_lib/skip.js';
 import { getAvailability } from '../_lib/availability.js';
 import { extrasStatus } from '../_lib/extras.js';
 
@@ -65,7 +66,8 @@ async function checkout({ request, env, waitUntil }, body) {
   if (!items.length) return json({ error: 'Your order is empty.' }, 400);
 
   // Which day: the usual Sunday, or one of the extra days with leftover bowls (functions/_lib/extras.js).
-  const sunday = nextFulfillment(site);
+  // Skipped Sundays (weeks we aren't producing) come from the private orders page.
+  const sunday = nextFulfillment({ ...site, skipDates: await skipDates(env) });
   const asked = /^\d{4}-\d{2}-\d{2}$/.test(String(body.day || '')) ? String(body.day) : '';
   const extraDay = asked && asked !== sunday;
   let date = sunday, windowText = '';

@@ -29,6 +29,7 @@
         warn.hidden = !!settings.pickupAddress;
         warn.textContent = 'The pickup address is not set yet, so "Ready for pickup" emails are turned off. Send Claude the pickup address and time window.';
         render();
+        if (typeof skipCounts === 'function') skipCounts();
       })
       .catch(function (e) { errEl.textContent = e.message; errEl.hidden = false; listEl.innerHTML = ''; });
   }
@@ -163,5 +164,51 @@
     });
     $('[data-extras-off]').addEventListener('click', function () { xSend({ off: true }, 'Turned off. The website is back to Sunday only.'); });
     xLoad();
+  }
+  // ---------- Weeks off: Sundays with no website orders ----------
+  var sBox = $('[data-skip-admin]');
+  function skipCounts() {
+    Array.prototype.forEach.call(document.querySelectorAll('[data-skip-count]'), function (el) {
+      var d = el.getAttribute('data-skip-count');
+      var n = all.filter(function (o) { return o.date === d; }).length;
+      el.textContent = n ? ' · ' + n + (n === 1 ? ' order' : ' orders') + ' already' : '';
+      el.className = n ? 'skip-warn' : '';
+    });
+  }
+  function showSkip(v) {
+    var dates = v.dates || [];
+    var pill = $('[data-skip-pill]');
+    pill.textContent = dates.length ? dates.length + (dates.length === 1 ? ' week off' : ' weeks off') : 'None';
+    pill.className = 'pill' + (dates.length ? ' pill-new' : '');
+    var st = $('[data-skip-status]');
+    st.hidden = false;
+    if (!v.enabled) st.textContent = 'Needs a one-time setup in Cloudflare before it can be used (ask Claude).';
+    else st.innerHTML = (dates.length ? '<strong>Skipping:</strong> ' + dates.map(prettyDay).map(esc).join(', ') + '.<br>' : '') +
+      'The website shows the next delivery as <strong>' + esc(v.next ? prettyDay(v.next) : 'none (all skipped)') + '</strong>.';
+    // The next 10 Sundays, plus any further-out ones already skipped.
+    var today = ncToday(), first = addDays(today, (7 - new Date(today + 'T12:00:00Z').getUTCDay()) % 7), suns = [];
+    for (var i = 0; i < 10; i++) suns.push(addDays(first, i * 7));
+    dates.forEach(function (d) { if (suns.indexOf(d) === -1) suns.push(d); });
+    suns.sort();
+    $('[data-skip-days]').innerHTML = suns.map(function (d) {
+      return '<label class="check"><input type="checkbox" value="' + d + '"' + (dates.indexOf(d) !== -1 ? ' checked' : '') + '> ' +
+        esc(prettyDay(d)) + '<span data-skip-count="' + d + '"></span></label>';
+    }).join('');
+    skipCounts();
+    if (dates.length) sBox.open = true;
+  }
+  function sMsg(text, ok) { var m = $('[data-skip-msg]'); m.className = 'form-status ' + (ok ? 'ok' : 'err'); m.textContent = text; m.hidden = false; }
+  if (sBox) {
+    $('[data-skip-save]').addEventListener('click', function () {
+      var dates = Array.prototype.map.call(document.querySelectorAll('[data-skip-days] input:checked'), function (c) { return c.value; });
+      var withOrders = dates.filter(function (d) { return all.some(function (o) { return o.date === d; }); });
+      if (withOrders.length && !confirm('There are already paid orders for ' + withOrders.map(prettyDay).join(', ') +
+        '. Skipping stops new orders but does not cancel or refund these. Save anyway?')) return;
+      fetch('/api/admin/skip', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ dates: dates }) })
+        .then(function (r) { return r.json().then(function (j) { if (!r.ok) throw new Error(j.error || 'Could not save.'); return j; }); })
+        .then(function (j) { showSkip(j); sMsg('Saved. The website shows the new delivery date within a minute.', true); })
+        .catch(function (e) { sMsg(e.message, false); });
+    });
+    fetch('/api/admin/skip', { cache: 'no-store' }).then(function (r) { return r.json(); }).then(showSkip).catch(function () {});
   }
 })();
