@@ -10,7 +10,7 @@
   "_orders": "Online orders are fulfilled on Sundays. Orders close Friday 11:59 PM (orderCutoff, weekday 5 = Friday); after that, new orders are for the following Sunday. The site shows the next Sunday automatically. Add a date to skipDates to skip a week (the site then shows the Sunday after).",
   "fulfillmentWeekday": 0,
   "orderCutoff": { "weekday": 5, "hour": 23, "minute": 59 },
-  "skipDates": [],
+  "skipDates": ["2026-11-15", "2026-11-22", "2026-11-29"],
   "pickupLocation": "Cary, NC",
   "_pickup": "Used in the 'ready for pickup' and 'on its way' emails sent from the private orders page.",
   "pickupAddress": "800 Roni Ct, Cary, NC 27519",
